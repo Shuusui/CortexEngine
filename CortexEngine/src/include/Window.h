@@ -4,36 +4,55 @@
 #pragma endregion
 #pragma region External includes
 #include <Windows.h>
+#include <cstdint>
 #pragma endregion
 
 namespace CortexEngine
 {
 	namespace Core
 	{
+		///\class Window.h "src/include/Window.h
+		///\brief this is the base window class which creates an window. 
 		class Window
 		{
 		public:
 			/**
-			* The Default Constructor of the Window class to initialize a new Window
+			* The Default Constructor of the window
+			*/
+			Window() {};
+			/**
+			* The Copy Constructor of the window class
+			*/
+			Window(const Window& window) {};
+			/**
+			*Initialize the window
 			*
+			* @param resolutionX The Resolution of the X axis from the current window
+			* @param resolutionY The Resolution of the Y axis from the current window
+			* @param hInstance The handle of the current instance
+			* @param nCmdShow The command of the current window to specialize how the window will be displayed
 			*/
-			Window(); 
+			void const Init(const uint16_t& resolutionX, const uint16_t& resolutionY, const HINSTANCE& hInstance, const int32_t& nCmdShow);
 			/**
-			* The Initialize method of the current window. 
+			*Shut down the current window
 			*/
-			void Init(); 
+			void const ShutDown();
 			/**
-			* The Run function fo the current Window. There will be the core loop to hold the window open. 
+			* Destructor
 			*/
-			void Run(); 
+			~Window();
+		private:
 			/**
-			* The Destrox method of the current window to shut down the window manually
+			* the private run function which will get started after the window is initialized.
+			* @param hWnd The handle of the current window which is initialized in the Init() function
+			* @param nCmdShow The command of the current window hand over from the Init() method.
 			*/
-			void Destroy();
+			void const Run(const HWND& hWnd, const int32_t& nCmdShow);
 			/**
-			* The default Destructor of the current window class to safe delete the class
+			* private member variable of a MSG to set the message to WM_QUIT in the shut down and the run function.
 			*/
-			~Window(); 
+			MSG m_message;
+
 		};
 	}
 }

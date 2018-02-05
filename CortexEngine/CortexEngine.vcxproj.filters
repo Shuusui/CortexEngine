@@ -38,8 +38,5 @@
     <ClInclude Include="src\include\Editor.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\include\CoreMacros.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

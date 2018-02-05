@@ -152,7 +152,6 @@
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\include\CoreMacros.h" />
     <ClInclude Include="src\include\Editor.h" />
     <ClInclude Include="src\include\ICObject.h" />
     <ClInclude Include="src\include\Level.h" />

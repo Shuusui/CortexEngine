@@ -2,7 +2,6 @@
 #pragma region Internal includes
 #include "ICObject.h"
 #include "Level.h"
-#include "CoreMacros.h"
 #pragma endregion
 #pragma region External includes
 #include <cstdint>

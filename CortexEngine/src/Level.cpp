@@ -5,15 +5,13 @@ CortexEngine::Core::Level::Level(const uint32_t& resolutionX, const uint32_t& re
 
 }
 
-void CortexEngine::Core::Level::AddObject(ICOBJECT* obj)
+void CortexEngine::Core::Level::AddObject(CortexEngine::Core::ICObject* obj)
 {
 	m_objCount++;
-	return false;
 }
 
-void CortexEngine::Core::Level::RemoveObject(ICOBJECT* obj)
+void CortexEngine::Core::Level::RemoveObject(CortexEngine::Core::ICObject* obj)
 {
-	return false;
 }
 
 CortexEngine::Core::Level::~Level()

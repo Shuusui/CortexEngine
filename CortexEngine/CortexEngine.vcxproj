@@ -147,14 +147,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\EngineManager.cpp" />
+    <ClCompile Include="src\include\ProjectManager.cpp" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\Editor.h" />
+    <ClInclude Include="src\include\EngineManager.h" />
     <ClInclude Include="src\include\ICObject.h" />
     <ClInclude Include="src\include\Level.h" />
+    <ClInclude Include="src\include\ProjectManager.h" />
     <ClInclude Include="src\include\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

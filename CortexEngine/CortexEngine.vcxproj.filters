@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Manager header files">
+      <UniqueIdentifier>{78722859-7ff8-404b-8273-9011bebae9fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager source files">
+      <UniqueIdentifier>{4b6c2e3b-abb6-451d-962a-2895ab97bc52}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\WinMain.cpp">
@@ -22,6 +28,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\Level.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EngineManager.cpp">
+      <Filter>Manager source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\include\ProjectManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -37,6 +49,12 @@
     </ClInclude>
     <ClInclude Include="src\include\Editor.h">
       <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\EngineManager.h">
+      <Filter>Manager header files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\ProjectManager.h">
+      <Filter>Manager header files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

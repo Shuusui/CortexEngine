@@ -18,5 +18,8 @@
     <ClInclude Include="src\include\DirectX11.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\include\DirectX12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

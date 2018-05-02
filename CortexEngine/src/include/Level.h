@@ -17,7 +17,10 @@ namespace CortexEngine
 		{
 
 		public:
+			Level() = delete; 
+
 			Level(const uint32_t& resolutionX,const uint32_t& resolutionY); 
+
 
 			void AddObject(CortexEngine::Core::ICObject* obj);
 			

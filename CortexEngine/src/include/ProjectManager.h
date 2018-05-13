@@ -1,8 +1,11 @@
 #pragma once
 
 #pragma region Internal Includes
+#include "CortexStructs.h"
+#include "Level.h"
 #pragma endregion 
 #pragma region External Includes
+#include <string>
 #pragma endregion 
 
 namespace CortexEngine
@@ -13,44 +16,34 @@ namespace CortexEngine
 		{
 		private:
 			static ProjectManager* s_pProjectManager;
+			Level* m_pCurrLevel;
+			std::string m_name;
 		public:
 			~ProjectManager();
 			ProjectManager(const ProjectManager&) = delete;
-			static inline bool CreateInstance();
+			static bool NewProject(const std::string& projectName);
+			static bool LoadProject(const std::string& projectPath);
+			static ProjectParams LoadProjectFile(const std::string& filePath);
 			static inline bool IsInstantiated();
+			static void Save();
 			static inline void Release();
 			static inline ProjectManager& GetInstance();
-			bool Init();
-			void Run();
+			void SetInitParams(const ProjectParams& params);
 			bool operator=(const ProjectManager&) = delete;
-
+			void LoadLevel(Level* currLevel);
 		private:
-			ProjectManager();
-
+			ProjectManager(const std::string& name, Level* pCurrLevel = nullptr);
+			
 		};
 	}
 }
-CortexEngine::Core::ProjectManager* CortexEngine::Core::ProjectManager::s_pProjectManager = nullptr;
 
-CortexEngine::Core::ProjectManager::~ProjectManager()
-{
-	s_pProjectManager = nullptr; 
-}
-
-inline bool CortexEngine::Core::ProjectManager::CreateInstance()
-{
-	if (!s_pProjectManager)
-	{
-		ProjectManager();
-		return true; 
-	}
-	return false; 
-}
 
 inline bool CortexEngine::Core::ProjectManager::IsInstantiated()
 {
 	return s_pProjectManager ? true : false; 
 }
+
 
 inline void CortexEngine::Core::ProjectManager::Release()
 {

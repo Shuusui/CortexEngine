@@ -19,6 +19,9 @@
     <Filter Include="Manager source files">
       <UniqueIdentifier>{4b6c2e3b-abb6-451d-962a-2895ab97bc52}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helper">
+      <UniqueIdentifier>{da2bba0b-cb14-4202-af43-5e3dfbfb986a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\WinMain.cpp">
@@ -55,6 +58,18 @@
     </ClInclude>
     <ClInclude Include="src\include\ProjectManager.h">
       <Filter>Manager header files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\CortexStructs.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\Algorithms.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\Defines.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\ICComponent.h">
+      <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

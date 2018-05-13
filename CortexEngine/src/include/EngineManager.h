@@ -1,7 +1,10 @@
 #pragma once
 #pragma region Internal Includes
+#include "ProjectManager.h"
 #pragma endregion 
 #pragma region External Includes
+#include <string>
+#include <fstream>
 #pragma endregion 
 
 
@@ -14,34 +17,33 @@ namespace CortexEngine
 		private: 
 			static EngineManager* s_pEngineManager;
 		public: 
-			~EngineManager();
+			~EngineManager() {	s_pEngineManager = nullptr;	};
 			EngineManager(const EngineManager&) = delete; 
 			static inline bool CreateInstance(); 
 			static inline bool IsInstantiated(); 
 			static inline EngineManager& GetInstance(); 
 			static inline void Release(); 
+			static void Save();
 			bool Init(); 
+			void LoadIni();
+			void CreateDefaultIni();
+			void SetDefaultSettings();
 			void Run();
 			bool operator=(const EngineManager&) = delete; 
 		private: 
-			EngineManager(); 
+			EngineManager() { s_pEngineManager = this; };
 			
 
 		};
 	}
 }
-CortexEngine::Core::EngineManager* CortexEngine::Core::EngineManager::s_pEngineManager = nullptr;
 
-CortexEngine::Core::EngineManager::EngineManager()
-{
-	s_pEngineManager = this; 
-}
 
 bool CortexEngine::Core::EngineManager::CreateInstance()
 {
 	if (!s_pEngineManager)
 	{
-		EngineManager();
+		s_pEngineManager = new EngineManager();
 		return true; 
 	}
 	return false; 
@@ -57,14 +59,12 @@ CortexEngine::Core::EngineManager& CortexEngine::Core::EngineManager::GetInstanc
 	return *s_pEngineManager;
 }
 
-CortexEngine::Core::EngineManager::~EngineManager()
-{
-	s_pEngineManager = nullptr; 
-}
 
 void CortexEngine::Core::EngineManager::Release()
 {
 	delete s_pEngineManager; 
 }
+
+
 
 

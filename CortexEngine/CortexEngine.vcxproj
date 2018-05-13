@@ -154,9 +154,13 @@
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\include\Algorithms.h" />
+    <ClInclude Include="src\include\CortexStructs.h" />
+    <ClInclude Include="src\include\Defines.h" />
     <ClInclude Include="src\include\Editor.h" />
     <ClInclude Include="src\include\EngineManager.h" />
     <ClInclude Include="src\include\ICObject.h" />
+    <ClInclude Include="src\include\ICComponent.h" />
     <ClInclude Include="src\include\Level.h" />
     <ClInclude Include="src\include\ProjectManager.h" />
     <ClInclude Include="src\include\Window.h" />

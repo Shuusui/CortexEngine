@@ -36,6 +36,8 @@ namespace CortexEngine
 			void RemoveObject(const uint32_t& index);
 
 			~Level();
+
+			
 		private:
 		};
 	}

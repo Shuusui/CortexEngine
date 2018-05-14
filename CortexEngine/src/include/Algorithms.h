@@ -18,9 +18,9 @@ namespace CortexEngine
 		template <typename t1, typename t2>
 		static bool VectorBinSearch(const std::vector<t1>& container, const t2& keyVal)
 		{
-			if (keyVal < container[container.size / 2])
+			if (keyVal < container[container.size() / 2])
 			{
-				for (int i = container.size() / 2; i >= 0; i--)
+				for (size_t i = container.size() / 2; i >= 0; i--)
 				{
 					if (keyVal == container[i])
 						return true;
@@ -29,7 +29,7 @@ namespace CortexEngine
 			}
 			else
 			{
-				for (int i = container.size() / 2; i < container.size(); i++)
+				for (size_t i = container.size() / 2; i < container.size(); i++)
 				{
 					if (keyVal == container[i])
 						return true;

@@ -25,6 +25,12 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Components Headerfiles">
+      <UniqueIdentifier>{74d0bd5e-87ac-4323-b973-7ff56fd80ab4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components Sourcefiles">
+      <UniqueIdentifier>{f862eb2c-e823-4a00-8293-4b9a341c135d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\WinMain.cpp">
@@ -41,6 +47,9 @@
     </ClCompile>
     <ClCompile Include="src\include\ProjectManager.cpp">
       <Filter>Manager source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TransformComponent.cpp">
+      <Filter>Components Sourcefiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +82,9 @@
     </ClInclude>
     <ClInclude Include="src\include\Window.h">
       <Filter>CoreHeaderfiles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\TransformComponent.h">
+      <Filter>Components Headerfiles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

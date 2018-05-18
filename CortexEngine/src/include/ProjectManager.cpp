@@ -49,7 +49,8 @@ bool CortexEngine::Core::ProjectManager::LoadProject(const std::string & project
 
 CortexEngine::Core::ProjectParams CortexEngine::Core::ProjectManager::LoadProjectFile(const std::string & filePath)
 {
-	
+	ProjectParams params;
+	return params;
 }
 
 

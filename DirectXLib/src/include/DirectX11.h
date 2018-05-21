@@ -4,10 +4,7 @@
 #include <Windows.h>
 #pragma endregion
 
-namespace DirectXLib
+namespace DX
 {
-	namespace Core
-	{
-
-	}
+	
 }

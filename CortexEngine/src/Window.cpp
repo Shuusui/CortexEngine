@@ -1,26 +1,38 @@
 #include "include\Window.h"
+#include "include\EngineManager.h"
+///\internal the definition of the forward declared WindowProc method.
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+	case WM_CLOSE: 
+		DestroyWindow(hwnd); 
+		return 0;
+	case WM_DESTROY:
+		CortexEngine::Core::EngineManager::Release();
+		PostQuitMessage(0);
+		return 0;
+	}
+	return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
 
-
-///\internal forward declaration of the WindowProc function which is needed for the WindowClassEx.
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-void const CortexEngine::Core::Window::Init(const uint16_t& resolutionX, const uint16_t& resolutionY, const HINSTANCE& hInstance, const int32_t& nCmdShow)
+HWND CortexEngine::Core::Window::Init(const EngineParams& params) const
 {
 	///\internal Initialize the WNDCLASSEX and set the important things
 	WNDCLASSEX wndClass{};
 	wndClass.cbSize = sizeof(WNDCLASSEX);
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
 	wndClass.lpfnWndProc = WindowProc;
-	wndClass.hInstance = hInstance;
+	wndClass.hInstance = params.hInstance;
 	wndClass.lpszClassName = "Window_Class";
 	wndClass.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW);
 
 	///\internal create a Rectangle to use it for the Window creation. 
 	RECT rect{};
 	rect.left = 0;
-	rect.right = resolutionX;
+	rect.right = params.ResX;
 	rect.top = 0;
-	rect.bottom = resolutionY;
+	rect.bottom = params.ResY;
 
 	///\internal Adjusts the Window to the left upper corner
 	AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, NULL);
@@ -43,51 +55,22 @@ void const CortexEngine::Core::Window::Init(const uint16_t& resolutionX, const u
 		rect.bottom - rect.top,
 		NULL,
 		NULL,
-		hInstance,
+		params.hInstance,
 		nullptr
 	);
 	///\internal use the run function after the initialization of the Window. 
-	Run(hWnd, nCmdShow);
-}
-
-void const CortexEngine::Core::Window::Run(const HWND& hWnd, const int32_t& nCmdShow)
-{
-	///\internal base functions to Show and update the window which was initialized before
-	ShowWindow(hWnd, nCmdShow);
+	ShowWindow(hWnd, SW_SHOW);
 	UpdateWindow(hWnd);
-	///\internal the while loop to update the window after a message comes in. 
-	while (true)
-	{
-		if (PeekMessage(&m_message, nullptr, 0, 0, PM_REMOVE))
-		{
-			if (m_message.message == WM_QUIT)
-			{
-				break;
-			}
-			TranslateMessage(&m_message);
-			DispatchMessage(&m_message);
-		}
-	}
+	return hWnd;
 }
 
-void const CortexEngine::Core::Window::ShutDown()
+void CortexEngine::Core::Window::Run(MSG & msg)
 {
-	///\internal sets manually the message to WM_QUIT. 
-	m_message.message = WM_QUIT;
+	if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+	{
+		TranslateMessage(&msg); 
+		DispatchMessage(&msg);
+	}
+
 }
 
-CortexEngine::Core::Window::~Window()
-{
-	ShutDown();
-}
-///\internal the definition of the forward declared WindowProc method.
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	switch (uMsg)
-	{
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		return 0;
-	}
-	return DefWindowProc(hwnd, uMsg, wParam, lParam);
-}

@@ -51,6 +51,9 @@
     <ClCompile Include="src\TransformComponent.cpp">
       <Filter>Components Sourcefiles</Filter>
     </ClCompile>
+    <ClCompile Include="src\EngineIni.cpp">
+      <Filter>CoreSourcefiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\ICObject.h">
@@ -85,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="src\include\TransformComponent.h">
       <Filter>Components Headerfiles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\EngineIni.h">
+      <Filter>CoreHeaderfiles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

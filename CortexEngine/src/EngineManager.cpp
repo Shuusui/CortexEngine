@@ -3,49 +3,34 @@
 CortexEngine::Core::EngineManager* CortexEngine::Core::EngineManager::s_pEngineManager = nullptr;
 
 
-bool CortexEngine::Core::EngineManager::Init()
+CortexEngine::Core::EngineParams CortexEngine::Core::EngineManager::Init(const HINSTANCE& hInstance)
 {
-	
-	return true;
+	EngineParams params;
+	LPWSTR* szArgList;
+	int nArgs;
+
+	szArgList = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+	std::wstring wstr = szArgList[0];
+	for (int i = 0; i < 16; i++)
+		wstr.pop_back(); 
+	LocalFree(szArgList);
+	params.EnginePath = wstr; 
+	params.hInstance = hInstance;
+	return m_pEngineIni->LoadIni(params);
 }
 
-void CortexEngine::Core::EngineManager::LoadIni()
+bool CortexEngine::Core::EngineManager::InitWindow(const EngineParams& params)
 {
-	std::fstream iniStream;
-	iniStream.open("engine.ini",std::ios::in); 
-	if (iniStream.is_open())
-	{
-
-	}
-	else
-		CreateDefaultIni();
-
-	iniStream.close();
+	m_pWndClass = new Window();
+	m_wndHandle =  m_pWndClass->Init(params);
+	return m_wndHandle != NULL ? true : false;
 }
-
-void CortexEngine::Core::EngineManager::CreateDefaultIni()
-{
-	std::fstream defaultStream; 
-	defaultStream.open("engine.ini", std::ios::out);
-	if (defaultStream.is_open())
-	{
-
-	}
-	defaultStream.close();
-	SetDefaultSettings();
-}
-
-
-void CortexEngine::Core::EngineManager::SetDefaultSettings()
-{
-
-}
-
 void CortexEngine::Core::EngineManager::Run()
 {
-	while (true)
+	MSG msg = { 0 };
+	while (msg.message != WM_QUIT)
 	{
-
+		m_pWndClass->Run(msg);
 	}
 }
 

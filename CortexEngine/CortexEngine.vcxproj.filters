@@ -1,93 +1,95 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Ressourcendateien">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Manager header files">
-      <UniqueIdentifier>{78722859-7ff8-404b-8273-9011bebae9fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manager source files">
-      <UniqueIdentifier>{4b6c2e3b-abb6-451d-962a-2895ab97bc52}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Helper">
       <UniqueIdentifier>{da2bba0b-cb14-4202-af43-5e3dfbfb986a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="CoreHeaderfiles">
+    <Filter Include="EventSystem">
+      <UniqueIdentifier>{4d3c0875-111f-42a0-b8be-d55d5c098a62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventSystem\EventSystem Headerfiles">
+      <UniqueIdentifier>{0a93d7d9-b346-4466-90bf-846262c8ab86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventSystem\EventSystem Headerfiles\Interfaces">
+      <UniqueIdentifier>{627008b2-467f-4a59-bcd3-644e5d7065f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventSystem\EventSystem Headerfiles\Base classes">
+      <UniqueIdentifier>{da71dcad-da35-4c27-8371-2f4930effee3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventSystem\EventSystem Sourcefiles">
+      <UniqueIdentifier>{bd7c3039-cc0b-4a5c-b0df-2d2c2ac71e21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{cff3b51b-4512-4ee0-bbf8-26c2f6a3b451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Manager header files">
+      <UniqueIdentifier>{78722859-7ff8-404b-8273-9011bebae9fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Manager source files">
+      <UniqueIdentifier>{4b6c2e3b-abb6-451d-962a-2895ab97bc52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{72ee7bb9-ac06-42e5-bc4f-4ff61172df54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\CoreHeaderfiles">
       <UniqueIdentifier>{8764a16b-8b81-4414-aba4-87827e0a8317}</UniqueIdentifier>
     </Filter>
-    <Filter Include="CoreSourcefiles">
+    <Filter Include="Core\CoreHeaderfiles\Interfaces">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Core\CoreSourcefiles">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Components Headerfiles">
+    <Filter Include="Components">
+      <UniqueIdentifier>{8715f0ca-22ec-4ff9-9a82-95c77f92d108}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Components Headerfiles">
       <UniqueIdentifier>{74d0bd5e-87ac-4323-b973-7ff56fd80ab4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components Sourcefiles">
+    <Filter Include="Components\Components Sourcefiles">
       <UniqueIdentifier>{f862eb2c-e823-4a00-8293-4b9a341c135d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="EventSystem Headerfiles">
-      <UniqueIdentifier>{0a93d7d9-b346-4466-90bf-846262c8ab86}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="EventSystem Sourcefiles">
-      <UniqueIdentifier>{bd7c3039-cc0b-4a5c-b0df-2d2c2ac71e21}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="EventSystem Headerfiles\Interfaces">
-      <UniqueIdentifier>{627008b2-467f-4a59-bcd3-644e5d7065f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="EventSystem Headerfiles\Base classes">
-      <UniqueIdentifier>{da71dcad-da35-4c27-8371-2f4930effee3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="CoreHeaderfiles\Interfaces">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\WinMain.cpp">
-      <Filter>CoreSourcefiles</Filter>
+      <Filter>Core\CoreSourcefiles</Filter>
     </ClCompile>
     <ClCompile Include="src\Window.cpp">
-      <Filter>CoreSourcefiles</Filter>
+      <Filter>Core\CoreSourcefiles</Filter>
     </ClCompile>
     <ClCompile Include="src\Level.cpp">
-      <Filter>CoreSourcefiles</Filter>
-    </ClCompile>
-    <ClCompile Include="src\EngineManager.cpp">
-      <Filter>Manager source files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\include\ProjectManager.cpp">
-      <Filter>Manager source files</Filter>
+      <Filter>Core\CoreSourcefiles</Filter>
     </ClCompile>
     <ClCompile Include="src\TransformComponent.cpp">
-      <Filter>Components Sourcefiles</Filter>
+      <Filter>Components\Components Sourcefiles</Filter>
     </ClCompile>
     <ClCompile Include="src\EngineIni.cpp">
-      <Filter>CoreSourcefiles</Filter>
+      <Filter>Core\CoreSourcefiles</Filter>
     </ClCompile>
     <ClCompile Include="src\RigidbodyComponent.cpp">
-      <Filter>Components Sourcefiles</Filter>
+      <Filter>Components\Components Sourcefiles</Filter>
     </ClCompile>
     <ClCompile Include="src\EventHandler.cpp">
-      <Filter>EventSystem Sourcefiles</Filter>
+      <Filter>EventSystem\EventSystem Sourcefiles</Filter>
     </ClCompile>
     <ClCompile Include="src\Console.cpp">
-      <Filter>EventSystem Sourcefiles</Filter>
+      <Filter>EventSystem\EventSystem Sourcefiles</Filter>
     </ClCompile>
     <ClCompile Include="src\IEvent.cpp">
-      <Filter>EventSystem Headerfiles\Interfaces</Filter>
+      <Filter>EventSystem\EventSystem Headerfiles\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EngineManager.cpp">
+      <Filter>Manager\Manager source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\include\ProjectManager.cpp">
+      <Filter>Manager\Manager source files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\ICObject.h">
-      <Filter>CoreHeaderfiles\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\EngineManager.h">
-      <Filter>Manager header files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\ProjectManager.h">
-      <Filter>Manager header files</Filter>
+      <Filter>Core\CoreHeaderfiles\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="src\include\CortexStructs.h">
       <Filter>Helper</Filter>
@@ -96,49 +98,55 @@
       <Filter>Helper</Filter>
     </ClInclude>
     <ClInclude Include="src\include\ICComponent.h">
-      <Filter>CoreHeaderfiles\Interfaces</Filter>
+      <Filter>Core\CoreHeaderfiles\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="src\include\Editor.h">
-      <Filter>CoreHeaderfiles</Filter>
+      <Filter>Core\CoreHeaderfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\Level.h">
-      <Filter>CoreHeaderfiles</Filter>
+      <Filter>Core\CoreHeaderfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\Window.h">
-      <Filter>CoreHeaderfiles</Filter>
+      <Filter>Core\CoreHeaderfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\TransformComponent.h">
-      <Filter>Components Headerfiles</Filter>
+      <Filter>Components\Components Headerfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\EngineIni.h">
-      <Filter>CoreHeaderfiles</Filter>
+      <Filter>Core\CoreHeaderfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\NamespaceAlias.h">
       <Filter>Helper</Filter>
     </ClInclude>
     <ClInclude Include="src\include\RigidbodyComponent.h">
-      <Filter>Components Headerfiles</Filter>
+      <Filter>Components\Components Headerfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\Enums.h">
       <Filter>Helper</Filter>
     </ClInclude>
     <ClInclude Include="src\include\EventHandler.h">
-      <Filter>EventSystem Headerfiles</Filter>
+      <Filter>EventSystem\EventSystem Headerfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\Console.h">
-      <Filter>EventSystem Headerfiles</Filter>
+      <Filter>EventSystem\EventSystem Headerfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\IEvent.h">
-      <Filter>EventSystem Headerfiles\Interfaces</Filter>
+      <Filter>EventSystem\EventSystem Headerfiles\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="src\include\IListener.h">
-      <Filter>EventSystem Headerfiles\Interfaces</Filter>
+      <Filter>EventSystem\EventSystem Headerfiles\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="src\include\MessageListener.h">
-      <Filter>EventSystem Headerfiles\Base classes</Filter>
+      <Filter>EventSystem\EventSystem Headerfiles\Base classes</Filter>
     </ClInclude>
     <ClInclude Include="src\include\MessageEvent.h">
-      <Filter>EventSystem Headerfiles\Base classes</Filter>
+      <Filter>EventSystem\EventSystem Headerfiles\Base classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\EngineManager.h">
+      <Filter>Manager\Manager header files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\ProjectManager.h">
+      <Filter>Manager\Manager header files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

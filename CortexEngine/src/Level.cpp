@@ -1,28 +1,28 @@
 #include "include\Level.h"
 
-CortexEngine::Core::Level::Level(const uint32_t& resolutionX, const uint32_t& resolutionY)
+CE::Core::Level::Level(const uint32_t& resolutionX, const uint32_t& resolutionY)
 {
 
 }
 
-void CortexEngine::Core::Level::AddObject(CortexEngine::Core::ICObject* obj)
+void CE::Core::Level::AddObject(CECORE::ICObject* obj)
 {
 	m_objects.push_back(obj);
 	
 	m_objCount++;
 }
 
-void CortexEngine::Core::Level::RemoveObject(CortexEngine::Core::ICObject* obj)
+void CE::Core::Level::RemoveObject(CECORE::ICObject* obj)
 {
 
 }
 
-void CortexEngine::Core::Level::RemoveObject(const uint32_t & index)
+void CE::Core::Level::RemoveObject(const uint32_t & index)
 {
 
 }
 
-CortexEngine::Core::Level::~Level()
+CE::Core::Level::~Level()
 {
 
 }

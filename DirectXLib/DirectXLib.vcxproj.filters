@@ -15,11 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\include\DirectX11.h">
+    <ClInclude Include="include\DirectX11.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\include\DirectX12.h">
+    <ClInclude Include="include\DirectX12.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\DirectX11.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DirectX12.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

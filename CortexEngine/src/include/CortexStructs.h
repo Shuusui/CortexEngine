@@ -7,18 +7,13 @@
 #include <Windows.h>
 #pragma endregion 
 
-namespace CortexEngine
+namespace CE
 {
 	namespace Core
 	{
 		struct ProjectParams
 		{
 			std::string ProjectName;
-		};
-		struct Transform
-		{
-			Nash::FVector3 Position;
-			Nash::FVector3 Scale;
 		};
 		struct EngineParams
 		{
@@ -27,5 +22,18 @@ namespace CortexEngine
 			uint16_t ResY; 
 			HINSTANCE hInstance;
 		};
+		struct FBXData
+		{
+			Nash::FVector3 Pos;
+		};
+	}
+	namespace Physics
+	{
+		struct Transform
+		{
+			Nash::FVector3 Position;
+			Nash::FVector3 Scale;
+		};
+
 	}
 }

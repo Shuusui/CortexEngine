@@ -2,35 +2,35 @@
 
 
 
-void CortexEngine::Core::ProjectManager::SetInitParams(const ProjectParams & params)
+void CE::Core::ProjectManager::SetInitParams(const ProjectParams & params)
 {
 
 }
 
-void CortexEngine::Core::ProjectManager::LoadLevel(Level * currLevel)
+void CE::Core::ProjectManager::LoadLevel(Level * currLevel)
 {
 }
 
-CortexEngine::Core::ProjectManager::ProjectManager(const std::string & name, Level* pCurrLevel, const bool& NewProj)
+CE::Core::ProjectManager::ProjectManager(const std::string & name, Level* pCurrLevel, const bool& newProj)
 	:m_name(name)
 	,m_pCurrLevel(pCurrLevel)
 {
-	if (NewProj)
+	if (newProj)
 		LoadProjectFile();
 }
 
-CortexEngine::Core::ProjectManager::~ProjectManager()
+CE::Core::ProjectManager::~ProjectManager()
 {
 }
 
-CortexEngine::Core::ProjectParams CortexEngine::Core::ProjectManager::LoadProjectFile()
+CE::Core::ProjectParams CE::Core::ProjectManager::LoadProjectFile()
 {
 	ProjectParams params;
 	return params;
 }
 
 
-void CortexEngine::Core::ProjectManager::Save()
+void CE::Core::ProjectManager::Save()
 {
 
 }

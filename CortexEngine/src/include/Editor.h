@@ -8,13 +8,12 @@
 #pragma endregion
 
 
-namespace CortexEngine
+namespace CE
 {
 	namespace Core
 	{
 		class Editor
 		{
-			static uint_fast32_t m_levelCount; 
 		public: 
 
 		private: 

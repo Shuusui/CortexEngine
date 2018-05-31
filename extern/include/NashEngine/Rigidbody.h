@@ -5,7 +5,7 @@
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Matrix.h"
-#include "Defines.h"
+#include "internal\Defines.h"
 #pragma endregion
 
 namespace Nash

@@ -1,7 +1,6 @@
 #pragma once
 #pragma region Internal includes
 #include "Algorithms.h"
-#include "Defines.h"
 #include "ICComponent.h"
 #pragma endregion
 #pragma region External includes
@@ -11,29 +10,30 @@
 #pragma endregion
 
 
-namespace CortexEngine
+namespace CE
 {
 	namespace Core
 	{
 		class ICObject
 		{
-		private: 
-			uint_fast32_t m_ID; 
+		private:
+			uint_fast32_t m_ID;
 			std::string m_name;
 			uint_fast32_t m_subObjectCount;
 			std::vector<ICObject*> m_subObjects;
 			std::vector<ICComponent*> m_components;
+			bool m_bPhysicsEnabled;
 		public:
 			ICObject() = delete;
 
-			ICObject(const uint_fast32_t& id, const std::string& name) : m_ID(id), m_name(name), m_subObjectCount(0) {};
+			ICObject(const uint_fast32_t& id, const std::string& name) : m_ID(id), m_name(name), m_subObjectCount(0), m_bPhysicsEnabled(false) {};
 
-			ICObject(const ICObject& obj) :m_ID(obj.m_ID), m_name(obj.m_name), m_subObjectCount(obj.m_subObjectCount) {}
+			ICObject(const ICObject& obj) :m_ID(obj.m_ID), m_name(obj.m_name), m_subObjectCount(obj.m_subObjectCount), m_bPhysicsEnabled(obj.m_bPhysicsEnabled) {}
 
-			inline bool CreateSubobject(const std::string& objName);			
+			inline bool CreateSubobject(const std::string& objName);
 
 			inline bool AddSubobject(ICObject* obj);
-			
+
 			inline bool RemoveSubobject(const uint_fast32_t& id);
 
 			inline bool AddComponent(ICComponent* component);
@@ -42,9 +42,13 @@ namespace CortexEngine
 
 			inline ICComponent* GetComponent(const uint_fast32_t& id);
 
-			inline uint_fast32_t GetID() const { return m_ID;  }
+			inline bool PhysicsEnabled() const { return m_bPhysicsEnabled; }
 
-			inline void SetID(const uint_fast32_t& newId) {m_ID = newId;}
+			inline void SetPhysicsEnabled(const bool& physEnabled) { m_bPhysicsEnabled = physEnabled; }
+
+			inline uint_fast32_t GetID() const { return m_ID; }
+
+			inline void SetID(const uint_fast32_t& newId) { m_ID = newId; }
 
 			inline bool operator!=(const ICObject& obj) { return m_ID != obj.m_ID ? true : false; }
 
@@ -55,9 +59,9 @@ namespace CortexEngine
 			inline bool operator>(const ICObject& obj) { return m_ID > obj.m_ID ? true : false; }
 
 			inline bool operator<=(const ICObject& obj) { return m_ID <= obj.m_ID ? true : false; }
-			
+
 			inline bool operator>=(const ICObject& obj) { return m_ID >= obj.m_ID ? true : false; }
-			
+
 			virtual ~ICObject() {};
 		};
 
@@ -91,7 +95,7 @@ namespace CortexEngine
 		inline bool ICObject::AddComponent(ICComponent* component)
 		{
 			if (component->IsUnique() && VectorBinSearch(m_components, component))
-				return false; 
+				return false;
 			m_components.push_back(component);
 		}
 
@@ -99,14 +103,14 @@ namespace CortexEngine
 		{
 			if (component->GetID() == m_components[m_components.size()]->GetID())
 				m_components.pop_back();
-			
-			m_subObjects[component->GetID()] = m_subObjects[m_subObjects.size()]; 
+
+			m_subObjects[component->GetID()] = m_subObjects[m_subObjects.size()];
 			m_subObjects.pop_back();
 		}
 
 		inline ICComponent * ICObject::GetComponent(const uint_fast32_t & id)
 		{
 			return m_components[id];
-		}		
+		}
 	}
 }

@@ -1,5 +1,4 @@
 #pragma once
-
 #pragma region Internal Includes
 #include "Vector3.h"
 #include "Vector4.h"
@@ -7,7 +6,7 @@
 
 namespace Nash
 {
-	class Transform
+	class NASHEXPORT Transform
 	{
 	private:
 		FVector3 m_position; 

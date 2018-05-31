@@ -8,7 +8,7 @@
 #include <string>
 #pragma endregion 
 
-namespace CortexEngine
+namespace CE
 {
 	namespace Core
 	{
@@ -18,9 +18,9 @@ namespace CortexEngine
 			Level* m_pCurrLevel;
 			std::string m_name;
 		public:
-			~ProjectManager();
+			ProjectManager(const std::string& name, Level* pCurrLevel = nullptr, const bool& newProj = true);
 			ProjectManager(const ProjectManager&) = delete;
-			ProjectManager(const std::string& name, Level* pCurrLevel = nullptr, const bool& NewProj = true);
+			~ProjectManager();
 			ProjectParams LoadProjectFile();
 			void Save();
 			void SetInitParams(const ProjectParams& params);

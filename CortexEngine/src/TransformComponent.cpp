@@ -1,7 +1,8 @@
 #include "include\TransformComponent.h"
 
-CortexEngine::Core::TransformComponent::TransformComponent(const Transform & transform)
-	:m_matrix()
+CE::Physics::TransformComponent::TransformComponent(const Transform & transform, const uint_fast32_t& id)
+	:CECORE::ICComponent(id, CECORE::Enums::EComponentType::Transform)
+	, m_matrix()
 {	
 	m_matrix.Translate(transform.Position);
 	
@@ -10,6 +11,6 @@ CortexEngine::Core::TransformComponent::TransformComponent(const Transform & tra
 
 
 
-CortexEngine::Core::TransformComponent::~TransformComponent()
+CE::Physics::TransformComponent::~TransformComponent()
 {
 }

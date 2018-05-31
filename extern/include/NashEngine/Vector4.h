@@ -1,5 +1,4 @@
 #pragma once
-
 #pragma region Internal Includes
 #include "BaseMath.h"
 #include "Vector2.h"
@@ -8,7 +7,7 @@
 
 namespace Nash
 {
-	class __declspec(dllexport) FVector4
+	class NASHEXPORT FVector4
 	{
 	public:
 		float X; float Y; float Z; float W;

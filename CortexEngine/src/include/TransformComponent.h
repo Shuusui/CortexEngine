@@ -3,22 +3,23 @@
 #include "ICComponent.h"
 #include "CortexStructs.h"
 #include "Matrix.h"
+#include "NamespaceAlias.h"
+#include "Enums.h"
 #pragma endregion
-
 #pragma region External Includes
 #pragma endregion 
 
-namespace CortexEngine
+namespace CE
 {
-	namespace Core
+	namespace Physics
 	{
-		class TransformComponent
+		class TransformComponent : public CECORE::ICComponent
 		{
 		private: 
 			Transform m_transform;
 			Nash::FMatrix m_matrix;
 		public: 
-			TransformComponent(const Transform& transform);
+			TransformComponent(const Transform & transform, const uint_fast32_t& id);
 
 			inline Nash::FVector3 GetPosition() const;
 		

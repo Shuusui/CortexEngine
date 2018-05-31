@@ -8,7 +8,7 @@
 #include <cstdlib> // wcstombs
 #pragma endregion 
 
-namespace CortexEngine
+namespace CE
 {
 	namespace Core
 	{

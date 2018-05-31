@@ -1,13 +1,14 @@
 #pragma once
 #pragma region Internal includes
 #include "CortexStructs.h"
+#include "Defines.h"
 #pragma endregion
 #pragma region External includes
 #include <Windows.h>
 #include <cstdint>
 #pragma endregion
 
-namespace CortexEngine
+namespace CE
 {
 	namespace Core
 	{

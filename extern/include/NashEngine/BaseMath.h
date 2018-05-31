@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include "internal\Defines.h"
 
 namespace Nash
 {
@@ -9,16 +10,18 @@ namespace Nash
 	#define PI (3.14159265359)
 	
 
-	inline static float AbsF(const float& value); 
-	inline static double AbsD(const double& value);
-	inline static bool Compare(const float& value1, const float& value2);
-	inline static bool Compare(const double& value1, const double& value2);
-	inline static float Sqrt(const float& value) { return std::sqrt(value); }
-	inline static double Sqrt(const double& value) { return std::sqrt(value); }
+	NASHEXPORT inline float AbsF(const float& value); 
+	NASHEXPORT inline double AbsD(const double& value);
+	NASHEXPORT inline bool Compare(const float& value1, const float& value2);
+	NASHEXPORT inline bool Compare(const double& value1, const double& value2);
+	NASHEXPORT inline float Sqrt(const float& value) { return std::sqrt(value); }
+	NASHEXPORT inline double Sqrt(const double& value) { return std::sqrt(value); }
+	NASHEXPORT inline float Square(const float& value) { return value * value; }
+	NASHEXPORT inline double Square(const double& value) { return value * value; }
 }
 
 
-float Nash::AbsF(const float & value)
+ float Nash::AbsF(const float & value)
 {
 	return value > 0 ? value : value * -1;
 }

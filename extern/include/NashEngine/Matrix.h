@@ -8,7 +8,7 @@
 
 namespace Nash
 {
-	class __declspec(dllexport) FMatrix
+	class NASHEXPORT FMatrix
 	{
 	public:
 		FVector4 Matrix[4];

@@ -1,6 +1,7 @@
 #pragma once
 #pragma region Internal includes
 #include "ICObject.h"
+#include "NamespaceAlias.h"
 #pragma endregion
 #pragma region External includes
 #include <cstdint>
@@ -8,13 +9,10 @@
 #include <vector>
 #pragma endregion
 
-
-
-namespace CortexEngine
+namespace CE
 {
 	namespace Core
 	{
-
 		class Level
 		{
 
@@ -27,11 +25,11 @@ namespace CortexEngine
 
 			Level(const uint32_t& resolutionX,const uint32_t& resolutionY); 
 
-			inline ICObject* GetObject(const uint32_t& objIndex) const { return m_objects[objIndex]; }
+			inline ICObject* GetCObject(const uint32_t& objIndex) const { return m_objects[objIndex]; }
 
-			void AddObject(CortexEngine::Core::ICObject* obj);
+			void AddObject(CECORE::ICObject* obj);
 			
-			void RemoveObject(CortexEngine::Core::ICObject* obj);
+			void RemoveObject(CECORE::ICObject* obj);
 
 			void RemoveObject(const uint32_t& index);
 

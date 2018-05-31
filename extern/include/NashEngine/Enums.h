@@ -1,9 +1,10 @@
 #pragma once
+#include "internal\Defines.h"
 
 
 namespace Nash
 {
-	class Enums
+	NASHEXPORT class Enums
 	{
 	public:
 		enum class ColliderType

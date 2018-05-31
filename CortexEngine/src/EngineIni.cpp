@@ -1,6 +1,6 @@
 #include "include\EngineIni.h"
 
-CortexEngine::Core::EngineParams CortexEngine::Core::EngineIni::LoadIni(EngineParams& params)
+CE::Core::EngineParams CE::Core::EngineIni::LoadIni(EngineParams& params)
 {
 	std::fstream iniStream;
 	iniStream.open("engine.ini", std::ios::in);
@@ -29,7 +29,7 @@ CortexEngine::Core::EngineParams CortexEngine::Core::EngineIni::LoadIni(EnginePa
 	return params;
 }
 
-CortexEngine::Core::EngineParams CortexEngine::Core::EngineIni::CreateDefaultIni(EngineParams& params)
+CE::Core::EngineParams CE::Core::EngineIni::CreateDefaultIni(EngineParams& params)
 {
 	std::fstream defaultStream;
 	defaultStream.open("engine.ini", std::ios::out);

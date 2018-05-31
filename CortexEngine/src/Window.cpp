@@ -9,14 +9,14 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		DestroyWindow(hwnd); 
 		return 0;
 	case WM_DESTROY:
-		CortexEngine::Core::EngineManager::Release();
+		CE::Core::EngineManager::Release();
 		PostQuitMessage(0);
 		return 0;
 	}
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-HWND CortexEngine::Core::Window::Init(const EngineParams& params) const
+HWND CE::Core::Window::Init(const EngineParams& params) const
 {
 	///\internal Initialize the WNDCLASSEX and set the important things
 	WNDCLASSEX wndClass{};
@@ -64,7 +64,7 @@ HWND CortexEngine::Core::Window::Init(const EngineParams& params) const
 	return hWnd;
 }
 
-void CortexEngine::Core::Window::Run(MSG & msg)
+void CE::Core::Window::Run(MSG & msg)
 {
 	if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 	{

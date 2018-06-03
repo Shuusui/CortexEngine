@@ -19,7 +19,7 @@ namespace CE
 		public:
 			Console();
 			~Console();
-			virtual void ReceiveEvent(IEvent* event) final;
+			virtual bool ReceiveEvent(IEvent* event) final;
 		};
 	}
 }

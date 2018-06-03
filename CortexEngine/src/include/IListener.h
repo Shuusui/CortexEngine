@@ -17,7 +17,7 @@ namespace CE
 		public:
 			void inline SetID(const uint_fast16_t& id) { m_ID = id; }
 
-			virtual void ReceiveEvent(IEvent* event) = 0;
+			virtual bool ReceiveEvent(IEvent* event) = 0;
 		};
 	}
 }

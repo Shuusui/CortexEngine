@@ -4,9 +4,9 @@ CE::Physics::TransformComponent::TransformComponent(const Transform & transform,
 	:CECORE::ICComponent(id, CECORE::Enums::EComponentType::Transform)
 	, m_matrix()
 {	
-	m_matrix.Translate(transform.Position);
+	//m_matrix.Translate(transform.Position);
 	
-	m_matrix.Scale(transform.Scale);
+	//m_matrix.Scale(transform.Scale);
 }
 
 

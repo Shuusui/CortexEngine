@@ -5,6 +5,7 @@
 #pragma endregion
 #pragma region External includes
 #include <Windows.h>
+#include <windowsx.h>
 #include <cstdint>
 #pragma endregion
 

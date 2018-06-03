@@ -181,6 +181,7 @@
     <ClInclude Include="src\include\Level.h" />
     <ClInclude Include="src\include\MessageEvent.h" />
     <ClInclude Include="src\include\MessageListener.h" />
+    <ClInclude Include="src\include\MouseEvent.h" />
     <ClInclude Include="src\include\NamespaceAlias.h" />
     <ClInclude Include="src\include\ProjectManager.h" />
     <ClInclude Include="src\include\RigidbodyComponent.h" />

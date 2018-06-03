@@ -49,9 +49,15 @@ void CECORE::EventHandler::SendEventToListener()
 {
 	if (m_listener.empty())
 		return;
+	bool isReceived = false;
 	for (IListener* listener : m_listener)
 	{
-		listener->ReceiveEvent(m_eventQue[0]);
+		if (listener->ReceiveEvent(m_eventQue[0]))
+			isReceived = true;
 	}
-	m_eventQue.pop_front();
+	if (isReceived)
+	{
+		delete m_eventQue[0];
+		m_eventQue.pop_front();
+	}
 }

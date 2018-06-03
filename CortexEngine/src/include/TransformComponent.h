@@ -5,6 +5,7 @@
 #include "Matrix.h"
 #include "NamespaceAlias.h"
 #include "Enums.h"
+#include "Vector3.h"
 #pragma endregion
 #pragma region External Includes
 #pragma endregion 

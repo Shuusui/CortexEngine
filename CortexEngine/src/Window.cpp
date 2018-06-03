@@ -1,5 +1,7 @@
 #include "include\Window.h"
 #include "include\EngineManager.h"
+#include "include\MouseEvent.h"
+
 ///\internal the definition of the forward declared WindowProc method.
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -11,6 +13,11 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		CE::Core::EngineManager::Release();
 		PostQuitMessage(0);
+		return 0;
+	case WM_LBUTTONDOWN: 
+	case WM_RBUTTONDOWN:
+	case WM_MBUTTONDOWN:
+		CE::Core::EngineManager::GetEventHandler()->AddEvent(new CE::Core::MouseEvent(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
 		return 0;
 	}
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);

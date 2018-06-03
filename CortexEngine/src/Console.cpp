@@ -8,10 +8,10 @@ CE::Core::Console::~Console()
 {
 }
 
-void CE::Core::Console::ReceiveEvent(IEvent* event)
+bool CE::Core::Console::ReceiveEvent(IEvent* event)
 {
-	if (!(MessageEvent*)event)
-		return;
+	if (!dynamic_cast<MessageEvent*>(event)) //TODO: Change the way to check if it's a messageevent
+		return false;
 	printf(((MessageEvent*)event)->GetMsg().c_str());
-	delete event;
+	return true;
 }

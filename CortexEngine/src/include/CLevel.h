@@ -13,7 +13,7 @@ namespace CE
 {
 	namespace Core
 	{
-		class Level
+		class CLevel
 		{
 
 		private: 
@@ -21,9 +21,9 @@ namespace CE
 			std::string m_name; 
 			std::vector<ICObject*> m_objects; 
 		public:
-			Level() = delete; 
+			CLevel() = delete; 
 
-			Level(const uint32_t& resolutionX,const uint32_t& resolutionY); 
+			CLevel(const uint32_t& resolutionX,const uint32_t& resolutionY); 
 
 			inline ICObject* GetCObject(const uint32_t& objIndex) const { return m_objects[objIndex]; }
 
@@ -33,7 +33,7 @@ namespace CE
 
 			void RemoveObject(const uint32_t& index);
 
-			~Level();
+			~CLevel();
 
 			
 		private:

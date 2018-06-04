@@ -23,23 +23,7 @@ int32_t CE::DX::DX11::Run()
 	return int32_t();
 }
 
-void CE::DX::DX11::OnResize()
-{
-}
-
 void CE::DX::DX11::DrawScene()
-{
-}
-
-void CE::DX::DX11::OnMouseDown(const WPARAM & btnState, const int32_t & x, const int32_t & y)
-{
-}
-
-void CE::DX::DX11::OnMouseUp(const WPARAM & btnState, const int32_t & x, const int32_t & y)
-{
-}
-
-void CE::DX::DX11::OnMouseMove(const WPARAM & btnState, const int32_t & x, const int32_t & y)
 {
 }
 

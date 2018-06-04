@@ -7,7 +7,7 @@ namespace Nash
 	NASHEXPORT class Enums
 	{
 	public:
-		enum class ColliderType
+		enum class EColliderType
 		{
 			BoxCollider = 0, 
 			CapsuleCollider, 

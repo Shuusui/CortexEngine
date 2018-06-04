@@ -1,7 +1,7 @@
 #pragma once
 #pragma region Internal includes
 #include "ICObject.h"
-#include "Level.h"
+#include "CLevel.h"
 #pragma endregion
 #pragma region External includes
 #include <cstdint>

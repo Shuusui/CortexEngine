@@ -153,39 +153,50 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\CColliderComponent.cpp" />
     <ClCompile Include="src\Console.cpp" />
+    <ClCompile Include="src\CRenderComponent.cpp" />
     <ClCompile Include="src\EngineIni.cpp" />
     <ClCompile Include="src\EngineManager.cpp" />
     <ClCompile Include="src\EventHandler.cpp" />
+    <ClCompile Include="src\ICObject.cpp" />
     <ClCompile Include="src\IEvent.cpp" />
     <ClCompile Include="src\include\ProjectManager.cpp" />
-    <ClCompile Include="src\Level.cpp" />
-    <ClCompile Include="src\RigidbodyComponent.cpp" />
-    <ClCompile Include="src\TransformComponent.cpp" />
+    <ClCompile Include="src\CLevel.cpp" />
+    <ClCompile Include="src\CRigidbodyComponent.cpp" />
+    <ClCompile Include="src\CTransformComponent.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\Algorithms.h" />
+    <ClInclude Include="src\include\CBoxCollider.h" />
+    <ClInclude Include="src\include\CCapsuleCollider.h" />
+    <ClInclude Include="src\include\CMaterial.h" />
+    <ClInclude Include="src\include\CColliderComponent.h" />
     <ClInclude Include="src\include\Console.h" />
     <ClInclude Include="src\include\CortexStructs.h" />
+    <ClInclude Include="src\include\CSphereCollider.h" />
     <ClInclude Include="src\include\Editor.h" />
     <ClInclude Include="src\include\EngineIni.h" />
     <ClInclude Include="src\include\EngineManager.h" />
     <ClInclude Include="src\include\Enums.h" />
+    <ClInclude Include="src\include\ICColllider.h" />
     <ClInclude Include="src\include\IEvent.h" />
     <ClInclude Include="src\include\EventHandler.h" />
     <ClInclude Include="src\include\ICObject.h" />
     <ClInclude Include="src\include\ICComponent.h" />
     <ClInclude Include="src\include\IListener.h" />
-    <ClInclude Include="src\include\Level.h" />
+    <ClInclude Include="src\include\CLevel.h" />
+    <ClInclude Include="src\include\CMesh.h" />
     <ClInclude Include="src\include\MessageEvent.h" />
     <ClInclude Include="src\include\MessageListener.h" />
     <ClInclude Include="src\include\MouseEvent.h" />
     <ClInclude Include="src\include\NamespaceAlias.h" />
     <ClInclude Include="src\include\ProjectManager.h" />
-    <ClInclude Include="src\include\RigidbodyComponent.h" />
-    <ClInclude Include="src\include\TransformComponent.h" />
+    <ClInclude Include="src\include\CRenderComponent.h" />
+    <ClInclude Include="src\include\CRigidbodyComponent.h" />
+    <ClInclude Include="src\include\CTransformComponent.h" />
     <ClInclude Include="src\include\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

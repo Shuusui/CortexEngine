@@ -2,20 +2,19 @@
 
 namespace CE
 {
-	namespace Core
+	class Enums
 	{
-		class Enums
+	public:
+		enum class EComponentType
 		{
-		public:
-			enum class EComponentType
-			{
-				Rigidbody, 
-				Transform
-			};
-			enum class EListenerType
-			{
-				Message
-			};
+			Rigidbody, 
+			Transform, 
+			Collider, 
+			Render
 		};
-	}
+		enum class EListenerType
+		{
+			Message
+		};
+	};
 }

@@ -28,6 +28,7 @@ namespace CE
 			inline bool IsUnique() const { return m_bUnique; }
 
 			virtual void Update() = 0; 
+
 			virtual void DeltaUpdate() = 0;
 		};
 	}

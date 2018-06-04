@@ -1,5 +1,4 @@
 #pragma once
-
 #pragma region External Includes
 #include <vector>
 #pragma endregion

@@ -13,12 +13,12 @@ namespace Nash
 		float m_height; 
 	public: 
 		CapsuleCollider() = delete; 
-		CapsuleCollider(const FVector3& globalPosition, const FVector3& localPosition, const float& radius = 1.0f, const float& height = 1.0f, const bool& isTrigger = false) :ICollider(globalPosition, localPosition, Enums::ColliderType::CapsuleCollider, isTrigger), m_radius(radius), m_height(height) {}
-		CapsuleCollider(const CapsuleCollider& capCollider) :ICollider(capCollider.GlobalPosition(), capCollider.LocalPosition(), Enums::ColliderType::CapsuleCollider, capCollider.IsTrigger()), m_radius(capCollider.m_radius), m_height(capCollider.m_radius) {}
-		CapsuleCollider(const ICollider& collider, const float& radius = 1.0f, const float& height = 1.0f) :ICollider(collider, Enums::ColliderType::CapsuleCollider), m_radius(radius), m_height(height) {}
+		CapsuleCollider(const FVector3& globalPosition, const FVector3& localPosition, const float& radius = 1.0f, const float& height = 1.0f, const bool& isTrigger = false) :ICollider(globalPosition, localPosition, Enums::EColliderType::CapsuleCollider, isTrigger), m_radius(radius), m_height(height) {}
+		CapsuleCollider(const CapsuleCollider& capCollider) :ICollider(capCollider.GlobalPosition(), capCollider.LocalPosition(), Enums::EColliderType::CapsuleCollider, capCollider.IsTrigger()), m_radius(capCollider.m_radius), m_height(capCollider.m_radius) {}
+		CapsuleCollider(const ICollider& collider, const float& radius = 1.0f, const float& height = 1.0f) :ICollider(collider, Enums::EColliderType::CapsuleCollider), m_radius(radius), m_height(height) {}
 
-		float GetRadius() const { m_radius; }
-		float GetHeight() const { m_height; }
+		float GetRadius() const { return m_radius; }
+		float GetHeight() const { return m_height; }
 
 	private:
 		void IntersectDynamic() final;

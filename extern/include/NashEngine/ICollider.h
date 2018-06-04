@@ -19,14 +19,13 @@ namespace Nash
 {
 	class NASHEXPORT ICollider
 	{
-	private:
-		FVector3 m_globalPosition;
-		FVector3 m_localPosition;
+	protected:
 		bool m_bIsTrigger;
 		Rigidbody* m_rigidbody;
-		Enums::ColliderType m_collType;
+		Enums::EColliderType m_collType;
 		bool m_bIsStatic;
-	protected:
+		FVector3 m_globalPosition;
+		FVector3 m_localPosition;
 		std::vector<ICollider*> m_nearStaticCollider; 
 		std::list<ICollider*> m_nearDynamicCollider;
 	public:
@@ -41,7 +40,7 @@ namespace Nash
 		* @param localPosition The local position of the collider depends on the position to the object which own this collider. 
 		* @param isTrigger Turn this on to disable collision with this object and enable trigger you can use for effects. (Default = false)
 		*/
-		ICollider(const FVector3& globalPosition, const FVector3& localPosition, const Enums::ColliderType& collType, const bool& isTrigger = false, const bool& isStatic = false) 
+		ICollider(const FVector3& globalPosition, const FVector3& localPosition, const Enums::EColliderType& collType, const bool& isTrigger = false, const bool& isStatic = false) 
 			:m_globalPosition(globalPosition)
 			, m_localPosition(localPosition)
 			, m_bIsTrigger(isTrigger)
@@ -53,7 +52,7 @@ namespace Nash
 		* 
 		* @param collider The collider which should be copied in this collider
 		*/
-		ICollider(const ICollider& collider, const Enums::ColliderType& collType)
+		ICollider(const ICollider& collider, const Enums::EColliderType& collType)
 			:m_globalPosition(collider.m_globalPosition)
 			, m_localPosition(collider.m_localPosition)
 			, m_bIsTrigger(collider.m_bIsTrigger)
@@ -68,7 +67,7 @@ namespace Nash
 		bool IsStatic() const { return m_bIsStatic; }
 		FVector3 GlobalPosition() const { return m_globalPosition; }
 		FVector3 LocalPosition() const { return m_localPosition; }
-		Enums::ColliderType Type() const { return m_collType; }
+		Enums::EColliderType Type() const { return m_collType; }
 
 		void SetIsTrigger(const bool& isTrigger) { m_bIsTrigger = isTrigger; }
 		void SetRigidbody(Rigidbody* rigidbody) { m_rigidbody = rigidbody; }
@@ -91,7 +90,8 @@ namespace Nash
 
 	inline void ICollider::Start()
 	{
-		IntersectStatic();
+		if(m_bIsStatic)
+			IntersectStatic();
 	}
 
 	inline void ICollider::AddNearCollider(ICollider* coll)
@@ -101,27 +101,5 @@ namespace Nash
 		else
 			m_nearDynamicCollider.push_back(coll);
 	}
-	void ICollider::RemoveNearCollider(ICollider* coll)
-	{
-		if (coll->IsStatic())
-		{
-			for (std::vector<ICollider*>::iterator it; it != m_nearStaticCollider.end(); ++it)
-			{
-				if (*it == coll)
-				{
-					m_nearStaticCollider.erase(it);
-				}
-			}
-		}
-		else
-		{
-			for (std::list<ICollider*>::iterator it; it != m_nearDynamicCollider.end(); ++it)
-			{
-				if (*it == coll)
-				{
-					m_nearDynamicCollider.erase(it);
-				}
-			}
-		}
-	}
+	
 }

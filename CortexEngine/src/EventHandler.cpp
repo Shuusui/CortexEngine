@@ -6,7 +6,7 @@ CECORE::EventHandler::EventHandler()
 
 CECORE::EventHandler::~EventHandler()
 {
-	for (int i = m_listener.size(); i > 0; --i)
+	for (int i = m_listener.size()-1; i > 0; --i)
 	{
 		delete(m_listener[i]);
 		m_listener.pop_back();

@@ -62,6 +62,8 @@ namespace CE
 
 			inline bool operator>=(const ICObject& obj) { return m_ID >= obj.m_ID ? true : false; }
 
+			void Update();
+
 			virtual ~ICObject() {};
 		};
 

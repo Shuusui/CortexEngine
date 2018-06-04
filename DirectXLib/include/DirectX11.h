@@ -43,12 +43,7 @@ namespace CE
 			bool Init();
 
 			int32_t Run();
-			void OnResize();
 			void DrawScene();
-
-			void OnMouseDown(const WPARAM& btnState, const int32_t& x, const int32_t& y);
-			void OnMouseUp(const WPARAM& btnState, const int32_t& x, const int32_t& y);
-			void OnMouseMove(const WPARAM& btnState, const int32_t& x, const int32_t& y);
 
 			virtual ~DX11();
 		private:

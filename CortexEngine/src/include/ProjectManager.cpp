@@ -7,11 +7,11 @@ void CE::Core::ProjectManager::SetInitParams(const ProjectParams & params)
 
 }
 
-void CE::Core::ProjectManager::LoadLevel(Level * currLevel)
+void CE::Core::ProjectManager::LoadLevel(CLevel * currLevel)
 {
 }
 
-CE::Core::ProjectManager::ProjectManager(const std::string & name, Level* pCurrLevel, const bool& newProj)
+CE::Core::ProjectManager::ProjectManager(const std::string & name, CLevel* pCurrLevel, const bool& newProj)
 	:m_name(name)
 	,m_pCurrLevel(pCurrLevel)
 {

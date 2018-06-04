@@ -11,14 +11,14 @@
 
 namespace CE
 {
-	namespace Physics
+	namespace Components 
 	{
-		class RigidbodyComponent : public CECORE::ICComponent
+		class CRigidbodyComponent : public CECORE::ICComponent
 		{
 		public: 
-			RigidbodyComponent(const uint_fast32_t& id);
-
-			~RigidbodyComponent();
+			CRigidbodyComponent(const uint_fast32_t& id);
+			void Update();
+			virtual ~CRigidbodyComponent();
 		};
 	}
 }

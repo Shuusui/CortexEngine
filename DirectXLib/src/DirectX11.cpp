@@ -13,11 +13,6 @@ CE::DX::DX11::DX11(const HINSTANCE & hInstance, const HWND& hwnd)
 {
 }
 
-HWND CE::DX::DX11::GetMainWnd() const
-{
-	return HWND();
-}
-
 int32_t CE::DX::DX11::Run()
 {
 	return int32_t();
@@ -92,10 +87,14 @@ HRESULT CE::DX::DX11::CreateDeviceD3D()
 
 void CE::DX::DX11::InvalidateDeviceObjects()
 {
+	SafeRelease(m_pRenderTargetView);
+	SafeRelease(m_pDepthStencilBuffer);
+	SafeRelease(m_pDepthStencilView);
 }
 
 void CE::DX::DX11::CleanupRenderTarget()
 {
+	SafeRelease(m_pRenderTargetView);
 }
 
 void CE::DX::DX11::CreateRenderTarget()

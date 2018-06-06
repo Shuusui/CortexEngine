@@ -7,6 +7,7 @@
 #include "EventHandler.h"
 #include "Console.h"
 #include "MessageEvent.h"
+#include "CEditor.h"
 #pragma endregion 
 #pragma region External Includes
 #include <string>
@@ -23,6 +24,7 @@ namespace CE
 			static EngineManager* s_pEngineManager;
 			static ProjectManager* s_pProjectManager;
 			static EventHandler* s_pEventHandler;
+			static Editor::CEditor* s_pEditor;
 			EngineIni* m_pEngineIni;
 			Window* m_pWndClass;
 			HWND m_wndHandle;
@@ -36,8 +38,9 @@ namespace CE
 			static void Save();
 			static ProjectManager* GetProjManager() { return s_pProjectManager; }
 			static EventHandler* GetEventHandler() { return s_pEventHandler; }
+			static Editor::CEditor* GetEditor() { return s_pEditor; }
 			EngineParams Init(const HINSTANCE& hInstance);
-			bool InitWindow(const EngineParams& params);			
+			bool InitWindow(const EngineParams& params);
 			void Run();
 			bool operator=(const EngineManager&) = delete; 
 		private: 
@@ -46,6 +49,7 @@ namespace CE
 				s_pEngineManager = this;
 				m_pEngineIni = new EngineIni("");
 				s_pEventHandler = new EventHandler();
+				s_pEditor = new Editor::CEditor();
 			};			
 		};
 	}
@@ -80,6 +84,7 @@ void CE::Core::EngineManager::Release()
 	delete s_pEventHandler; 
 	delete s_pProjectManager;
 	delete s_pEngineManager;
+	delete s_pEditor;
 }
 
 

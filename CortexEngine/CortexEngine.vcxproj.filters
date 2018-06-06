@@ -57,6 +57,12 @@
     <Filter Include="Components\Collider">
       <UniqueIdentifier>{b413b2f4-3ebb-451e-b484-6ca73375306c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Editor Headerfiles">
+      <UniqueIdentifier>{c48c0ce8-247e-4e6e-95f0-0ca58ccbe55a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor Sourcefiles">
+      <UniqueIdentifier>{3562ebe9-b1f5-4154-85eb-29b6999191c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\WinMain.cpp">
@@ -101,6 +107,15 @@
     <ClCompile Include="src\ICObject.cpp">
       <Filter>Core\CoreSourcefiles</Filter>
     </ClCompile>
+    <ClCompile Include="src\CMesh.cpp">
+      <Filter>Core\CoreSourcefiles</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CEditor.cpp">
+      <Filter>Editor Sourcefiles</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CEditorCamera.cpp">
+      <Filter>Editor Sourcefiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\ICObject.h">
@@ -111,9 +126,6 @@
     </ClInclude>
     <ClInclude Include="src\include\Algorithms.h">
       <Filter>Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\Editor.h">
-      <Filter>Core\CoreHeaderfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\Window.h">
       <Filter>Core\CoreHeaderfiles</Filter>
@@ -189,6 +201,12 @@
     </ClInclude>
     <ClInclude Include="src\include\CTransformComponent.h">
       <Filter>Components\Components Headerfiles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\CEditor.h">
+      <Filter>Editor Headerfiles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\CEditorCamera.h">
+      <Filter>Editor Headerfiles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

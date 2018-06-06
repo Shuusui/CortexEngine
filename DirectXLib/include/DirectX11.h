@@ -39,7 +39,6 @@ namespace CE
 
 		public:
 			DX11(const HINSTANCE& hInstance, const HWND& hwnd);
-			HWND GetMainWnd() const;
 			bool Init();
 
 			int32_t Run();

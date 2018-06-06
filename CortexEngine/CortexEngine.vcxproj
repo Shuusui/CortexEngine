@@ -154,6 +154,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\CColliderComponent.cpp" />
+    <ClCompile Include="src\CEditor.cpp" />
+    <ClCompile Include="src\CEditorCamera.cpp" />
+    <ClCompile Include="src\CMesh.cpp" />
     <ClCompile Include="src\Console.cpp" />
     <ClCompile Include="src\CRenderComponent.cpp" />
     <ClCompile Include="src\EngineIni.cpp" />
@@ -177,7 +180,8 @@
     <ClInclude Include="src\include\Console.h" />
     <ClInclude Include="src\include\CortexStructs.h" />
     <ClInclude Include="src\include\CSphereCollider.h" />
-    <ClInclude Include="src\include\Editor.h" />
+    <ClInclude Include="src\include\CEditor.h" />
+    <ClInclude Include="src\include\CEditorCamera.h" />
     <ClInclude Include="src\include\EngineIni.h" />
     <ClInclude Include="src\include\EngineManager.h" />
     <ClInclude Include="src\include\Enums.h" />

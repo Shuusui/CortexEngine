@@ -2,7 +2,7 @@
 
 void CE::Core::ICObject::Update()
 {
-	for (ICComponent* comp : m_components)
+	for (Components::ICComponent* comp : m_components)
 	{
 		comp->Update();
 		comp->DeltaUpdate();

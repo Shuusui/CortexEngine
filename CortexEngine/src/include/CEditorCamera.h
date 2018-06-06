@@ -3,20 +3,20 @@
 #include "CortexStructs.h"
 #pragma endregion 
 #pragma region External Includes
-#pragma endregion
+#pragma endregion 
 
 namespace CE
 {
-	namespace Rendering
+	namespace Editor
 	{
-		class CMesh
+		class CEditorCamera
 		{
 		private: 
-			MeshData m_data;
-		public:
-			CMesh(const std::string& name, const MeshData& data); 
-			~CMesh();
-
+			Physics::Transform m_transform;
+		public: 
+			CEditorCamera(); 
+			~CEditorCamera();
+		private: 
 		};
 	}
 }

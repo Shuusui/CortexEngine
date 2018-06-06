@@ -13,7 +13,7 @@ namespace CE
 {
 	namespace Components 
 	{
-		class CRigidbodyComponent : public CECORE::ICComponent
+		class CRigidbodyComponent : public ICComponent
 		{
 		public: 
 			CRigidbodyComponent(const uint_fast32_t& id);

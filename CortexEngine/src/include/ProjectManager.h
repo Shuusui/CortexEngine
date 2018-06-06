@@ -6,6 +6,7 @@
 #pragma endregion 
 #pragma region External Includes
 #include <string>
+#include <cstdint>
 #pragma endregion 
 
 namespace CE
@@ -26,6 +27,7 @@ namespace CE
 			void SetInitParams(const ProjectParams& params);
 			bool operator=(const ProjectManager&) = delete;
 			void LoadLevel(CLevel* currLevel);
+			void NewLevel(const std::string& name, const uint32_t& resX, const uint32_t& resY);
 		private:
 			
 		};

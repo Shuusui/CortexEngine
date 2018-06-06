@@ -1,6 +1,9 @@
 #include "include\CLevel.h"
 
-CE::Core::CLevel::CLevel(const uint32_t& resolutionX, const uint32_t& resolutionY)
+CE::Core::CLevel::CLevel(const std::string& name, const uint32_t& resolutionX, const uint32_t& resolutionY)
+	:m_name(name)
+	,m_resolutionX(resolutionX)
+	,m_resolutionY(resolutionY)
 {
 
 }

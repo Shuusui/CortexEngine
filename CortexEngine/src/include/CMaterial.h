@@ -6,7 +6,7 @@
 
 namespace CE
 {
-	namespace Core
+	namespace Rendering
 	{
 		class CMaterial
 		{

@@ -3,6 +3,7 @@
 CE::Core::EngineManager* CE::Core::EngineManager::s_pEngineManager = nullptr;
 CE::Core::EventHandler* CE::Core::EngineManager::s_pEventHandler = nullptr;
 CE::Core::ProjectManager* CE::Core::EngineManager::s_pProjectManager = nullptr;
+CE::Editor::CEditor* CE::Core::EngineManager::s_pEditor = nullptr;
 
 CE::Core::EngineParams CE::Core::EngineManager::Init(const HINSTANCE& hInstance)
 {
@@ -27,7 +28,7 @@ CE::Core::EngineParams CE::Core::EngineManager::Init(const HINSTANCE& hInstance)
 bool CE::Core::EngineManager::InitWindow(const EngineParams& params)
 {
 	m_pWndClass = new Window();
-	m_wndHandle =  m_pWndClass->Init(params);
+	m_wndHandle = m_pWndClass->Init(params);
 	return m_wndHandle != NULL ? true : false;
 }
 void CE::Core::EngineManager::Run()

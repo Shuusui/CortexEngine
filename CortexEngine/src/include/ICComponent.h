@@ -9,7 +9,7 @@
 
 namespace CE
 {
-	namespace Core
+	namespace Components
 	{
 		class ICComponent
 		{

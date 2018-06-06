@@ -34,6 +34,12 @@ namespace CE
 			Nash::FVector3 Position;
 			Nash::FVector3 Scale;
 		};
+	}
+	namespace Rendering
+	{
+		struct MeshData
+		{
 
+		};
 	}
 }

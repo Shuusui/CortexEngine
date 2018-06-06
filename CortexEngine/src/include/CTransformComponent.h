@@ -14,7 +14,7 @@ namespace CE
 {
 	namespace Components
 	{
-		class CTransformComponent : public CECORE::ICComponent
+		class CTransformComponent : public ICComponent
 		{
 		private: 
 			Physics::Transform m_transform;

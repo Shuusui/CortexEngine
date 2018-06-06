@@ -21,7 +21,7 @@ namespace CE
 			std::string m_name;
 			uint_fast32_t m_subObjectCount;
 			std::vector<ICObject*> m_subObjects;
-			std::vector<ICComponent*> m_components;
+			std::vector<Components::ICComponent*> m_components;
 			bool m_bPhysicsEnabled;
 		public:
 			ICObject() = delete;
@@ -36,11 +36,11 @@ namespace CE
 
 			inline bool RemoveSubobject(const uint_fast32_t& id);
 
-			inline bool AddComponent(ICComponent* component);
+			inline bool AddComponent(Components::ICComponent* component);
 
-			inline void RemoveComponent(ICComponent* component);
+			inline void RemoveComponent(Components::ICComponent* component);
 
-			inline ICComponent* GetComponent(const uint_fast32_t& id);
+			inline Components::ICComponent* GetComponent(const uint_fast32_t& id);
 
 			inline bool PhysicsEnabled() const { return m_bPhysicsEnabled; }
 
@@ -94,14 +94,14 @@ namespace CE
 				m_subObjects.pop_back();
 			}
 		}
-		inline bool ICObject::AddComponent(ICComponent* component)
+		inline bool ICObject::AddComponent(Components::ICComponent* component)
 		{
 			if (component->IsUnique() && VectorBinSearch(m_components, component))
 				return false;
 			m_components.push_back(component);
 		}
 
-		inline void ICObject::RemoveComponent(ICComponent* component)
+		inline void ICObject::RemoveComponent(Components::ICComponent* component)
 		{
 			if (component->GetID() == m_components[m_components.size()]->GetID())
 				m_components.pop_back();
@@ -110,7 +110,7 @@ namespace CE
 			m_subObjects.pop_back();
 		}
 
-		inline ICComponent * ICObject::GetComponent(const uint_fast32_t & id)
+		inline Components::ICComponent * ICObject::GetComponent(const uint_fast32_t & id)
 		{
 			return m_components[id];
 		}

@@ -9,7 +9,7 @@ CE::Components::CRenderComponent::CRenderComponent(const uint_fast32_t& id)
 
 void CE::Components::CRenderComponent::Update()
 {
-
+	//TODO: Send mesh and material data to the renderer
 }
 
 CE::Components::CRenderComponent::~CRenderComponent()

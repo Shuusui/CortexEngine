@@ -11,7 +11,7 @@ namespace CE
 {
 	namespace Components
 	{
-		class CColliderComponent : public Core::ICComponent
+		class CColliderComponent : public ICComponent
 		{
 		private: 
 			Internal::ICCollider* m_collider;

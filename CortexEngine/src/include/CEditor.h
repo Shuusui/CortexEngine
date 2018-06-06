@@ -1,7 +1,6 @@
 #pragma once
 #pragma region Internal includes
-#include "ICObject.h"
-#include "CLevel.h"
+#include "CEditorCamera.h"
 #pragma endregion
 #pragma region External includes
 #include <cstdint>
@@ -10,12 +9,15 @@
 
 namespace CE
 {
-	namespace Core
+	namespace Editor
 	{
-		class Editor
+		class CEditor
 		{
+		private: 
+			CEditorCamera* m_pEdiCam; 
 		public: 
-
+			CEditor(); 
+			~CEditor();
 		private: 
 
 		};

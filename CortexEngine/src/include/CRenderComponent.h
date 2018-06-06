@@ -12,11 +12,11 @@ namespace CE
 {
 	namespace Components
 	{
-		class CRenderComponent : public Core::ICComponent
+		class CRenderComponent : public ICComponent
 		{
 		private:
-			Core::CMesh* m_mesh;
-			Core::CMaterial* m_material;
+			Rendering::CMesh* m_mesh;
+			Rendering::CMaterial* m_material;
 
 		public: 
 			CRenderComponent(const uint_fast32_t& id); 

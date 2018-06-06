@@ -1,7 +1,7 @@
 #include "include\CTransformComponent.h"
 
 CE::Components::CTransformComponent::CTransformComponent(const Physics::Transform & transform, const uint_fast32_t& id)
-	:CECORE::ICComponent(id, Enums::EComponentType::Transform, true)
+	:ICComponent(id, Enums::EComponentType::Transform, true)
 	, m_matrix()
 {	
 	//m_matrix.Translate(transform.Position);

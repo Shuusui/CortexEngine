@@ -43,7 +43,8 @@ namespace CE
 
 			int32_t Run();
 			void DrawScene();
-
+			bool BuildShader(const std::string& filePath); //TODO: use shader class here instead of the bool as return
+			bool SetShader(/*Shaderplaceholder*/); //TODO: set shader here instead of the placeholder
 			virtual ~DX11();
 		private:
 			template<typename T> void SafeRelease(T*& aPointer)

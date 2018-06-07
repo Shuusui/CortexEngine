@@ -22,6 +22,11 @@ void CE::DX::DX11::DrawScene()
 {
 }
 
+bool CE::DX::DX11::BuildShader(const std::string & filePath)
+{
+	return false;
+}
+
 CE::DX::DX11::~DX11()
 {
 }

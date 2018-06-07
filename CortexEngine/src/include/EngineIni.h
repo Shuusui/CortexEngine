@@ -22,6 +22,7 @@ namespace CE
 
 			}
 			EngineParams LoadIni(EngineParams& params);
+			EngineParams GetParams() const { return m_engineParams; }
 		private: 
 			EngineParams CreateDefaultIni(EngineParams& params);
 		};

@@ -8,6 +8,7 @@
 #include "Console.h"
 #include "MessageEvent.h"
 #include "CEditor.h"
+#include "DirtyEventListener.h"
 #pragma endregion 
 #pragma region External Includes
 #include <string>
@@ -41,7 +42,10 @@ namespace CE
 			static Editor::CEditor* GetEditor() { return s_pEditor; }
 			EngineParams Init(const HINSTANCE& hInstance);
 			bool InitWindow(const EngineParams& params);
+			bool InitListener();
 			void Run();
+			bool CreateNewProject(const std::string& name);
+			bool LoadExistentProject(const std::string& projectFilePath);
 			bool operator=(const EngineManager&) = delete; 
 		private: 
 			EngineManager() 

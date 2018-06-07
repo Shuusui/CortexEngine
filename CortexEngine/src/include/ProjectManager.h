@@ -18,11 +18,12 @@ namespace CE
 		private:
 			CLevel* m_pCurrLevel;
 			std::string m_name;
+			bool m_isDirty;
 		public:
 			ProjectManager(const std::string& name, CLevel* pCurrLevel = nullptr, const bool& newProj = true);
 			ProjectManager(const ProjectManager&) = delete;
 			~ProjectManager();
-			ProjectParams LoadProjectFile();
+			static ProjectParams LoadProjectFile();
 			void Save();
 			void SetInitParams(const ProjectParams& params);
 			bool operator=(const ProjectManager&) = delete;

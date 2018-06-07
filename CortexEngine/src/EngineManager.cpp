@@ -16,11 +16,15 @@ CE::Core::EngineParams CE::Core::EngineManager::Init(const HINSTANCE& hInstance)
 	for (int i = 0; i < 16; i++)
 		wstr.pop_back(); 
 	LocalFree(szArgList);
-	params.EnginePath = wstr; 
+	std::string str;
+	_memccpy((void*)str.c_str(), (void*)wstr.c_str(), 0, wstr.size());
+	
+	params.EnginePath = wstr;
 	params.hInstance = hInstance;
 
-	Console* console = new Console(); 
-	s_pEventHandler->RegisterListener(console);
+	if (!InitListener())
+		return params; //TODO do some Error Handling here
+		
 
 	return m_pEngineIni->LoadIni(params);
 }
@@ -31,6 +35,20 @@ bool CE::Core::EngineManager::InitWindow(const EngineParams& params)
 	m_wndHandle = m_pWndClass->Init(params);
 	return m_wndHandle != NULL ? true : false;
 }
+bool CE::Core::EngineManager::InitListener()
+{
+	Console* console = new Console();
+	if (!console)
+		return false; 
+	DirtyEventListener* dirtyListener = new DirtyEventListener();
+	if (!dirtyListener)
+		return false; 
+
+
+	s_pEventHandler->RegisterListener(console);
+	s_pEventHandler->RegisterListener(dirtyListener);
+	return true;
+}
 void CE::Core::EngineManager::Run()
 {
 	MSG msg = { 0 };
@@ -39,6 +57,21 @@ void CE::Core::EngineManager::Run()
 		m_pWndClass->Run(msg);
 		s_pEventHandler->Update();
 	}
+}
+
+bool CE::Core::EngineManager::CreateNewProject(const std::string & name)
+{
+	s_pProjectManager = new ProjectManager(name);
+	if (!s_pProjectManager)
+		return false; 
+	ProjectParams params{ 0 };
+	params.ProjectName = name;
+	return true;
+}
+
+bool CE::Core::EngineManager::LoadExistentProject(const std::string & projectFilePath)
+{
+	return false;
 }
 
 void CE::Core::EngineManager::Save()

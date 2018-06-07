@@ -22,6 +22,7 @@ namespace CE
 			std::vector<ICObject*> m_objects; 
 			uint32_t m_resolutionX; 
 			uint32_t m_resolutionY;
+			bool m_isDirty;
 		public:
 			CLevel() = delete; 
 
@@ -34,6 +35,8 @@ namespace CE
 			void RemoveObject(CECORE::ICObject* obj);
 
 			void RemoveObject(const uint32_t& index);
+
+			void Save();
 
 			~CLevel();
 

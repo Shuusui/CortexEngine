@@ -12,7 +12,7 @@ namespace CE
 		{
 		public: 
 			CMaterial(); 
-			~CMaterial() {};
+			~CMaterial();
 		};
 	}
 }

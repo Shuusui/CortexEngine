@@ -159,6 +159,7 @@
     <ClCompile Include="src\CMesh.cpp" />
     <ClCompile Include="src\Console.cpp" />
     <ClCompile Include="src\CRenderComponent.cpp" />
+    <ClCompile Include="src\DirtyEventListener.cpp" />
     <ClCompile Include="src\EngineIni.cpp" />
     <ClCompile Include="src\EngineManager.cpp" />
     <ClCompile Include="src\EventHandler.cpp" />
@@ -168,6 +169,7 @@
     <ClCompile Include="src\CLevel.cpp" />
     <ClCompile Include="src\CRigidbodyComponent.cpp" />
     <ClCompile Include="src\CTransformComponent.cpp" />
+    <ClCompile Include="src\CMaterial.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
@@ -182,6 +184,8 @@
     <ClInclude Include="src\include\CSphereCollider.h" />
     <ClInclude Include="src\include\CEditor.h" />
     <ClInclude Include="src\include\CEditorCamera.h" />
+    <ClInclude Include="src\include\DirtyClassEvent.h" />
+    <ClInclude Include="src\include\DirtyEventListener.h" />
     <ClInclude Include="src\include\EngineIni.h" />
     <ClInclude Include="src\include\EngineManager.h" />
     <ClInclude Include="src\include\Enums.h" />

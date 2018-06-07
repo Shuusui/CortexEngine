@@ -4,6 +4,7 @@ CE::Core::CLevel::CLevel(const std::string& name, const uint32_t& resolutionX, c
 	:m_name(name)
 	,m_resolutionX(resolutionX)
 	,m_resolutionY(resolutionY)
+	,m_isDirty(false)
 {
 
 }
@@ -21,6 +22,11 @@ void CE::Core::CLevel::RemoveObject(CECORE::ICObject* obj)
 }
 
 void CE::Core::CLevel::RemoveObject(const uint32_t & index)
+{
+
+}
+
+void CE::Core::CLevel::Save()
 {
 
 }

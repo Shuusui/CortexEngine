@@ -14,6 +14,7 @@ namespace CE
 		struct ProjectParams
 		{
 			std::string ProjectName;
+			std::string ProjectFilePath;
 		};
 		struct EngineParams
 		{
@@ -25,6 +26,12 @@ namespace CE
 		struct FBXData
 		{
 			Nash::FVector3 Pos;
+		};
+		struct ChangedVariable
+		{
+			std::string FilePath; 
+			uint_fast32_t Line;
+			std::string Change;
 		};
 	}
 	namespace Physics

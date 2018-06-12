@@ -75,6 +75,15 @@
     <Filter Include="Rendering\Rendering Sourcefiles">
       <UniqueIdentifier>{255d4ae1-819a-41fa-a26b-fba433339e68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rendering\Vulkan">
+      <UniqueIdentifier>{e7280dba-b66a-42eb-827b-654f082fd27f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Vulkan\Vulkan Headerfiles">
+      <UniqueIdentifier>{a5c3e480-e087-44a4-8d31-b429528bed64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Vulkan\Vulkan Solutionfiles">
+      <UniqueIdentifier>{fbfda9b9-69a7-4a2f-85bb-ab2a8589602e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\WinMain.cpp">
@@ -133,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="src\DirtyEventListener.cpp">
       <Filter>EventSystem\EventSystem Sourcefiles</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VulkanRenderer.cpp">
+      <Filter>Rendering\Vulkan\Vulkan Solutionfiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +243,9 @@
     </ClInclude>
     <ClInclude Include="src\include\DirtyClassEvent.h">
       <Filter>EventSystem\EventSystem Headerfiles\Base classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\VulkanRenderer.h">
+      <Filter>Rendering\Vulkan\Vulkan Headerfiles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

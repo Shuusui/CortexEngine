@@ -109,12 +109,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\extern\include\NashEngine; $(SolutionDir)\DirectXLib\include;$(SolutionDir)\Importer\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)extern\tinyobjloader;$(SolutionDir)\extern\include\NashEngine;$(SolutionDir)\DirectXLib\include;$(SolutionDir)\Importer\include;$(SolutionDir)extern\glfw-3.2.1.bin.WIN64\include;$(SolutionDir)extern\stb_image;$(SolutionDir)extern\glm;C:\VulkanSDK\1.1.73.0\include;%(AdditionalDependencies)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;NashEngine.lib;DirectXLib.lib;Importer.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)\bin\$(Platform)\$(Configuration);</AdditionalLibraryDirectories>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;NashEngine.lib;DirectXLib.lib;Importer.lib;glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\bin\$(Platform)\$(Configuration);$(SolutionDir)extern\glfw-3.2.1.bin.WIN64\lib-vc2015;C:\VulkanSDK\1.1.73.0\Lib;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -142,14 +142,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\extern\include\NashEngine; $(SolutionDir)\DirectXLib\include;$(SolutionDir)\Importer\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)extern\tinyobjloader;$(SolutionDir)\extern\include\NashEngine;$(SolutionDir)\DirectXLib\include;$(SolutionDir)\Importer\include;$(SolutionDir)extern\glfw-3.2.1.bin.WIN64\include;$(SolutionDir)extern\stb_image;$(SolutionDir)extern\glm;C:\VulkanSDK\1.1.73.0\include;%(AdditionalDependencies)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;NashEngine.lib;DirectXLib.lib;Importer.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)\bin\$(Platform)\$(Configuration);</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;NashEngine.lib;DirectXLib.lib;Importer.lib;glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\bin\$(Platform)\$(Configuration);$(SolutionDir)extern\glfw-3.2.1.bin.WIN64\lib-vc2015;C:\VulkanSDK\1.1.73.0\Lib;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -170,6 +170,7 @@
     <ClCompile Include="src\CRigidbodyComponent.cpp" />
     <ClCompile Include="src\CTransformComponent.cpp" />
     <ClCompile Include="src\CMaterial.cpp" />
+    <ClCompile Include="src\VulkanRenderer.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
@@ -205,6 +206,7 @@
     <ClInclude Include="src\include\CRenderComponent.h" />
     <ClInclude Include="src\include\CRigidbodyComponent.h" />
     <ClInclude Include="src\include\CTransformComponent.h" />
+    <ClInclude Include="src\include\VulkanRenderer.h" />
     <ClInclude Include="src\include\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

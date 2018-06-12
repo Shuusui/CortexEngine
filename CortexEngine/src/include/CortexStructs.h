@@ -4,7 +4,6 @@
 #pragma endregion 
 #pragma region External Includes
 #include <string>
-#include <Windows.h>
 #pragma endregion 
 
 namespace CE
@@ -18,10 +17,9 @@ namespace CE
 		};
 		struct EngineParams
 		{
-			std::wstring EnginePath;
+			std::string EnginePath;
 			uint16_t ResX; 
 			uint16_t ResY; 
-			HINSTANCE hInstance;
 		};
 		struct FBXData
 		{

@@ -24,6 +24,7 @@ namespace CE
 			ProjectManager(const ProjectManager&) = delete;
 			~ProjectManager();
 			static ProjectParams LoadProjectFile();
+			bool Init();
 			void Save();
 			void SetInitParams(const ProjectParams& params);
 			bool operator=(const ProjectManager&) = delete;

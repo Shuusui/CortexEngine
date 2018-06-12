@@ -1,6 +1,8 @@
 #pragma once
 #pragma region External Includes
 #include <vector>
+#include <string>
+#include <Windows.h>
 #pragma endregion
 
 namespace CE
@@ -35,6 +37,15 @@ namespace CE
 				}
 				return false;
 			}
+		}
+
+		static std::string WStrToStr(const std::wstring& wstr)
+		{
+			int len;
+			len = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), wstr.size(), 0, 0, 0, 0);
+			std::string str(len, '\0');
+			WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), wstr.size(), &str[0], len, 0, 0);
+			return str;
 		}
 	}
 }

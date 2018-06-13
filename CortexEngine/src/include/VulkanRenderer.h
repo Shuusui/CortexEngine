@@ -11,6 +11,7 @@
 #include <vector>
 #include <set>
 #include <algorithm>
+#include <fstream>
 #pragma endregion 
 
 
@@ -62,6 +63,9 @@ namespace CE
 			VkQueue m_presentQueue;
 			VkSwapchainKHR m_swapChain;
 			std::vector<VkImage> m_swapChainImages;
+			std::vector<VkImageView> m_swapChainImageViews;
+			VkFormat m_swapChainImageFormat; 
+			VkExtent2D m_swapChainExtent;
 		public: 
 			VulkanRenderer(); 
 			~VulkanRenderer(); 
@@ -78,6 +82,8 @@ namespace CE
 			void CreateLogicalDevice();
 			void CreateSurface();
 			void CreateSwapChain();
+			void CreateImageViews();
+			void CreateGraphicsPipeline();
 
 			//Helper functions
 			bool CheckValidationLayerSupport();
@@ -89,6 +95,7 @@ namespace CE
 			VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 			VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
 			VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilites);
+			static std::vector<char> ReadFile(const std::string& fileName);
 
 			static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallBack(
 				VkDebugReportFlagsEXT flags,

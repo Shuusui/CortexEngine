@@ -18,6 +18,7 @@ namespace CE
 
 		struct __declspec(dllexport)FaceGroup
 		{
+		
 			std::string Groupname;
 			uint_fast32_t smoothShading = 0;
 			std::string UseMaterial;

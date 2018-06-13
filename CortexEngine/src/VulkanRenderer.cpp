@@ -38,6 +38,10 @@ void CE::Rendering::VulkanRenderer::InitWindow()
 
 void CE::Rendering::VulkanRenderer::Cleanup()
 {
+	for (auto imageView : m_swapChainImageViews) {
+		vkDestroyImageView(m_logicalDevice, imageView, nullptr);
+	}
+
 	vkDestroySwapchainKHR(m_logicalDevice, m_swapChain, nullptr);
 
 	vkDestroyDevice(m_logicalDevice, nullptr);
@@ -97,6 +101,9 @@ void CE::Rendering::VulkanRenderer::InitVulkan()
 	CreateSurface();
 	PickPhysicalDevice();
 	CreateLogicalDevice();
+	CreateSwapChain(); 
+	CreateImageViews(); 
+	CreateGraphicsPipeline();
 }
 
 void CE::Rendering::VulkanRenderer::SetupDebugCallback()
@@ -148,12 +155,9 @@ void CE::Rendering::VulkanRenderer::CreateLogicalDevice()
 
 	VkPhysicalDeviceFeatures physicalDeviceFeatures;
 
-	QueueFamilyIndices indices = FindQueueFamilies(m_physicalDevice);
-
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	std::set<int> uniqueFamilies = { indices.GraphicsFamily, indices.PresentFamily };
 
-	float queuePriority = 1.0f;
 	for (int queueFamily : uniqueFamilies) {
 		VkDeviceQueueCreateInfo queueCreateInfo = {};
 		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
@@ -246,6 +250,101 @@ void CE::Rendering::VulkanRenderer::CreateSwapChain()
 	vkGetSwapchainImagesKHR(m_logicalDevice, m_swapChain, &imageCount, nullptr);
 	m_swapChainImages.resize(imageCount);
 	vkGetSwapchainImagesKHR(m_logicalDevice, m_swapChain, &imageCount, m_swapChainImages.data());
+	m_swapChainImageFormat = surfaceFormat.format;
+	m_swapChainExtent = extent;
+}
+
+void CE::Rendering::VulkanRenderer::CreateImageViews()
+{
+	m_swapChainImageViews.resize(m_swapChainImages.size());
+	for (size_t i = 0; i < m_swapChainImages.size(); i++) {
+		VkImageViewCreateInfo createInfo = {};
+		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		createInfo.image = m_swapChainImages[i];
+
+		createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		createInfo.format = m_swapChainImageFormat;
+		
+		createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+		createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY; 
+		createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY; 
+		createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+		createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT; 
+		createInfo.subresourceRange.baseMipLevel = 0; 
+		createInfo.subresourceRange.levelCount = 1; 
+		createInfo.subresourceRange.baseArrayLayer = 0; 
+		createInfo.subresourceRange.layerCount = 1;
+
+		if (vkCreateImageView(m_logicalDevice, &createInfo, nullptr, &m_swapChainImageViews[i]) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create image views!");
+		}
+	}
+}
+
+void CE::Rendering::VulkanRenderer::CreateGraphicsPipeline()
+{
+	auto vertexShaderCode = ReadFile("../assets//shader//vert.spv");
+	auto fragShaderCode = ReadFile("../assets//shader//vert.spv");
+
+	VkShaderModule vertShaderModule = CreateShaderModule(vertexShaderCode);
+	VkShaderModule fragShaderModule = CreateShaderModule(fragShaderCode);
+
+	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO; 
+	vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+	vertShaderStageInfo.module = vertShaderModule;
+	vertShaderStageInfo.pName = "main";
+
+	VkPipelineShaderStageCreateInfo fragShaderStageInfo = {}; 
+	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT; 
+	fragShaderStageInfo.module = fragShaderModule; 
+	fragShaderStageInfo.pName = "main"; 
+
+	VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {}; 
+	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO; 
+	vertexInputInfo.vertexBindingDescriptionCount = 0; 
+	vertexInputInfo.vertexAttributeDescriptionCount = 0;
+
+	VkViewport viewport = {}; 
+	viewport.x = 0.0f; 
+	viewport.y = 0.0f; 
+	viewport.width = (float)m_swapChainExtent.width;
+	viewport.height = (float)m_swapChainExtent.height; 
+	viewport.minDepth = 0.0f; 
+	viewport.maxDepth = 1.0f; 
+
+	VkRect2D scissor = {};
+	scissor.offset = { 0,0 };
+	scissor.extent = m_swapChainExtent;
+
+	VkPipelineViewportStateCreateInfo viewportState = {};
+	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+	viewportState.viewportCount = 1; 
+	viewportState.pViewports = &viewport; 
+	viewportState.scissorCount = 1; 
+	viewportState.pScissors = &scissor;
+
+	VkPipelineRasterizationStateCreateInfo rasterizer = {};
+	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+	rasterizer.depthClampEnable = VK_FALSE;
+	rasterizer.rasterizerDiscardEnable = VK_FALSE; 
+	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+	rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+	rasterizer.depthBiasEnable = VK_FALSE;
+
+	VkPipelineMultisampleStateCreateInfo multisampling = {};
+	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO; 
+	multisampling.sampleShadingEnable = VK_FALSE; 
+	multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+
+	vkDestroyShaderModule(m_logicalDevice, vertShaderModule, nullptr); 
+	vkDestroyShaderModule(m_logicalDevice, fragShaderModule, nullptr);
 }
 
 bool CE::Rendering::VulkanRenderer::CheckValidationLayerSupport()
@@ -414,6 +513,37 @@ VkExtent2D CE::Rendering::VulkanRenderer::ChooseSwapExtent(const VkSurfaceCapabi
 		actualExtent.height = std::max(capabilites.minImageExtent.height, std::min(capabilites.maxImageExtent.height, actualExtent.height));
 		return actualExtent;
 	}
+}
+
+std::vector<char> CE::Rendering::VulkanRenderer::ReadFile(const std::string & fileName)
+{
+	std::ifstream file(fileName, std::ios::ate | std::ios::binary);
+	if (!file.is_open()) {
+		throw std::runtime_error("failed to open file");
+	}
+
+	size_t fileSize = (size_t)file.tellg();
+	std::vector<char> buffer(fileSize);
+
+	file.seekg(0); 
+	file.read(buffer.data(), fileSize);
+
+	file.close();
+	return buffer;
+}
+
+VkShaderModule CE::Rendering::VulkanRenderer::CreateShaderModule(const std::vector<char>& code)
+{
+	VkShaderModuleCreateInfo createInfo = {}; 
+	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO; 
+	createInfo.codeSize = code.size(); 
+	createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data()); 
+
+	VkShaderModule shaderModule; 
+	if (vkCreateShaderModule(m_logicalDevice, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create shader module");
+	}
+	return shaderModule;
 }
 
 VKAPI_ATTR VkBool32 VKAPI_CALL CE::Rendering::VulkanRenderer::DebugCallBack(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objType, uint64_t obj, size_t location, int32_t code, const char * layerPrefix, const char * msg, void * userData)

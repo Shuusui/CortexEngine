@@ -4,6 +4,7 @@
 #pragma region External Includes
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW\glfw3.h>
+#include <glm/glm.hpp>
 #include <iostream>
 #include <stdexcept>
 #include <functional>
@@ -12,6 +13,7 @@
 #include <set>
 #include <algorithm>
 #include <fstream>
+#include <array>
 #pragma endregion 
 
 
@@ -25,6 +27,8 @@ const std::vector<const char*> validationLayers = {
 const std::vector<const char*> deviceExtensions = {
 	VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
+
+const int MAX_FRAMES_IN_FLIGHT = 2;
 
 #ifdef NDEBUG 
 const bool enableValidationLayers = false; 
@@ -50,6 +54,42 @@ namespace CE
 			std::vector<VkSurfaceFormatKHR> Formats;
 			std::vector<VkPresentModeKHR> PresentModes;
 		};
+
+		struct Vertex {
+			glm::vec2 Pos; 
+			glm::vec3 Color;
+
+			static VkVertexInputBindingDescription GetBindingDescription() {
+				VkVertexInputBindingDescription bindingDescription = {};
+				bindingDescription.binding = 0; 
+				bindingDescription.stride = sizeof(Vertex); 
+				bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+				return bindingDescription;
+			}
+
+			static std::array<VkVertexInputAttributeDescription, 2> GetAttributeDescriptions() {
+				std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions = {};
+
+				attributeDescriptions[0].binding = 0; 
+				attributeDescriptions[0].location = 0; 
+				attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+				attributeDescriptions[0].offset = offsetof(Vertex, Pos);
+
+				attributeDescriptions[1].binding = 0; 
+				attributeDescriptions[1].location = 1; 
+				attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT; 
+				attributeDescriptions[1].offset = offsetof(Vertex, Color);
+
+				return attributeDescriptions; 
+			}
+		};
+
+		const std::vector<Vertex> vertices = {
+			{ { 0.0f, -0.5f },{ 1.0f, 0.0f, 0.0f } },
+		{ { 0.5f, 0.5f },{ 0.0f, 1.0f, 0.0f } },
+		{ { -0.5f, 0.5f },{ 0.0f, 0.0f, 1.0f } }
+		};
 		class VulkanRenderer
 		{
 		private: 
@@ -66,6 +106,18 @@ namespace CE
 			std::vector<VkImageView> m_swapChainImageViews;
 			VkFormat m_swapChainImageFormat; 
 			VkExtent2D m_swapChainExtent;
+			VkPipelineLayout m_pipelineLayout;
+			VkRenderPass m_renderPass;
+			VkPipeline m_graphicsPipeline;
+			std::vector<VkFramebuffer> m_swapChainFramebuffers;
+			VkCommandPool m_commandPool;
+			std::vector<VkCommandBuffer> m_commandBuffers;
+			std::vector<VkSemaphore> m_imageAvailableSemaphores; 
+			std::vector<VkSemaphore> m_renderFinishedSemaphores;
+			std::vector<VkFence> m_inFlightFences;
+			size_t m_currentFrame;
+			VkBuffer m_vertexBuffer;
+			VkDeviceMemory m_vertexBufferMemory;
 		public: 
 			VulkanRenderer(); 
 			~VulkanRenderer(); 
@@ -73,8 +125,10 @@ namespace CE
 			int Run(); 
 			void Release();
 		private: 
+			//Init functions
 			void InitWindow();
 			void Cleanup(); 
+			void CleanupSwapChain();
 			void CreateInstance();
 			void InitVulkan();
 			void SetupDebugCallback();
@@ -84,6 +138,16 @@ namespace CE
 			void CreateSwapChain();
 			void CreateImageViews();
 			void CreateGraphicsPipeline();
+			void CreateRenderPass();
+			void CreateFramebuffers();
+			void CreateCommandPool();
+			void CreateCommandBuffers();
+			void CreateSyncObjects();
+			void RecreateSwapChain();
+			void CreateVertexBuffer();
+
+			//Runtime functions
+			void DrawFrame();
 
 			//Helper functions
 			bool CheckValidationLayerSupport();
@@ -96,7 +160,10 @@ namespace CE
 			VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
 			VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilites);
 			static std::vector<char> ReadFile(const std::string& fileName);
+			VkShaderModule CreateShaderModule(const std::vector<char>& code);
+			uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
+			//Statics
 			static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallBack(
 				VkDebugReportFlagsEXT flags,
 				VkDebugReportObjectTypeEXT objType,

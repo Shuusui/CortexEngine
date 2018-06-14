@@ -5,6 +5,7 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW\glfw3.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <stdexcept>
 #include <functional>
@@ -14,6 +15,7 @@
 #include <algorithm>
 #include <fstream>
 #include <array>
+#include <chrono>
 #pragma endregion 
 
 
@@ -56,8 +58,9 @@ namespace CE
 		};
 
 		struct Vertex {
-			glm::vec2 Pos; 
+			glm::vec3 Pos; 
 			glm::vec3 Color;
+			glm::vec2 TexCoord;
 
 			static VkVertexInputBindingDescription GetBindingDescription() {
 				VkVertexInputBindingDescription bindingDescription = {};
@@ -68,12 +71,12 @@ namespace CE
 				return bindingDescription;
 			}
 
-			static std::array<VkVertexInputAttributeDescription, 2> GetAttributeDescriptions() {
-				std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions = {};
+			static std::array<VkVertexInputAttributeDescription, 3> GetAttributeDescriptions() {
+				std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions = {};
 
 				attributeDescriptions[0].binding = 0; 
 				attributeDescriptions[0].location = 0; 
-				attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+				attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
 				attributeDescriptions[0].offset = offsetof(Vertex, Pos);
 
 				attributeDescriptions[1].binding = 0; 
@@ -81,19 +84,36 @@ namespace CE
 				attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT; 
 				attributeDescriptions[1].offset = offsetof(Vertex, Color);
 
+				attributeDescriptions[2].binding = 0; 
+				attributeDescriptions[2].location = 2; 
+				attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT; 
+				attributeDescriptions[2].offset = offsetof(Vertex, TexCoord);
+
 				return attributeDescriptions; 
 			}
 		};
 
 		const std::vector<Vertex> vertices = {
-			{ { -0.5f, -0.5f },{ 1.0f, 0.0f, 0.0f } },
-		{ { 0.5f, -0.5f },{ 0.0f, 1.0f, 0.0f } },
-		{ { 0.5f, 0.5f },{ 0.0f, 0.0f, 1.0f } },
-		{ { -0.5f, 0.5f },{ 1.0f, 1.0f, 1.0f } }
+			{ { -0.5f, -0.5f, 0.0f },{ 1.0f, 0.0f, 0.0f },{ 0.0f, 0.0f } },
+		{ { 0.5f, -0.5f, 0.0f },{ 0.0f, 1.0f, 0.0f },{ 1.0f, 0.0f } },
+		{ { 0.5f, 0.5f, 0.0f },{ 0.0f, 0.0f, 1.0f },{ 1.0f, 1.0f } },
+		{ { -0.5f, 0.5f, 0.0f },{ 1.0f, 1.0f, 1.0f },{ 0.0f, 1.0f } },
+
+		{ { -0.5f, -0.5f, -0.5f },{ 1.0f, 0.0f, 0.0f },{ 0.0f, 0.0f } },
+		{ { 0.5f, -0.5f, -0.5f },{ 0.0f, 1.0f, 0.0f },{ 1.0f, 0.0f } },
+		{ { 0.5f, 0.5f, -0.5f },{ 0.0f, 0.0f, 1.0f },{ 1.0f, 1.0f } },
+		{ { -0.5f, 0.5f, -0.5f },{ 1.0f, 1.0f, 1.0f },{ 0.0f, 1.0f } }
 		};
 
 		const std::vector<uint16_t> indices = {
-			0,1,2,2,3,0
+			0, 1, 2, 2, 3, 0,
+			4, 5, 6, 6, 7, 4
+		};
+
+		struct UniformBufferObject {
+			glm::mat4 Model; 
+			glm::mat4 View; 
+			glm::mat4 Proj;
 		};
 
 		class VulkanRenderer
@@ -126,6 +146,18 @@ namespace CE
 			VkDeviceMemory m_vertexBufferMemory;
 			VkBuffer m_indexBuffer; 
 			VkDeviceMemory m_indexBufferMemory;
+			VkDescriptorSetLayout m_descriptorSetLayout;
+			VkBuffer m_uniformBuffer; 
+			VkDeviceMemory m_uniformBufferMemory;
+			VkDescriptorPool m_descriptorPool;
+			VkDescriptorSet m_descriptorSet;
+			VkImage m_textureImage; 
+			VkImageView m_textureImageView;
+			VkDeviceMemory m_textureImageMemory;
+			VkSampler m_textureSampler;
+			VkImage m_depthImage;
+			VkDeviceMemory m_depthImageMemory;
+			VkImageView m_depthImageView;
 		public: 
 			VulkanRenderer(); 
 			~VulkanRenderer(); 
@@ -154,9 +186,18 @@ namespace CE
 			void RecreateSwapChain();
 			void CreateVertexBuffer();
 			void CreateIndexBuffer();
+			void CreateDescriptorLayout();
+			void CreateUniformBuffer();
+			void CreateDescriptorPool();
+			void CreateDescriptorSet();
+			void CreateTextureImage();
+			void CreateTextureImageView();
+			void CreateTextureSampler();
+			void CreateDepthResources();
 
 			//Runtime functions
 			void DrawFrame();
+			void UpdateUniformBuffer();
 
 			//Helper functions
 			bool CheckValidationLayerSupport();
@@ -173,7 +214,17 @@ namespace CE
 			uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 			void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 			void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-			
+			void CreateImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
+				VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+			VkCommandBuffer BeginSingleTimeCommand(); 
+			void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
+			void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+			void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height); 
+			VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+			VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features); 
+			VkFormat FindDepthFormat();
+			bool HasStencilComponent(VkFormat format);
+
 			//Statics
 			static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallBack(
 				VkDebugReportFlagsEXT flags,

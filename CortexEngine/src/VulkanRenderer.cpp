@@ -3,6 +3,8 @@
 #include <stb_image.h>
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
 
 
 
@@ -167,7 +169,6 @@ void CE::Rendering::VulkanRenderer::InitVulkan()
 	CreateCommandPool();
 	CreateDepthResources();
 	CreateFramebuffers();
-	CreateDepthResources();
 	CreateTextureImage();
 	CreateTextureImageView();
 	CreateTextureSampler();
@@ -605,7 +606,7 @@ void CE::Rendering::VulkanRenderer::CreateCommandBuffers()
 
 		vkCmdBindVertexBuffers(m_commandBuffers[i], 0, 1, vertexBuffers, offsets);
 
-		vkCmdBindIndexBuffer(m_commandBuffers[i], m_indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+		vkCmdBindIndexBuffer(m_commandBuffers[i], m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
 		vkCmdBindDescriptorSets(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSet, 0, nullptr);
 
@@ -802,7 +803,7 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorSet()
 void CE::Rendering::VulkanRenderer::CreateTextureImage()
 {
 	int texWidth, texHeight, texChannels;
-	stbi_uc* pixels = stbi_load("../assets//textures//texture.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+	stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 
 	VkDeviceSize imageSize = texWidth * texHeight * 4;
 

@@ -22,6 +22,9 @@
 const int WIDTH = 800; 
 const int HEIGHT = 600;
 
+const std::string MODEL_PATH = "../assets//models//chalet.obj";
+const std::string TEXTURE_PATH = "../assets//textures//chalet.jpg";
+
 const std::vector<const char*> validationLayers = {
 	"VK_LAYER_LUNARG_standard_validation"
 };
@@ -93,23 +96,6 @@ namespace CE
 			}
 		};
 
-		const std::vector<Vertex> vertices = {
-			{ { -0.5f, -0.5f, 0.0f },{ 1.0f, 0.0f, 0.0f },{ 0.0f, 0.0f } },
-		{ { 0.5f, -0.5f, 0.0f },{ 0.0f, 1.0f, 0.0f },{ 1.0f, 0.0f } },
-		{ { 0.5f, 0.5f, 0.0f },{ 0.0f, 0.0f, 1.0f },{ 1.0f, 1.0f } },
-		{ { -0.5f, 0.5f, 0.0f },{ 1.0f, 1.0f, 1.0f },{ 0.0f, 1.0f } },
-
-		{ { -0.5f, -0.5f, -0.5f },{ 1.0f, 0.0f, 0.0f },{ 0.0f, 0.0f } },
-		{ { 0.5f, -0.5f, -0.5f },{ 0.0f, 1.0f, 0.0f },{ 1.0f, 0.0f } },
-		{ { 0.5f, 0.5f, -0.5f },{ 0.0f, 0.0f, 1.0f },{ 1.0f, 1.0f } },
-		{ { -0.5f, 0.5f, -0.5f },{ 1.0f, 1.0f, 1.0f },{ 0.0f, 1.0f } }
-		};
-
-		const std::vector<uint16_t> indices = {
-			0, 1, 2, 2, 3, 0,
-			4, 5, 6, 6, 7, 4
-		};
-
 		struct UniformBufferObject {
 			glm::mat4 Model; 
 			glm::mat4 View; 
@@ -158,6 +144,8 @@ namespace CE
 			VkImage m_depthImage;
 			VkDeviceMemory m_depthImageMemory;
 			VkImageView m_depthImageView;
+			std::vector<Vertex> vertices; 
+			std::vector<uint32_t> indices; 
 		public: 
 			VulkanRenderer(); 
 			~VulkanRenderer(); 
@@ -194,6 +182,7 @@ namespace CE
 			void CreateTextureImageView();
 			void CreateTextureSampler();
 			void CreateDepthResources();
+			void LoadModel(); //TODO: 
 
 			//Runtime functions
 			void DrawFrame();

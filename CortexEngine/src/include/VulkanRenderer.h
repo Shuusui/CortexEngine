@@ -86,10 +86,16 @@ namespace CE
 		};
 
 		const std::vector<Vertex> vertices = {
-			{ { 0.0f, -0.5f },{ 1.0f, 0.0f, 0.0f } },
-		{ { 0.5f, 0.5f },{ 0.0f, 1.0f, 0.0f } },
-		{ { -0.5f, 0.5f },{ 0.0f, 0.0f, 1.0f } }
+			{ { -0.5f, -0.5f },{ 1.0f, 0.0f, 0.0f } },
+		{ { 0.5f, -0.5f },{ 0.0f, 1.0f, 0.0f } },
+		{ { 0.5f, 0.5f },{ 0.0f, 0.0f, 1.0f } },
+		{ { -0.5f, 0.5f },{ 1.0f, 1.0f, 1.0f } }
 		};
+
+		const std::vector<uint16_t> indices = {
+			0,1,2,2,3,0
+		};
+
 		class VulkanRenderer
 		{
 		private: 
@@ -118,6 +124,8 @@ namespace CE
 			size_t m_currentFrame;
 			VkBuffer m_vertexBuffer;
 			VkDeviceMemory m_vertexBufferMemory;
+			VkBuffer m_indexBuffer; 
+			VkDeviceMemory m_indexBufferMemory;
 		public: 
 			VulkanRenderer(); 
 			~VulkanRenderer(); 
@@ -145,6 +153,7 @@ namespace CE
 			void CreateSyncObjects();
 			void RecreateSwapChain();
 			void CreateVertexBuffer();
+			void CreateIndexBuffer();
 
 			//Runtime functions
 			void DrawFrame();
@@ -162,7 +171,9 @@ namespace CE
 			static std::vector<char> ReadFile(const std::string& fileName);
 			VkShaderModule CreateShaderModule(const std::vector<char>& code);
 			uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
-
+			void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+			void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+			
 			//Statics
 			static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallBack(
 				VkDebugReportFlagsEXT flags,

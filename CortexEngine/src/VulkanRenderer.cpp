@@ -42,6 +42,9 @@ void CE::Rendering::VulkanRenderer::InitWindow()
 
 void CE::Rendering::VulkanRenderer::Cleanup()
 {
+	vkDestroyBuffer(m_logicalDevice, m_indexBuffer, nullptr); 
+	vkFreeMemory(m_logicalDevice, m_indexBufferMemory, nullptr);
+
 	vkDestroyBuffer(m_logicalDevice, m_vertexBuffer, nullptr);
 	vkFreeMemory(m_logicalDevice, m_vertexBufferMemory, nullptr);
 
@@ -138,6 +141,7 @@ void CE::Rendering::VulkanRenderer::InitVulkan()
 	CreateFramebuffers();
 	CreateCommandPool();
 	CreateVertexBuffer();
+	CreateIndexBuffer();
 	CreateCommandBuffers();
 	CreateSyncObjects();
 }
@@ -556,7 +560,14 @@ void CE::Rendering::VulkanRenderer::CreateCommandBuffers()
 
 		vkCmdBindPipeline(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
 
-		vkCmdDraw(m_commandBuffers[i], 3, 1, 0, 0);
+		VkBuffer vertexBuffers[] = { m_vertexBuffer };
+		VkDeviceSize offsets[] = { 0 };
+
+		vkCmdBindVertexBuffers(m_commandBuffers[i], 0, 1, vertexBuffers, offsets);
+
+		vkCmdBindIndexBuffer(m_commandBuffers[i], m_indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+
+		vkCmdDrawIndexed(m_commandBuffers[i], static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
 		vkCmdEndRenderPass(m_commandBuffers[i]);
 
@@ -608,34 +619,109 @@ void CE::Rendering::VulkanRenderer::RecreateSwapChain()
 
 void CE::Rendering::VulkanRenderer::CreateVertexBuffer()
 {
+	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+	VkBuffer stagingBuffer; 
+	VkDeviceMemory stagingBufferMemory;
+	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 
+		stagingBuffer, stagingBufferMemory);
+
+	void* data; 
+	vkMapMemory(m_logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
+	memcpy(data, vertices.data(), (size_t)bufferSize);
+	vkUnmapMemory(m_logicalDevice, stagingBufferMemory);
+	
+	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+		m_vertexBuffer, m_vertexBufferMemory);
+
+	CopyBuffer(stagingBuffer, m_vertexBuffer, bufferSize);
+
+	vkDestroyBuffer(m_logicalDevice, stagingBuffer, nullptr); 
+	vkFreeMemory(m_logicalDevice, stagingBufferMemory, nullptr);
+}
+
+void CE::Rendering::VulkanRenderer::CreateIndexBuffer()
+{
+	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+
+	VkBuffer stagingBuffer; 
+	VkDeviceMemory stagingBufferMemory; 
+	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 
+		stagingBuffer, stagingBufferMemory);
+
+	void* data; 
+	vkMapMemory(m_logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
+	memcpy(data, indices.data(), (size_t)bufferSize);
+	vkUnmapMemory(m_logicalDevice, stagingBufferMemory);
+
+	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+		m_indexBuffer, m_indexBufferMemory); 
+
+	CopyBuffer(stagingBuffer, m_indexBuffer, bufferSize); 
+
+	vkDestroyBuffer(m_logicalDevice, stagingBuffer, nullptr); 
+	vkFreeMemory(m_logicalDevice, stagingBufferMemory, nullptr);	
+}
+
+void CE::Rendering::VulkanRenderer::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+{
 	VkBufferCreateInfo bufferInfo = {};
 	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-	bufferInfo.size = sizeof(vertices[0]) * vertices.size();
-	bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+	bufferInfo.size = size;
+	bufferInfo.usage = usage;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-	if (vkCreateBuffer(m_logicalDevice, &bufferInfo, nullptr, &m_vertexBuffer) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create vertex buffer");
+	if (vkCreateBuffer(m_logicalDevice, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create buffer");
 	}
 
-	VkMemoryRequirements memRequirements; 
-	vkGetBufferMemoryRequirements(m_logicalDevice, m_vertexBuffer, &memRequirements);
+	VkMemoryRequirements memRequirements;
+	vkGetBufferMemoryRequirements(m_logicalDevice, buffer, &memRequirements);
 
 	VkMemoryAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
 
-	if (vkAllocateMemory(m_logicalDevice, &allocInfo, nullptr, &m_vertexBufferMemory) != VK_SUCCESS) {
-		throw std::runtime_error("failed to allocate vertex buffer memory!");
+	if (vkAllocateMemory(m_logicalDevice, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
+		throw std::runtime_error("failed to allocate buffer memory!");
 	}
 
-	vkBindBufferMemory(m_logicalDevice, m_vertexBuffer, m_vertexBufferMemory, 0);
+	vkBindBufferMemory(m_logicalDevice, buffer, bufferMemory, 0);
+}
 
-	void* data; 
-	vkMapMemory(m_logicalDevice, m_vertexBufferMemory, 0, bufferInfo.size, 0, &data);
-	memcpy(data, vertices.data(), (size_t)bufferInfo.size);
-	vkUnmapMemory(m_logicalDevice, m_vertexBufferMemory);
+void CE::Rendering::VulkanRenderer::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+{
+	VkCommandBufferAllocateInfo allocInfo = {}; 
+	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO; 
+	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY; 
+	allocInfo.commandPool = m_commandPool;
+	allocInfo.commandBufferCount = 1; 
+
+	VkCommandBuffer commandBuffer; 
+	vkAllocateCommandBuffers(m_logicalDevice, &allocInfo, &commandBuffer);
+
+	VkCommandBufferBeginInfo beginInfo = {}; 
+	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO; 
+	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+	vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+	VkBufferCopy copyRegion = {};
+	copyRegion.size = size;
+	
+	vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+
+	vkEndCommandBuffer(commandBuffer);
+
+	VkSubmitInfo submitInfo = {};
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.commandBufferCount = 1; 
+	submitInfo.pCommandBuffers = &commandBuffer;
+
+	vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+	vkQueueWaitIdle(m_graphicsQueue);
+
+	vkFreeCommandBuffers(m_logicalDevice, m_commandPool, 1, &commandBuffer);
 }
 
 void CE::Rendering::VulkanRenderer::DrawFrame()

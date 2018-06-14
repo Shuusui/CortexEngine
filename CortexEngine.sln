@@ -17,6 +17,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "googletest", "googletest\googletest.vcxproj", "{26266D3E-1413-4E26-837F-FB1FBE0D4DA9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Importer", "Importer\Importer.vcxproj", "{6E364EE5-B296-4D8A-A222-3FBB72CE4A20}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2DB49D1A-21CB-4D45-A633-7BB21C8AD7B5} = {2DB49D1A-21CB-4D45-A633-7BB21C8AD7B5}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

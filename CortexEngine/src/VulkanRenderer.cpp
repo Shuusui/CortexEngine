@@ -172,6 +172,7 @@ void CE::Rendering::VulkanRenderer::InitVulkan()
 	CreateTextureImage();
 	CreateTextureImageView();
 	CreateTextureSampler();
+	LoadModel();
 	CreateVertexBuffer();
 	CreateIndexBuffer();
 	CreateUniformBuffer();
@@ -610,7 +611,7 @@ void CE::Rendering::VulkanRenderer::CreateCommandBuffers()
 
 		vkCmdBindDescriptorSets(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSet, 0, nullptr);
 
-		vkCmdDrawIndexed(m_commandBuffers[i], static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+		vkCmdDrawIndexed(m_commandBuffers[i], static_cast<uint32_t>(m_indices.size()), 1, 0, 0, 0);
 
 		vkCmdEndRenderPass(m_commandBuffers[i]);
 
@@ -663,7 +664,7 @@ void CE::Rendering::VulkanRenderer::RecreateSwapChain()
 
 void CE::Rendering::VulkanRenderer::CreateVertexBuffer()
 {
-	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+	VkDeviceSize bufferSize = sizeof(m_vertices[0]) * m_vertices.size();
 	VkBuffer stagingBuffer; 
 	VkDeviceMemory stagingBufferMemory;
 	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 
@@ -671,7 +672,7 @@ void CE::Rendering::VulkanRenderer::CreateVertexBuffer()
 
 	void* data; 
 	vkMapMemory(m_logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, vertices.data(), (size_t)bufferSize);
+	memcpy(data, m_vertices.data(), (size_t)bufferSize);
 	vkUnmapMemory(m_logicalDevice, stagingBufferMemory);
 	
 	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -685,7 +686,7 @@ void CE::Rendering::VulkanRenderer::CreateVertexBuffer()
 
 void CE::Rendering::VulkanRenderer::CreateIndexBuffer()
 {
-	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+	VkDeviceSize bufferSize = sizeof(m_indices[0]) * m_indices.size();
 
 	VkBuffer stagingBuffer; 
 	VkDeviceMemory stagingBufferMemory; 
@@ -694,7 +695,7 @@ void CE::Rendering::VulkanRenderer::CreateIndexBuffer()
 
 	void* data; 
 	vkMapMemory(m_logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, indices.data(), (size_t)bufferSize);
+	memcpy(data, m_indices.data(), (size_t)bufferSize);
 	vkUnmapMemory(m_logicalDevice, stagingBufferMemory);
 
 	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -879,6 +880,40 @@ void CE::Rendering::VulkanRenderer::CreateDepthResources()
 	TransitionImageLayout(m_depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 
 	
+}
+
+void CE::Rendering::VulkanRenderer::LoadModel()
+{
+	tinyobj::attrib_t attrib;
+	std::vector<tinyobj::shape_t> shapes; 
+	std::vector<tinyobj::material_t> materials;
+	std::string err;
+
+	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &err, MODEL_PATH.c_str())) {
+		throw std::runtime_error(err);
+	}
+
+	for (const auto& shape : shapes) {
+		for (const auto& index : shape.mesh.indices) {
+			Vertex vertex = {};
+
+			m_vertices.push_back(vertex); 
+			m_indices.push_back(m_indices.size());
+
+			vertex.Pos = {
+				attrib.vertices[3 * index.vertex_index + 0],
+				attrib.vertices[3 * index.vertex_index + 1],
+				attrib.vertices[3 * index.vertex_index + 2]
+			};
+
+			vertex.TexCoord = {
+				attrib.texcoords[2 * index.texcoord_index + 0],
+				1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+			};
+
+			vertex.Color = { 1.0f, 1.0f, 1.0f };
+		}
+	}
 }
 
 void CE::Rendering::VulkanRenderer::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)

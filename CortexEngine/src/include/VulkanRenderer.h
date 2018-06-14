@@ -144,8 +144,8 @@ namespace CE
 			VkImage m_depthImage;
 			VkDeviceMemory m_depthImageMemory;
 			VkImageView m_depthImageView;
-			std::vector<Vertex> vertices; 
-			std::vector<uint32_t> indices; 
+			std::vector<Vertex> m_vertices; 
+			std::vector<uint32_t> m_indices; 
 		public: 
 			VulkanRenderer(); 
 			~VulkanRenderer(); 
@@ -182,7 +182,7 @@ namespace CE
 			void CreateTextureImageView();
 			void CreateTextureSampler();
 			void CreateDepthResources();
-			void LoadModel(); //TODO: 
+			void LoadModel(); 
 
 			//Runtime functions
 			void DrawFrame();

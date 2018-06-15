@@ -36,7 +36,7 @@ namespace CE
 		class __declspec(dllexport) OBJImporter
 		{
 		public:
-			static OBJData* ReadObjFile(const std::string& filePath); //TODO: Turn into const std::string& after testing
+			static OBJData* ReadObjFile(const std::string& filePath); 
 		private: 
 			static std::string parse(const std::string& str);
 			static std::vector<std::string> cutStr(const std::string& str);

@@ -247,5 +247,8 @@
     <ClInclude Include="src\include\VulkanRenderer.h">
       <Filter>Rendering\Vulkan\Vulkan Headerfiles</Filter>
     </ClInclude>
+    <ClInclude Include="src\include\VulkanCamera.h">
+      <Filter>Rendering\Vulkan\Vulkan Headerfiles</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,6 +4,8 @@
 #pragma region External Includes
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW\glfw3.h>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm\gtx\hash.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
@@ -16,6 +18,7 @@
 #include <fstream>
 #include <array>
 #include <chrono>
+#include <unordered_map>
 #pragma endregion 
 
 
@@ -41,6 +44,55 @@ const bool enableValidationLayers = false;
 const bool enableValidationLayers = true; 
 #endif
 
+struct Vertex {
+	glm::vec3 Pos;
+	glm::vec3 Color;
+	glm::vec2 TexCoord;
+
+	static VkVertexInputBindingDescription GetBindingDescription() {
+		VkVertexInputBindingDescription bindingDescription = {};
+		bindingDescription.binding = 0;
+		bindingDescription.stride = sizeof(Vertex);
+		bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+		return bindingDescription;
+	}
+
+	static std::array<VkVertexInputAttributeDescription, 3> GetAttributeDescriptions() {
+		std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions = {};
+
+		attributeDescriptions[0].binding = 0;
+		attributeDescriptions[0].location = 0;
+		attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+		attributeDescriptions[0].offset = offsetof(Vertex, Pos);
+
+		attributeDescriptions[1].binding = 0;
+		attributeDescriptions[1].location = 1;
+		attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+		attributeDescriptions[1].offset = offsetof(Vertex, Color);
+
+		attributeDescriptions[2].binding = 0;
+		attributeDescriptions[2].location = 2;
+		attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
+		attributeDescriptions[2].offset = offsetof(Vertex, TexCoord);
+
+		return attributeDescriptions;
+	}
+
+	bool operator==(const Vertex& other) const {
+		return Pos == other.Pos && Color == other.Color && TexCoord == other.TexCoord;
+	}
+};
+
+namespace std {
+	template<> struct hash<Vertex> {
+		size_t operator() (Vertex const & vertex) const {
+			return ((hash<glm::vec3>()(vertex.Pos) ^
+				(hash<glm::vec3>()(vertex.Color) << 1)) >> 1) ^
+				(hash<glm::vec2>()(vertex.TexCoord) << 1);
+		}
+	};
+}
 namespace CE
 {
 	namespace Rendering
@@ -58,42 +110,6 @@ namespace CE
 			VkSurfaceCapabilitiesKHR Capabilites;
 			std::vector<VkSurfaceFormatKHR> Formats;
 			std::vector<VkPresentModeKHR> PresentModes;
-		};
-
-		struct Vertex {
-			glm::vec3 Pos; 
-			glm::vec3 Color;
-			glm::vec2 TexCoord;
-
-			static VkVertexInputBindingDescription GetBindingDescription() {
-				VkVertexInputBindingDescription bindingDescription = {};
-				bindingDescription.binding = 0; 
-				bindingDescription.stride = sizeof(Vertex); 
-				bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-				return bindingDescription;
-			}
-
-			static std::array<VkVertexInputAttributeDescription, 3> GetAttributeDescriptions() {
-				std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions = {};
-
-				attributeDescriptions[0].binding = 0; 
-				attributeDescriptions[0].location = 0; 
-				attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-				attributeDescriptions[0].offset = offsetof(Vertex, Pos);
-
-				attributeDescriptions[1].binding = 0; 
-				attributeDescriptions[1].location = 1; 
-				attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT; 
-				attributeDescriptions[1].offset = offsetof(Vertex, Color);
-
-				attributeDescriptions[2].binding = 0; 
-				attributeDescriptions[2].location = 2; 
-				attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT; 
-				attributeDescriptions[2].offset = offsetof(Vertex, TexCoord);
-
-				return attributeDescriptions; 
-			}
 		};
 
 		struct UniformBufferObject {
@@ -146,6 +162,7 @@ namespace CE
 			VkImageView m_depthImageView;
 			std::vector<Vertex> m_vertices; 
 			std::vector<uint32_t> m_indices; 
+			uint32_t m_mipLevels;
 		public: 
 			VulkanRenderer(); 
 			~VulkanRenderer(); 
@@ -203,16 +220,18 @@ namespace CE
 			uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 			void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 			void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-			void CreateImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
+			void CreateImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
 				VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 			VkCommandBuffer BeginSingleTimeCommand(); 
 			void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
-			void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+			void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels);
 			void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height); 
-			VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+			VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels);
 			VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features); 
 			VkFormat FindDepthFormat();
 			bool HasStencilComponent(VkFormat format);
+			void GenerateMipmaps(VkImage image, int32_t texWidth, int32_t teexHeight, uint32_t mipLevels);
+
 
 			//Statics
 			static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallBack(

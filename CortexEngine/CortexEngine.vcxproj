@@ -206,6 +206,7 @@
     <ClInclude Include="src\include\CRenderComponent.h" />
     <ClInclude Include="src\include\CRigidbodyComponent.h" />
     <ClInclude Include="src\include\CTransformComponent.h" />
+    <ClInclude Include="src\include\VulkanCamera.h" />
     <ClInclude Include="src\include\VulkanRenderer.h" />
     <ClInclude Include="src\include\Window.h" />
   </ItemGroup>

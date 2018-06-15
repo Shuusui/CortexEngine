@@ -70,10 +70,10 @@ bool CE::Core::EngineManager::CreateInstance()
 	if (!s_pEngineManager)
 	{
 		s_pEngineManager = new EngineManager();
-		MessageEvent* msgE = new MessageEvent("Engine successfully instantiated");
+		MessageEvent* msgE = new MessageEvent("Engine successfully instantiated \n");
 		return true; 
 	}
-	MessageEvent* msgE = new MessageEvent("Engine couldn't be instantiated");
+	MessageEvent* msgE = new MessageEvent("Engine couldn't be instantiated \n");
 	return false; 
 }
 

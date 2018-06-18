@@ -25,8 +25,6 @@
 const int WIDTH = 800; 
 const int HEIGHT = 600;
 
-const std::string MODEL_PATH = "../assets//models//chalet.obj";
-const std::string TEXTURE_PATH = "../assets//textures//chalet.jpg";
 
 const std::vector<const char*> validationLayers = {
 	"VK_LAYER_LUNARG_standard_validation"
@@ -199,7 +197,6 @@ namespace CE
 			void CreateTextureImageView();
 			void CreateTextureSampler();
 			void CreateDepthResources();
-			void LoadModel(); 
 
 			//Runtime functions
 			void DrawFrame();

@@ -15,6 +15,8 @@ void CE::Components::CRenderComponent::Update()
 	}
 }
 
+
+
 CE::Components::CRenderComponent::~CRenderComponent()
 {
 	delete m_material; 

@@ -1,12 +1,6 @@
 #include "include\VulkanRenderer.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
-
-#define TINYOBJLOADER_IMPLEMENTATION
-#include <tiny_obj_loader.h>
-
 
 uint32_t g_modelRotation = 0;
 
@@ -184,7 +178,6 @@ void CE::Rendering::VulkanRenderer::InitVulkan()
 	CreateTextureImage();
 	CreateTextureImageView();
 	CreateTextureSampler();
-	LoadModel();
 	CreateVertexBuffer();
 	CreateIndexBuffer();
 	CreateUniformBuffer();
@@ -815,8 +808,7 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorSet()
 
 void CE::Rendering::VulkanRenderer::CreateTextureImage()
 {
-	int texWidth, texHeight, texChannels;
-	stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+	
 
 	VkDeviceSize imageSize = texWidth * texHeight * 4;
 
@@ -838,16 +830,13 @@ void CE::Rendering::VulkanRenderer::CreateTextureImage()
 	memcpy(data, pixels, static_cast<size_t>(imageSize));
 	vkUnmapMemory(m_logicalDevice, stagingBufferMemory);
 
-	stbi_image_free(pixels);
 
 	CreateImage(texWidth, texHeight, m_mipLevels, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT |VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory);
 
 	TransitionImageLayout(m_textureImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, m_mipLevels);
 	CopyBufferToImage(stagingBuffer, m_textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
-//#ifndef NDEBUG
-//	TransitionImageLayout(m_textureImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, m_mipLevels);
-//#endif
+
 	vkDestroyBuffer(m_logicalDevice, stagingBuffer, nullptr);
 	vkFreeMemory(m_logicalDevice, stagingBufferMemory, nullptr);
 
@@ -897,46 +886,7 @@ void CE::Rendering::VulkanRenderer::CreateDepthResources()
 
 }
 
-void CE::Rendering::VulkanRenderer::LoadModel()
-{
-	tinyobj::attrib_t attrib;
-	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials;
-	std::string err;
 
-	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &err, MODEL_PATH.c_str())) {
-		throw std::runtime_error(err);
-	}
-
-	std::unordered_map<Vertex, uint32_t> uniqueVertices = {};
-
-	for (const auto& shape : shapes) {
-		for (const auto& index : shape.mesh.indices) {
-			Vertex vertex = {};
-
-			vertex.Pos = {
-				attrib.vertices[3 * index.vertex_index + 0],
-				attrib.vertices[3 * index.vertex_index + 1],
-				attrib.vertices[3 * index.vertex_index + 2]
-			};
-
-			vertex.TexCoord = {
-				attrib.texcoords[2 * index.texcoord_index + 0],
-				1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
-			};
-
-			vertex.Color = { 1.0f, 1.0f, 1.0f };
-
-			if (uniqueVertices.count(vertex) == 0) {
-				uniqueVertices[vertex] = static_cast<uint32_t>(m_vertices.size());
-				m_vertices.push_back(vertex);
-			}
-
-			
-			m_indices.push_back(uniqueVertices[vertex]);
-		}
-	}
-}
 
 void CE::Rendering::VulkanRenderer::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 {

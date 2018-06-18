@@ -121,7 +121,7 @@ namespace CE
 		class VulkanRenderer
 		{
 		private: 
-			GLFWwindow * m_pWindow;
+			GLFWwindow* m_pWindow;
 			VkInstance m_vkInstance;
 			VkDebugReportCallbackEXT m_callback;
 			VkPhysicalDevice m_physicalDevice;

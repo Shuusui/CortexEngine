@@ -3,6 +3,7 @@
 #include "Vector3.h"
 #pragma endregion 
 #pragma region External Includes
+#include <glm/vec3.hpp>
 #include <string>
 #pragma endregion 
 
@@ -36,8 +37,13 @@ namespace CE
 	{
 		struct Transform
 		{
-			Nash::FVector3 Position;
-			Nash::FVector3 Scale;
+			Transform(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3&  scale)
+			{
+
+			}
+			glm::vec3 Position;
+			glm::vec3 Rotation; 
+			glm::vec3 Scale;
 		};
 	}
 	namespace Rendering

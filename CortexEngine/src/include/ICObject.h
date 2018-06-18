@@ -2,6 +2,7 @@
 #pragma region Internal includes
 #include "Algorithms.h"
 #include "ICComponent.h"
+#include "CortexStructs.h"
 #pragma endregion
 #pragma region External includes
 #include <cstdint>
@@ -23,6 +24,7 @@ namespace CE
 			std::vector<ICObject*> m_subObjects;
 			std::vector<Components::ICComponent*> m_components;
 			bool m_bPhysicsEnabled;
+			CE::Physics::Transform m_transform;
 		public:
 			ICObject() = delete;
 
@@ -41,6 +43,8 @@ namespace CE
 			inline void RemoveComponent(Components::ICComponent* component);
 
 			inline Components::ICComponent* GetComponent(const uint_fast32_t& id);
+
+			inline CE::Physics::Transform GetTransform() const { return m_transform; }
 
 			inline bool PhysicsEnabled() const { return m_bPhysicsEnabled; }
 

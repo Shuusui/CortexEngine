@@ -28,11 +28,11 @@ namespace CE
 		public:
 			ICObject() = delete;
 
-			ICObject(const uint_fast32_t& id, const std::string& name) : m_ID(id), m_name(name), m_subObjectCount(0), m_bPhysicsEnabled(false) {};
+			ICObject(const uint_fast32_t& id, const std::string& name, const CE::Physics::Transform& transform) : m_ID(id), m_name(name), m_subObjectCount(0), m_bPhysicsEnabled(false), m_transform(transform) {};
 
-			ICObject(const ICObject& obj) :m_ID(obj.m_ID), m_name(obj.m_name), m_subObjectCount(obj.m_subObjectCount), m_bPhysicsEnabled(obj.m_bPhysicsEnabled) {}
+			ICObject(const ICObject& obj) :m_ID(obj.m_ID), m_name(obj.m_name), m_subObjectCount(obj.m_subObjectCount), m_bPhysicsEnabled(obj.m_bPhysicsEnabled), m_transform(obj.m_transform) {}
 
-			inline bool CreateSubobject(const std::string& objName);
+			inline bool CreateSubobject(const std::string& objName, const CE::Physics::Transform& transform);
 
 			inline bool AddSubobject(ICObject* obj);
 
@@ -71,9 +71,9 @@ namespace CE
 			virtual ~ICObject() {};
 		};
 
-		bool ICObject::CreateSubobject(const std::string& objName)
+		bool ICObject::CreateSubobject(const std::string& objName, const CE::Physics::Transform& transform)
 		{
-			ICObject* newObj = new ICObject(m_subObjectCount, objName);
+			ICObject* newObj = new ICObject(m_subObjectCount, objName, transform);
 			if (!VectorBinSearch(m_subObjects, newObj))
 				if (AddSubobject(newObj))
 				{

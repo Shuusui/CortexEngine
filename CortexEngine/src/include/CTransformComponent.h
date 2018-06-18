@@ -22,19 +22,19 @@ namespace CE
 		public: 
 			CTransformComponent(const Physics::Transform & transform, const uint_fast32_t& id);
 
-			inline Nash::FVector3 GetPosition() const;
-		
-			inline Nash::FVector3 GetScale() const;
+			inline glm::vec3 GetPosition() const;
+				   
+			inline glm::vec3 GetScale() const;
 
 			void Update();
 
 			~CTransformComponent();
 		};
-		inline Nash::FVector3 CTransformComponent::GetPosition() const
+		inline glm::vec3 CTransformComponent::GetPosition() const
 		{
 			return m_transform.Position;
 		}		
-		inline Nash::FVector3 CTransformComponent::GetScale() const
+		inline glm::vec3 CTransformComponent::GetScale() const
 		{
 			return m_transform.Scale; 
 		}

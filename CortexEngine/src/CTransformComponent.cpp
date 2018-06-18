@@ -3,6 +3,7 @@
 CE::Components::CTransformComponent::CTransformComponent(const Physics::Transform & transform, const uint_fast32_t& id)
 	:ICComponent(id, Enums::EComponentType::Transform, true)
 	, m_matrix()
+	, m_transform(transform)
 {	
 	//m_matrix.Translate(transform.Position);
 	

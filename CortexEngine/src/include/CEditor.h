@@ -1,6 +1,5 @@
 #pragma once
 #pragma region Internal includes
-#include "CEditorCamera.h"
 #pragma endregion
 #pragma region External includes
 #include <cstdint>
@@ -14,7 +13,6 @@ namespace CE
 		class CEditor
 		{
 		private: 
-			CEditorCamera* m_pEdiCam; 
 		public: 
 			CEditor(); 
 			~CEditor();

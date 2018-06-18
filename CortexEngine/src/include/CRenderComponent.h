@@ -4,6 +4,7 @@
 #include "CMaterial.h"
 #include "ICComponent.h"
 #include "Enums.h"
+#include "EngineManager.h"
 #pragma endregion 
 #pragma region External Includes
 #pragma endregion

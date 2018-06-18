@@ -131,9 +131,6 @@
     <ClCompile Include="src\CEditor.cpp">
       <Filter>Editor\Editor Sourcefiles</Filter>
     </ClCompile>
-    <ClCompile Include="src\CEditorCamera.cpp">
-      <Filter>Editor\Editor Sourcefiles</Filter>
-    </ClCompile>
     <ClCompile Include="src\CMesh.cpp">
       <Filter>Rendering\Rendering Sourcefiles</Filter>
     </ClCompile>
@@ -227,9 +224,6 @@
       <Filter>Components\Components Headerfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\CEditor.h">
-      <Filter>Editor\Editor Headerfiles</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\CEditorCamera.h">
       <Filter>Editor\Editor Headerfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\CMesh.h">

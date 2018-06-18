@@ -45,8 +45,8 @@ namespace CE
 			static EventHandler* GetEventHandler() { return s_pEventHandler; }
 			static Editor::CEditor* GetEditor() { return s_pEditor; }
 			EngineParams Init();
-			//bool InitWindow(const EngineParams& params);
 			bool InitListener();
+			Rendering::VulkanRenderer* GetRenderer() { return m_pVkRenderer; }
 			void Run();
 			bool CreateNewProject(const std::string& name);
 			bool LoadExistentProject(const std::string& projectFilePath);

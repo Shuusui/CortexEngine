@@ -1,5 +1,7 @@
 #pragma once
 #pragma region Internal Includes
+#include "EngineManager.h"
+#include "InternalMacros.h"
 #pragma endregion 
 #pragma region External Includes
 #include <string>
@@ -21,12 +23,13 @@ namespace CE
 			stbi_uc* m_pPixels;
 			VkImage m_texImage; 
 			VkDeviceMemory m_texImageMemory;
+			int m_mipLevels;
 		public: 
 			CMaterial(); 
 			//reads only jpeg files at the moment
 			void ReadFile(const std::string& texturepath);
 
-			void CreateTextureImage(int texWidth, int texHeight, void* pixels, VkImage& texImage, VkDeviceMemory& texImageMemory);
+			void CreateTextureImage();
 
 
 			~CMaterial();

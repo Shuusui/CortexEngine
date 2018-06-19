@@ -45,6 +45,13 @@ void CE::Rendering::VulkanRenderer::Release()
 	Cleanup();
 }
 
+void CE::Rendering::VulkanRenderer::MapData(void * dstData, void * srcData, VkDeviceMemory & dstMapMemory, VkDeviceSize memorySize)
+{
+	vkMapMemory(m_logicalDevice, dstMapMemory, 0, memorySize, 0, &srcData); 
+	memcpy(dstData, srcData, static_cast<size_t>(memorySize));
+	vkUnmapMemory(m_logicalDevice, dstMapMemory);
+}
+
 void CE::Rendering::VulkanRenderer::InitWindow()
 {
 	glfwInit();

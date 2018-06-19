@@ -7,6 +7,16 @@ CE::Components::CRenderComponent::CRenderComponent(const uint_fast32_t& id)
 {
 }
 
+void CE::Components::CRenderComponent::AddMesh(Rendering::CMesh * mesh)
+{
+	m_mesh = mesh;
+}
+
+void CE::Components::CRenderComponent::AddMaterial(Rendering::CMaterial * mat)
+{
+	m_material = mat;
+}
+
 void CE::Components::CRenderComponent::Update()
 {
 	if (m_material && m_mesh)
@@ -15,6 +25,9 @@ void CE::Components::CRenderComponent::Update()
 	}
 }
 
+void CE::Components::CRenderComponent::DeltaUpdate()
+{
+}
 
 
 CE::Components::CRenderComponent::~CRenderComponent()

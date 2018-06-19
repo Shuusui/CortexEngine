@@ -25,6 +25,8 @@ CE::Core::EngineParams CE::Core::EngineManager::Init()
 	
 	
 	m_pVkRenderer->Init();
+	s_pProjectManager = new CE::Core::ProjectManager("project");
+	s_pProjectManager->Init();
 
 	return m_pEngineIni->LoadIni(params);
 }

@@ -30,8 +30,6 @@ namespace CE
 			static EventHandler* s_pEventHandler;
 			static Editor::CEditor* s_pEditor;
 			EngineIni* m_pEngineIni;
-			//Window* m_pWndClass;
-			//HWND m_wndHandle;
 			Rendering::VulkanRenderer* m_pVkRenderer;
 		public: 
 			~EngineManager() {	s_pEngineManager = nullptr;	};

@@ -142,25 +142,18 @@ namespace CE
 			std::vector<VkSemaphore> m_renderFinishedSemaphores;
 			std::vector<VkFence> m_inFlightFences;
 			size_t m_currentFrame;
-			VkBuffer m_vertexBuffer;
-			VkDeviceMemory m_vertexBufferMemory;
-			VkBuffer m_indexBuffer; 
-			VkDeviceMemory m_indexBufferMemory;
 			VkDescriptorSetLayout m_descriptorSetLayout;
 			VkBuffer m_uniformBuffer; 
 			VkDeviceMemory m_uniformBufferMemory;
 			VkDescriptorPool m_descriptorPool;
 			VkDescriptorSet m_descriptorSet;
-			VkImage m_textureImage; 
-			VkImageView m_textureImageView;
-			VkDeviceMemory m_textureImageMemory;
 			VkSampler m_textureSampler;
 			VkImage m_depthImage;
 			VkDeviceMemory m_depthImageMemory;
 			VkImageView m_depthImageView;
-			std::vector<Vertex> m_vertices; 
-			std::vector<uint32_t> m_indices; 
-			uint32_t m_mipLevels;
+			std::vector<VkBuffer> m_vertexBuffers; 
+			VkBuffer m_indexBuffer;
+			std::vector<uint32_t> m_indices;
 		public: 
 			VulkanRenderer(); 
 			~VulkanRenderer(); 
@@ -168,6 +161,7 @@ namespace CE
 			int Run(); 
 			void Release();
 			VkDevice GetLogicalDevice() const { return m_logicalDevice; }
+
 			//Helper functions
 			void MapData(void* dstData, void* srcData, VkDeviceMemory& dstMapMemory, VkDeviceSize memorySize);
 			void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
@@ -177,6 +171,12 @@ namespace CE
 			void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels);
 			void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height); 
 			void GenerateMipmaps(VkImage image, int32_t texWidth, int32_t teexHeight, uint32_t mipLevels);
+			VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels);
+			size_t AddVertexBuffer(VkBuffer vertexBuffer);
+			void RemoveVertexBuffer(size_t index);
+			void SetIndices(std::vector<uint32_t> indices);
+			void SetIndexBuffer(VkBuffer indexBuffer);
+			void CreateDescriptorSet(VkImageView texImageView);
 		private: 
 			//Init functions
 			void InitWindow();
@@ -194,18 +194,13 @@ namespace CE
 			void CreateRenderPass();
 			void CreateFramebuffers();
 			void CreateCommandPool();
-			void CreateCommandBuffers();
 			void CreateSyncObjects();
 			void RecreateSwapChain();
-			void CreateVertexBuffer();
-			void CreateIndexBuffer();
 			void CreateDescriptorLayout();
 			void CreateUniformBuffer();
 			void CreateDescriptorPool();
-			void CreateDescriptorSet();
-			void CreateTextureImageView();
-			void CreateTextureSampler();
 			void CreateDepthResources();
+			void CreateCommandBuffers();
 
 			//Runtime functions
 			void DrawFrame();
@@ -226,7 +221,6 @@ namespace CE
 			uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 			VkCommandBuffer BeginSingleTimeCommand(); 
 			void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
-			VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels);
 			VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features); 
 			VkFormat FindDepthFormat();
 			bool HasStencilComponent(VkFormat format);

@@ -4,6 +4,8 @@
 
 
 CE::Rendering::CMesh::CMesh()
+	:m_vertexBuffer(VK_NULL_HANDLE)
+	,m_indexBuffer(VK_NULL_HANDLE)
 {
 
 }
@@ -47,9 +49,79 @@ void CE::Rendering::CMesh::LoadModel(const std::string& modelPath)
 			m_indices.push_back(uniqueVertices[vertex]);
 		}
 	}
+	if (m_vertices.empty())
+	{
+		return;
+	}
+	CreateVertexBuffer();
+	CreateIndexBuffer();
+	RENDERER->AddVertexBuffer(m_vertexBuffer);
+	RENDERER->SetIndexBuffer(m_indexBuffer);
+	RENDERER->SetIndices(m_indices);
+}
+
+void CE::Rendering::CMesh::ReleaseModel()
+{
+	m_vertices.clear();
+	m_indices.clear();
+	vkDestroyBuffer(RENDERER->GetLogicalDevice(), m_indexBuffer, nullptr);
+	vkFreeMemory(RENDERER->GetLogicalDevice(), m_indexBufferMemory, nullptr);
+
+	vkDestroyBuffer(RENDERER->GetLogicalDevice(), m_vertexBuffer, nullptr);
+	vkFreeMemory(RENDERER->GetLogicalDevice(), m_vertexBufferMemory, nullptr);
+}
+
+void CE::Rendering::CMesh::CreateVertexBuffer()
+{
+	
+	VkDeviceSize bufferSize = sizeof(m_vertices[0]) * m_vertices.size();
+	VkBuffer stagingBuffer;
+	VkDeviceMemory stagingBufferMemory;
+	RENDERER->CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+		stagingBuffer, stagingBufferMemory);
+
+	void* data;
+	vkMapMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
+	memcpy(data, m_vertices.data(), (size_t)bufferSize);
+	vkUnmapMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory);
+
+	RENDERER->CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+		m_vertexBuffer, m_vertexBufferMemory);
+
+	RENDERER->CopyBuffer(stagingBuffer, m_vertexBuffer, bufferSize);
+
+	vkDestroyBuffer(RENDERER->GetLogicalDevice(), stagingBuffer, nullptr);
+	vkFreeMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory, nullptr);
+}
+
+void CE::Rendering::CMesh::CreateIndexBuffer()
+{
+	VkDeviceSize bufferSize = sizeof(m_indices[0]) * m_indices.size();
+
+	VkBuffer stagingBuffer;
+	VkDeviceMemory stagingBufferMemory;
+	RENDERER->CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+		stagingBuffer, stagingBufferMemory);
+
+	void* data;
+	vkMapMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
+	memcpy(data, m_indices.data(), (size_t)bufferSize);
+	vkUnmapMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory);
+
+	RENDERER->CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+		m_indexBuffer, m_indexBufferMemory);
+
+	RENDERER->CopyBuffer(stagingBuffer, m_indexBuffer, bufferSize);
+
+	vkDestroyBuffer(RENDERER->GetLogicalDevice(), stagingBuffer, nullptr);
+	vkFreeMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory, nullptr);
 }
 
 CE::Rendering::CMesh::~CMesh()
 {
+	vkDestroyBuffer(RENDERER->GetLogicalDevice(), m_indexBuffer, nullptr);
+	vkFreeMemory(RENDERER->GetLogicalDevice(), m_indexBufferMemory, nullptr);
 
+	vkDestroyBuffer(RENDERER->GetLogicalDevice(), m_vertexBuffer, nullptr);
+	vkFreeMemory(RENDERER->GetLogicalDevice(), m_vertexBufferMemory, nullptr);
 }

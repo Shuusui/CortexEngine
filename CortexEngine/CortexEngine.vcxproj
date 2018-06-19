@@ -196,6 +196,7 @@
     <ClInclude Include="src\include\IListener.h" />
     <ClInclude Include="src\include\CLevel.h" />
     <ClInclude Include="src\include\CMesh.h" />
+    <ClInclude Include="src\include\InternalMacros.h" />
     <ClInclude Include="src\include\MessageEvent.h" />
     <ClInclude Include="src\include\MessageListener.h" />
     <ClInclude Include="src\include\MouseEvent.h" />

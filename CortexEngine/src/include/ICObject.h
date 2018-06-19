@@ -100,9 +100,10 @@ namespace CE
 		}
 		inline bool ICObject::AddComponent(Components::ICComponent* component)
 		{
-			if (component->IsUnique() && VectorBinSearch(m_components, component))
-				return false;
+			/*if (component->IsUnique() && VectorBinSearch(m_components, component))
+				return false;*/
 			m_components.push_back(component);
+			return true;
 		}
 
 		inline void ICObject::RemoveComponent(Components::ICComponent* component)

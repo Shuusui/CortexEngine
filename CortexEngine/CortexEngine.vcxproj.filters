@@ -244,5 +244,8 @@
     <ClInclude Include="src\include\VulkanCamera.h">
       <Filter>Rendering\Vulkan\Vulkan Headerfiles</Filter>
     </ClInclude>
+    <ClInclude Include="src\include\InternalMacros.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

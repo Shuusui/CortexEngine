@@ -167,6 +167,8 @@ namespace CE
 			void Init(); 
 			int Run(); 
 			void Release();
+			VkDevice& GetLogicalDevice() const { return m_logicalDevice; }
+
 		private: 
 			//Init functions
 			void InitWindow();
@@ -193,7 +195,6 @@ namespace CE
 			void CreateUniformBuffer();
 			void CreateDescriptorPool();
 			void CreateDescriptorSet();
-			void CreateTextureImage();
 			void CreateTextureImageView();
 			void CreateTextureSampler();
 			void CreateDepthResources();

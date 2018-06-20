@@ -45,8 +45,6 @@ bool CE::Core::EngineManager::InitListener()
 	DirtyEventListener* dirtyListener = new DirtyEventListener();
 	if (!dirtyListener)
 		return false; 
-
-
 	s_pEventHandler->RegisterListener(console);
 	s_pEventHandler->RegisterListener(dirtyListener);
 	return true;

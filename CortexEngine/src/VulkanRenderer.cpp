@@ -46,7 +46,7 @@ void CE::Rendering::VulkanRenderer::Release()
 
 void CE::Rendering::VulkanRenderer::MapData(void * dstData, void * srcData, VkDeviceMemory & dstMapMemory, VkDeviceSize memorySize)
 {
-	vkMapMemory(m_logicalDevice, dstMapMemory, 0, memorySize, 0, &srcData); 
+	vkMapMemory(m_logicalDevice, dstMapMemory, 0, memorySize, 0, &dstData); 
 	memcpy(dstData, srcData, static_cast<size_t>(memorySize));
 	vkUnmapMemory(m_logicalDevice, dstMapMemory);
 }
@@ -163,6 +163,8 @@ void CE::Rendering::VulkanRenderer::InitDevices()
 	CreateLogicalDevice();
 	CreateCommandPool();
 	CreateDescriptorLayout();
+	CreateUniformBuffer();
+	CreateDescriptorPool();
 }
 
 void CE::Rendering::VulkanRenderer::InitVulkan()
@@ -173,8 +175,6 @@ void CE::Rendering::VulkanRenderer::InitVulkan()
 	CreateGraphicsPipeline();
 	CreateDepthResources();
 	CreateFramebuffers();
-	CreateUniformBuffer();
-	CreateDescriptorPool();
 	CreateCommandBuffers();
 	CreateSyncObjects();
 }
@@ -1405,10 +1405,11 @@ uint32_t CE::Rendering::VulkanRenderer::FindMemoryType(uint32_t typeFilter, VkMe
 	}
 	throw std::runtime_error("failed to find suitable memory type!");
 }
-
 VKAPI_ATTR VkBool32 VKAPI_CALL CE::Rendering::VulkanRenderer::DebugCallBack(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objType, uint64_t obj, size_t location, int32_t code, const char * layerPrefix, const char * msg, void * userData)
 {
 	std::cerr << "validation layer: " << msg << std::endl;
+	//CE::Core::MessageEvent* mEvent = new CE::Core::MessageEvent(msg);
+	//CE::Core::EngineManager::GetEventHandler()->AddEvent(mEvent);
 	return VK_FALSE;
 }
 

@@ -220,3 +220,5 @@ FakesAssemblies/
 _Pvt_Extensions
 
 data/
+
+CortexEngine/errorLog\.txt

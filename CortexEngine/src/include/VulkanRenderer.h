@@ -1,5 +1,6 @@
 #pragma once
 #pragma region Internal Includes
+#include "MessageEvent.h"
 #pragma endregion 
 #pragma region External Includes
 #define GLFW_INCLUDE_VULKAN

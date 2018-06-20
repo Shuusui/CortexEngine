@@ -23,10 +23,10 @@ CE::Core::EngineParams CE::Core::EngineManager::Init()
 	if (!InitListener())
 		return params; //TODO do some Error Handling here
 	
-	
-	m_pVkRenderer->Init();
+	m_pVkRenderer->InitDevices();
 	s_pProjectManager = new CE::Core::ProjectManager("project");
 	s_pProjectManager->Init();
+	m_pVkRenderer->Init();
 
 	return m_pEngineIni->LoadIni(params);
 }

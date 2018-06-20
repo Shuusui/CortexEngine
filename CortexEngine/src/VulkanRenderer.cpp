@@ -17,7 +17,6 @@ CE::Rendering::VulkanRenderer::~VulkanRenderer()
 
 void CE::Rendering::VulkanRenderer::Init()
 {
-	InitWindow();
 	InitVulkan();
 }
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -67,9 +66,6 @@ void CE::Rendering::VulkanRenderer::Cleanup()
 	vkDestroyImageView(m_logicalDevice, m_depthImageView, nullptr);
 	vkDestroyImage(m_logicalDevice, m_depthImage, nullptr);
 	vkFreeMemory(m_logicalDevice, m_depthImageMemory, nullptr);
-
-	vkDestroySampler(m_logicalDevice, m_textureSampler, nullptr);
-
 	
 	vkDestroyDescriptorPool(m_logicalDevice, m_descriptorPool, nullptr);
 
@@ -157,19 +153,24 @@ void CE::Rendering::VulkanRenderer::CreateInstance()
 	}
 }
 
-void CE::Rendering::VulkanRenderer::InitVulkan()
+void CE::Rendering::VulkanRenderer::InitDevices()
 {
+	InitWindow();
 	CreateInstance();
 	SetupDebugCallback();
 	CreateSurface();
 	PickPhysicalDevice();
 	CreateLogicalDevice();
+	CreateCommandPool();
+	CreateDescriptorLayout();
+}
+
+void CE::Rendering::VulkanRenderer::InitVulkan()
+{
 	CreateSwapChain();
 	CreateImageViews();
 	CreateRenderPass();
-	CreateDescriptorLayout();
 	CreateGraphicsPipeline();
-	CreateCommandPool();
 	CreateDepthResources();
 	CreateFramebuffers();
 	CreateUniformBuffer();
@@ -605,7 +606,7 @@ void CE::Rendering::VulkanRenderer::CreateCommandBuffers()
 
 			vkCmdBindIndexBuffer(m_commandBuffers[i], m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-			//vkCmdBindDescriptorSets(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSet, 0, nullptr);
+			vkCmdBindDescriptorSets(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSet, 0, nullptr);
 
 			vkCmdDrawIndexed(m_commandBuffers[i], static_cast<uint32_t>(m_indices.size()), 1, 0, 0, 0);
 		}
@@ -651,7 +652,6 @@ void CE::Rendering::VulkanRenderer::RecreateSwapChain()
 	vkDeviceWaitIdle(m_logicalDevice);
 
 	CleanupSwapChain();
-
 	CreateSwapChain();
 	CreateImageViews();
 	CreateRenderPass();
@@ -712,7 +712,7 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorPool()
 	}
 }
 
-void CE::Rendering::VulkanRenderer::CreateDescriptorSet(VkImageView textureImageView)
+void CE::Rendering::VulkanRenderer::CreateDescriptorSet(VkImageView& textureImageView, VkSampler& textureSampler)
 {
 	VkDescriptorSetLayout layouts[] = { m_descriptorSetLayout };
 	VkDescriptorSetAllocateInfo allocInfo = {};
@@ -733,7 +733,7 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorSet(VkImageView textureImage
 	VkDescriptorImageInfo imageInfo = {};
 	imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 	imageInfo.imageView = textureImageView;
-	imageInfo.sampler = m_textureSampler;
+	imageInfo.sampler = textureSampler;
 
 	std::array<VkWriteDescriptorSet, 2> descriptorWrites = {};
 	descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -995,7 +995,7 @@ void CE::Rendering::VulkanRenderer::RemoveVertexBuffer(size_t index)
 void CE::Rendering::VulkanRenderer::SetIndices(std::vector<uint32_t> indices)
 {
 	m_indices = indices;
-	RecreateSwapChain();
+	//RecreateSwapChain();
 }
 
 void CE::Rendering::VulkanRenderer::SetIndexBuffer(VkBuffer indexBuffer)

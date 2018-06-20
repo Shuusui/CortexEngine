@@ -25,7 +25,7 @@ void CE::Rendering::CMaterial::ReadFile(const std::string & texturepath)
 	CreateTextureImageView();
 	CreateTextureSampler();
 
-	RENDERER->CreateDescriptorSet(m_texImageView);
+	RENDERER->CreateDescriptorSet(m_texImageView, m_texSampler);
 }
 
 void CE::Rendering::CMaterial::CreateTextureImage()

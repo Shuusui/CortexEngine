@@ -147,7 +147,6 @@ namespace CE
 			VkDeviceMemory m_uniformBufferMemory;
 			VkDescriptorPool m_descriptorPool;
 			VkDescriptorSet m_descriptorSet;
-			VkSampler m_textureSampler;
 			VkImage m_depthImage;
 			VkDeviceMemory m_depthImageMemory;
 			VkImageView m_depthImageView;
@@ -176,7 +175,8 @@ namespace CE
 			void RemoveVertexBuffer(size_t index);
 			void SetIndices(std::vector<uint32_t> indices);
 			void SetIndexBuffer(VkBuffer indexBuffer);
-			void CreateDescriptorSet(VkImageView texImageView);
+			void CreateDescriptorSet(VkImageView& texImageView, VkSampler& textureSampler);
+			void InitDevices();
 		private: 
 			//Init functions
 			void InitWindow();

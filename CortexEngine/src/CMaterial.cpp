@@ -30,7 +30,7 @@ void CE::Rendering::CMaterial::ReadFile(const std::string & texturepath)
 
 void CE::Rendering::CMaterial::CreateTextureImage()
 {
-	VkDeviceSize imageSize = m_texWidth * m_texHeight * m_texChannels;
+	VkDeviceSize imageSize = m_texWidth * m_texHeight * 4;
 
 	m_mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(m_texWidth, m_texHeight)))) + 1;
 

@@ -1,5 +1,7 @@
 #include "ProjectManager.h"
-
+#include "CRenderComponent.h"
+#include "CMesh.h"
+#include "CMaterial.h"
 
 
 void CE::Core::ProjectManager::SetInitParams(const ProjectParams & params)
@@ -23,6 +25,13 @@ CE::Core::ProjectManager::ProjectManager(const std::string & name, CLevel* pCurr
 {
 	if (!newProj)
 		LoadProjectFile();
+	else
+	{
+		if (!pCurrLevel)
+		{
+			NewLevel("level", 1024, 1024);
+		}
+	}
 }
 
 CE::Core::ProjectManager::~ProjectManager()
@@ -38,6 +47,17 @@ CE::Core::ProjectParams CE::Core::ProjectManager::LoadProjectFile()
 
 bool CE::Core::ProjectManager::Init()
 {
+	CE::Physics::Transform transform;
+	ICObject* object = new ICObject(0, "object", transform);
+	CE::Components::CRenderComponent* renderComponent = new CE::Components::CRenderComponent(0);
+	CE::Rendering::CMaterial* material = new CE::Rendering::CMaterial();
+	material->ReadFile("../assets//textures//default.jpg");
+	CE::Rendering::CMesh* mesh = new CE::Rendering::CMesh();
+	mesh->LoadModel("../assets//models//sphere.obj");
+	renderComponent->AddMesh(mesh);
+	renderComponent->AddMaterial(material);
+	object->AddComponent(renderComponent);
+	m_pCurrLevel->AddObject(object);
 	return true;
 }
 

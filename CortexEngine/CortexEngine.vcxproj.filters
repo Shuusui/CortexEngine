@@ -13,9 +13,6 @@
     <Filter Include="EventSystem\EventSystem Headerfiles\Interfaces">
       <UniqueIdentifier>{627008b2-467f-4a59-bcd3-644e5d7065f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="EventSystem\EventSystem Headerfiles\Base classes">
-      <UniqueIdentifier>{da71dcad-da35-4c27-8371-2f4930effee3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="EventSystem\EventSystem Sourcefiles">
       <UniqueIdentifier>{bd7c3039-cc0b-4a5c-b0df-2d2c2ac71e21}</UniqueIdentifier>
     </Filter>
@@ -83,6 +80,12 @@
     </Filter>
     <Filter Include="Rendering\Vulkan\Vulkan Solutionfiles">
       <UniqueIdentifier>{fbfda9b9-69a7-4a2f-85bb-ab2a8589602e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventSystem\EventSystem Headerfiles\Base class Headerfiles">
+      <UniqueIdentifier>{da71dcad-da35-4c27-8371-2f4930effee3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventSystem\EventSystem Headerfiles\Base class Sourcefiles">
+      <UniqueIdentifier>{e67cde12-cae2-4032-96f3-fc1262a9dcba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -179,10 +182,10 @@
       <Filter>EventSystem\EventSystem Headerfiles\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="src\include\MessageListener.h">
-      <Filter>EventSystem\EventSystem Headerfiles\Base classes</Filter>
+      <Filter>EventSystem\EventSystem Headerfiles\Base class Headerfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\MessageEvent.h">
-      <Filter>EventSystem\EventSystem Headerfiles\Base classes</Filter>
+      <Filter>EventSystem\EventSystem Headerfiles\Base class Headerfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\EngineManager.h">
       <Filter>Manager\Manager header files</Filter>
@@ -191,7 +194,7 @@
       <Filter>Manager\Manager header files</Filter>
     </ClInclude>
     <ClInclude Include="src\include\MouseEvent.h">
-      <Filter>EventSystem\EventSystem Headerfiles\Base classes</Filter>
+      <Filter>EventSystem\EventSystem Headerfiles\Base class Headerfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\ICComponent.h">
       <Filter>Components\Interfaces</Filter>
@@ -233,16 +236,19 @@
       <Filter>Rendering\Rendering Headerfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\DirtyEventListener.h">
-      <Filter>EventSystem\EventSystem Headerfiles\Base classes</Filter>
+      <Filter>EventSystem\EventSystem Headerfiles\Base class Headerfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\DirtyClassEvent.h">
-      <Filter>EventSystem\EventSystem Headerfiles\Base classes</Filter>
+      <Filter>EventSystem\EventSystem Headerfiles\Base class Headerfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\VulkanRenderer.h">
       <Filter>Rendering\Vulkan\Vulkan Headerfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\VulkanCamera.h">
       <Filter>Rendering\Vulkan\Vulkan Headerfiles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\InternalMacros.h">
+      <Filter>Helper</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

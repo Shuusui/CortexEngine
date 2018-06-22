@@ -4,7 +4,6 @@
 #include "CMaterial.h"
 #include "ICComponent.h"
 #include "Enums.h"
-#include "EngineManager.h"
 #pragma endregion 
 #pragma region External Includes
 #pragma endregion
@@ -21,7 +20,10 @@ namespace CE
 
 		public: 
 			CRenderComponent(const uint_fast32_t& id); 
-			void Update(); 
+			void AddMesh(Rendering::CMesh* mesh);
+			void AddMaterial(Rendering::CMaterial* mat);
+			void Update() final; 
+			void DeltaUpdate() final;
 			virtual ~CRenderComponent();
 		};
 	}

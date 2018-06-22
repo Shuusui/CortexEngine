@@ -30,8 +30,6 @@ namespace CE
 			static EventHandler* s_pEventHandler;
 			static Editor::CEditor* s_pEditor;
 			EngineIni* m_pEngineIni;
-			//Window* m_pWndClass;
-			//HWND m_wndHandle;
 			Rendering::VulkanRenderer* m_pVkRenderer;
 		public: 
 			~EngineManager() {	s_pEngineManager = nullptr;	};
@@ -90,9 +88,9 @@ CE::Core::EngineManager& CE::Core::EngineManager::GetInstance()
 
 void CE::Core::EngineManager::Release()
 {
-	s_pEngineManager->m_pVkRenderer->Release();
-	delete s_pEventHandler; 
+	delete s_pEventHandler;
 	delete s_pProjectManager;
+	s_pEngineManager->m_pVkRenderer->Release();
 	delete s_pEngineManager;
 	delete s_pEditor;
 }

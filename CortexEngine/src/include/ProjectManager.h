@@ -1,8 +1,8 @@
 #pragma once
-
 #pragma region Internal Includes
 #include "CortexStructs.h"
 #include "CLevel.h"
+#include "ICObject.h"
 #pragma endregion 
 #pragma region External Includes
 #include <string>
@@ -30,6 +30,7 @@ namespace CE
 			bool operator=(const ProjectManager&) = delete;
 			void LoadLevel(CLevel* currLevel);
 			void NewLevel(const std::string& name, const uint32_t& resX, const uint32_t& resY);
+			CLevel* Level() { return m_pCurrLevel; }
 		private:
 			
 		};

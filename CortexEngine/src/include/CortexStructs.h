@@ -37,9 +37,19 @@ namespace CE
 	{
 		struct Transform
 		{
-			Transform(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3&  scale)
+			Transform()
+				:Position(glm::vec3())
+				, Rotation(glm::vec3())
+				, Scale(glm::vec3())
 			{
 
+			}
+			Transform(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3&  scale)
+				:Position(pos)
+				,Rotation(rot)
+				,Scale(scale)
+			{
+				
 			}
 			glm::vec3 Position;
 			glm::vec3 Rotation; 

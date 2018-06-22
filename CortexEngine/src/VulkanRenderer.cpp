@@ -1,12 +1,6 @@
 #include "include\VulkanRenderer.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
-
-#define TINYOBJLOADER_IMPLEMENTATION
-#include <tiny_obj_loader.h>
-
 
 uint32_t g_modelRotation = 0;
 
@@ -23,13 +17,14 @@ CE::Rendering::VulkanRenderer::~VulkanRenderer()
 
 void CE::Rendering::VulkanRenderer::Init()
 {
-	InitWindow();
 	InitVulkan();
 }
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_W && action == GLFW_PRESS) {
 		g_modelRotation++;
+	}
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
 	}
 	
 }
@@ -51,6 +46,13 @@ void CE::Rendering::VulkanRenderer::Release()
 	Cleanup();
 }
 
+void CE::Rendering::VulkanRenderer::MapData(void * dstData, void * srcData, VkDeviceMemory & dstMapMemory, VkDeviceSize memorySize)
+{
+	vkMapMemory(m_logicalDevice, dstMapMemory, 0, memorySize, 0, &dstData); 
+	memcpy(dstData, srcData, static_cast<size_t>(memorySize));
+	vkUnmapMemory(m_logicalDevice, dstMapMemory);
+}
+
 void CE::Rendering::VulkanRenderer::InitWindow()
 {
 	glfwInit();
@@ -66,26 +68,13 @@ void CE::Rendering::VulkanRenderer::Cleanup()
 	vkDestroyImageView(m_logicalDevice, m_depthImageView, nullptr);
 	vkDestroyImage(m_logicalDevice, m_depthImage, nullptr);
 	vkFreeMemory(m_logicalDevice, m_depthImageMemory, nullptr);
-
-	vkDestroySampler(m_logicalDevice, m_textureSampler, nullptr);
-
-	vkDestroyImageView(m_logicalDevice, m_textureImageView, nullptr);
-
-	vkDestroyImage(m_logicalDevice, m_textureImage, nullptr);
-	vkFreeMemory(m_logicalDevice, m_textureImageMemory, nullptr);
-
+	
 	vkDestroyDescriptorPool(m_logicalDevice, m_descriptorPool, nullptr);
 
 	vkDestroyDescriptorSetLayout(m_logicalDevice, m_descriptorSetLayout, nullptr);
 
 	vkDestroyBuffer(m_logicalDevice, m_uniformBuffer, nullptr);
 	vkFreeMemory(m_logicalDevice, m_uniformBufferMemory, nullptr);
-
-	vkDestroyBuffer(m_logicalDevice, m_indexBuffer, nullptr);
-	vkFreeMemory(m_logicalDevice, m_indexBufferMemory, nullptr);
-
-	vkDestroyBuffer(m_logicalDevice, m_vertexBuffer, nullptr);
-	vkFreeMemory(m_logicalDevice, m_vertexBufferMemory, nullptr);
 
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 		vkDestroySemaphore(m_logicalDevice, m_renderFinishedSemaphores[i], nullptr);
@@ -166,30 +155,28 @@ void CE::Rendering::VulkanRenderer::CreateInstance()
 	}
 }
 
-void CE::Rendering::VulkanRenderer::InitVulkan()
+void CE::Rendering::VulkanRenderer::InitDevices()
 {
+	InitWindow();
 	CreateInstance();
 	SetupDebugCallback();
 	CreateSurface();
 	PickPhysicalDevice();
 	CreateLogicalDevice();
+	CreateCommandPool();
+	CreateDescriptorLayout();
+	CreateUniformBuffer();
+	CreateDescriptorPool();
+}
+
+void CE::Rendering::VulkanRenderer::InitVulkan()
+{
 	CreateSwapChain();
 	CreateImageViews();
 	CreateRenderPass();
-	CreateDescriptorLayout();
 	CreateGraphicsPipeline();
-	CreateCommandPool();
 	CreateDepthResources();
 	CreateFramebuffers();
-	CreateTextureImage();
-	CreateTextureImageView();
-	CreateTextureSampler();
-	LoadModel();
-	CreateVertexBuffer();
-	CreateIndexBuffer();
-	CreateUniformBuffer();
-	CreateDescriptorPool();
-	CreateDescriptorSet();
 	CreateCommandBuffers();
 	CreateSyncObjects();
 }
@@ -614,17 +601,20 @@ void CE::Rendering::VulkanRenderer::CreateCommandBuffers()
 
 		vkCmdBindPipeline(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
 
-		VkBuffer vertexBuffers[] = { m_vertexBuffer };
 		VkDeviceSize offsets[] = { 0 };
+		if (!m_vertexBuffers.empty())
+		{
+			vkCmdBindVertexBuffers(m_commandBuffers[i], 0, 1, m_vertexBuffers.data(), offsets);
 
-		vkCmdBindVertexBuffers(m_commandBuffers[i], 0, 1, vertexBuffers, offsets);
+			vkCmdBindIndexBuffer(m_commandBuffers[i], m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-		vkCmdBindIndexBuffer(m_commandBuffers[i], m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+			vkCmdBindDescriptorSets(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSet, 0, nullptr);
 
-		vkCmdBindDescriptorSets(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSet, 0, nullptr);
-
-		vkCmdDrawIndexed(m_commandBuffers[i], static_cast<uint32_t>(m_indices.size()), 1, 0, 0, 0);
-
+			vkCmdDrawIndexed(m_commandBuffers[i], static_cast<uint32_t>(m_indices.size()), 1, 0, 0, 0);
+		}
+		else {
+			vkCmdDraw(m_commandBuffers[i], 0, 1, 0, 0);
+		}
 		vkCmdEndRenderPass(m_commandBuffers[i]);
 
 		if (vkEndCommandBuffer(m_commandBuffers[i]) != VK_SUCCESS) {
@@ -664,7 +654,6 @@ void CE::Rendering::VulkanRenderer::RecreateSwapChain()
 	vkDeviceWaitIdle(m_logicalDevice);
 
 	CleanupSwapChain();
-
 	CreateSwapChain();
 	CreateImageViews();
 	CreateRenderPass();
@@ -672,51 +661,6 @@ void CE::Rendering::VulkanRenderer::RecreateSwapChain()
 	CreateDepthResources();
 	CreateFramebuffers();
 	CreateCommandBuffers();
-}
-
-void CE::Rendering::VulkanRenderer::CreateVertexBuffer()
-{
-	VkDeviceSize bufferSize = sizeof(m_vertices[0]) * m_vertices.size();
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-		stagingBuffer, stagingBufferMemory);
-
-	void* data;
-	vkMapMemory(m_logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, m_vertices.data(), (size_t)bufferSize);
-	vkUnmapMemory(m_logicalDevice, stagingBufferMemory);
-
-	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-		m_vertexBuffer, m_vertexBufferMemory);
-
-	CopyBuffer(stagingBuffer, m_vertexBuffer, bufferSize);
-
-	vkDestroyBuffer(m_logicalDevice, stagingBuffer, nullptr);
-	vkFreeMemory(m_logicalDevice, stagingBufferMemory, nullptr);
-}
-
-void CE::Rendering::VulkanRenderer::CreateIndexBuffer()
-{
-	VkDeviceSize bufferSize = sizeof(m_indices[0]) * m_indices.size();
-
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-		stagingBuffer, stagingBufferMemory);
-
-	void* data;
-	vkMapMemory(m_logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, m_indices.data(), (size_t)bufferSize);
-	vkUnmapMemory(m_logicalDevice, stagingBufferMemory);
-
-	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-		m_indexBuffer, m_indexBufferMemory);
-
-	CopyBuffer(stagingBuffer, m_indexBuffer, bufferSize);
-
-	vkDestroyBuffer(m_logicalDevice, stagingBuffer, nullptr);
-	vkFreeMemory(m_logicalDevice, stagingBufferMemory, nullptr);
 }
 
 void CE::Rendering::VulkanRenderer::CreateDescriptorLayout()
@@ -770,7 +714,7 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorPool()
 	}
 }
 
-void CE::Rendering::VulkanRenderer::CreateDescriptorSet()
+void CE::Rendering::VulkanRenderer::CreateDescriptorSet(VkImageView& textureImageView, VkSampler& textureSampler)
 {
 	VkDescriptorSetLayout layouts[] = { m_descriptorSetLayout };
 	VkDescriptorSetAllocateInfo allocInfo = {};
@@ -790,8 +734,8 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorSet()
 
 	VkDescriptorImageInfo imageInfo = {};
 	imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-	imageInfo.imageView = m_textureImageView;
-	imageInfo.sampler = m_textureSampler;
+	imageInfo.imageView = textureImageView;
+	imageInfo.sampler = textureSampler;
 
 	std::array<VkWriteDescriptorSet, 2> descriptorWrites = {};
 	descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -813,77 +757,6 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorSet()
 	vkUpdateDescriptorSets(m_logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 }
 
-void CE::Rendering::VulkanRenderer::CreateTextureImage()
-{
-	int texWidth, texHeight, texChannels;
-	stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-
-	VkDeviceSize imageSize = texWidth * texHeight * 4;
-
-	m_mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
-
-	if (!pixels) {
-		throw std::runtime_error("failed to load texture image!");
-	}
-
-
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-
-	CreateBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-		stagingBuffer, stagingBufferMemory);
-
-	void* data;
-	vkMapMemory(m_logicalDevice, stagingBufferMemory, 0, imageSize, 0, &data);
-	memcpy(data, pixels, static_cast<size_t>(imageSize));
-	vkUnmapMemory(m_logicalDevice, stagingBufferMemory);
-
-	stbi_image_free(pixels);
-
-	CreateImage(texWidth, texHeight, m_mipLevels, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT |VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory);
-
-	TransitionImageLayout(m_textureImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, m_mipLevels);
-	CopyBufferToImage(stagingBuffer, m_textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
-//#ifndef NDEBUG
-//	TransitionImageLayout(m_textureImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, m_mipLevels);
-//#endif
-	vkDestroyBuffer(m_logicalDevice, stagingBuffer, nullptr);
-	vkFreeMemory(m_logicalDevice, stagingBufferMemory, nullptr);
-
-	GenerateMipmaps(m_textureImage, texWidth, texHeight, m_mipLevels);
-}
-
-void CE::Rendering::VulkanRenderer::CreateTextureImageView()
-{
-	m_textureImageView = CreateImageView(m_textureImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT, m_mipLevels);
-}
-
-void CE::Rendering::VulkanRenderer::CreateTextureSampler()
-{
-	VkSamplerCreateInfo samplerInfo = {};
-	samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-	samplerInfo.magFilter = VK_FILTER_LINEAR;
-	samplerInfo.minFilter = VK_FILTER_LINEAR;
-	samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	samplerInfo.anisotropyEnable = VK_TRUE;
-	samplerInfo.maxAnisotropy = 16;
-	samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-	samplerInfo.unnormalizedCoordinates = VK_FALSE;
-	samplerInfo.compareEnable = VK_FALSE;
-	samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-	samplerInfo.mipLodBias = 0.0f;
-	samplerInfo.minLod = 0.0f;
-	samplerInfo.maxLod = static_cast<float>(m_mipLevels);
-
-	if (vkCreateSampler(m_logicalDevice, &samplerInfo, nullptr, &m_textureSampler) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create texture sampler!");
-	}
-}
-
 void CE::Rendering::VulkanRenderer::CreateDepthResources()
 {
 	VkFormat depthFormat = FindDepthFormat();
@@ -893,50 +766,9 @@ void CE::Rendering::VulkanRenderer::CreateDepthResources()
 	m_depthImageView = CreateImageView(m_depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
 
 	TransitionImageLayout(m_depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, 1);
-
-
 }
 
-void CE::Rendering::VulkanRenderer::LoadModel()
-{
-	tinyobj::attrib_t attrib;
-	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials;
-	std::string err;
 
-	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &err, MODEL_PATH.c_str())) {
-		throw std::runtime_error(err);
-	}
-
-	std::unordered_map<Vertex, uint32_t> uniqueVertices = {};
-
-	for (const auto& shape : shapes) {
-		for (const auto& index : shape.mesh.indices) {
-			Vertex vertex = {};
-
-			vertex.Pos = {
-				attrib.vertices[3 * index.vertex_index + 0],
-				attrib.vertices[3 * index.vertex_index + 1],
-				attrib.vertices[3 * index.vertex_index + 2]
-			};
-
-			vertex.TexCoord = {
-				attrib.texcoords[2 * index.texcoord_index + 0],
-				1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
-			};
-
-			vertex.Color = { 1.0f, 1.0f, 1.0f };
-
-			if (uniqueVertices.count(vertex) == 0) {
-				uniqueVertices[vertex] = static_cast<uint32_t>(m_vertices.size());
-				m_vertices.push_back(vertex);
-			}
-
-			
-			m_indices.push_back(uniqueVertices[vertex]);
-		}
-	}
-}
 
 void CE::Rendering::VulkanRenderer::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 {
@@ -1151,6 +983,28 @@ VkImageView CE::Rendering::VulkanRenderer::CreateImageView(VkImage image, VkForm
 	return imageView;
 }
 
+size_t CE::Rendering::VulkanRenderer::AddVertexBuffer(VkBuffer vertexBuffer)
+{
+	m_vertexBuffers.push_back(vertexBuffer);
+	return m_vertexBuffers.size();
+}
+
+void CE::Rendering::VulkanRenderer::RemoveVertexBuffer(size_t index)
+{
+	m_vertexBuffers.erase(m_vertexBuffers.begin() + index);
+}
+
+void CE::Rendering::VulkanRenderer::SetIndices(std::vector<uint32_t> indices)
+{
+	m_indices = indices;
+	//RecreateSwapChain();
+}
+
+void CE::Rendering::VulkanRenderer::SetIndexBuffer(VkBuffer indexBuffer)
+{
+	m_indexBuffer = indexBuffer;
+}
+
 VkFormat CE::Rendering::VulkanRenderer::FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
 {
 	for (VkFormat format : candidates) {
@@ -1325,9 +1179,9 @@ void CE::Rendering::VulkanRenderer::UpdateUniformBuffer()
 	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
 	UniformBufferObject ubo = {};
-	ubo.Model = glm::rotate(glm::mat4(1.0f), g_modelRotation+ glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.View = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.Proj = glm::perspective(glm::radians(45.0f), m_swapChainExtent.width / (float)m_swapChainExtent.height, 0.1f, 10.0f);
+	ubo.Model = glm::rotate(glm::mat4(1.0f), g_modelRotation* glm::radians(1.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	ubo.View = glm::lookAt(glm::vec3(40.0f, 40.0f, 40.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	ubo.Proj = glm::perspective(glm::radians(45.0f), m_swapChainExtent.width / (float)m_swapChainExtent.height, 0.1f, 100.0f);
 	
 	ubo.Proj[1][1] *= -1;
 
@@ -1335,6 +1189,7 @@ void CE::Rendering::VulkanRenderer::UpdateUniformBuffer()
 	vkMapMemory(m_logicalDevice, m_uniformBufferMemory, 0, sizeof(ubo), 0, &data);
 	memcpy(data, &ubo, sizeof(ubo));
 	vkUnmapMemory(m_logicalDevice, m_uniformBufferMemory);
+	
 }
 
 bool CE::Rendering::VulkanRenderer::CheckValidationLayerSupport()
@@ -1552,10 +1407,11 @@ uint32_t CE::Rendering::VulkanRenderer::FindMemoryType(uint32_t typeFilter, VkMe
 	}
 	throw std::runtime_error("failed to find suitable memory type!");
 }
-
 VKAPI_ATTR VkBool32 VKAPI_CALL CE::Rendering::VulkanRenderer::DebugCallBack(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objType, uint64_t obj, size_t location, int32_t code, const char * layerPrefix, const char * msg, void * userData)
 {
 	std::cerr << "validation layer: " << msg << std::endl;
+	//CE::Core::MessageEvent* mEvent = new CE::Core::MessageEvent(msg);
+	//CE::Core::EngineManager::GetEventHandler()->AddEvent(mEvent);
 	return VK_FALSE;
 }
 

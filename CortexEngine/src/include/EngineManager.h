@@ -89,8 +89,8 @@ CE::Core::EngineManager& CE::Core::EngineManager::GetInstance()
 void CE::Core::EngineManager::Release()
 {
 	delete s_pEventHandler;
-	s_pEngineManager->m_pVkRenderer->Release();
 	delete s_pProjectManager;
+	s_pEngineManager->m_pVkRenderer->Release();
 	delete s_pEngineManager;
 	delete s_pEditor;
 }

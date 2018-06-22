@@ -68,7 +68,7 @@ namespace CE
 
 			void Update();
 
-			virtual ~ICObject() {};
+			virtual ~ICObject();
 		};
 
 		bool ICObject::CreateSubobject(const std::string& objName, const CE::Physics::Transform& transform)

@@ -33,6 +33,9 @@ void CE::Core::CLevel::Save()
 
 CE::Core::CLevel::~CLevel()
 {
-
+	for (const auto& object : m_objects)
+	{
+		delete(object);
+	}
 }
 

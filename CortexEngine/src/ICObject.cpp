@@ -8,3 +8,15 @@ void CE::Core::ICObject::Update()
 		comp->DeltaUpdate();
 	}
 }
+
+CE::Core::ICObject::~ICObject()
+{
+	for (const auto& component: m_components)
+	{
+		delete (component);
+	}
+	for (const auto& subObject : m_subObjects)
+	{
+		delete(subObject);
+	}
+}

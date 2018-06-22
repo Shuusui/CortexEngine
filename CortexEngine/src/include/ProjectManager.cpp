@@ -51,9 +51,9 @@ bool CE::Core::ProjectManager::Init()
 	ICObject* object = new ICObject(0, "object", transform);
 	CE::Components::CRenderComponent* renderComponent = new CE::Components::CRenderComponent(0);
 	CE::Rendering::CMaterial* material = new CE::Rendering::CMaterial();
-	material->ReadFile("../assets//textures//chalet.jpg");
+	material->ReadFile("../assets//textures//default.jpg");
 	CE::Rendering::CMesh* mesh = new CE::Rendering::CMesh();
-	mesh->LoadModel("../assets//models//chalet.obj");
+	mesh->LoadModel("../assets//models//sphere.obj");
 	renderComponent->AddMesh(mesh);
 	renderComponent->AddMaterial(material);
 	object->AddComponent(renderComponent);

@@ -12,6 +12,9 @@
 
 namespace CE
 {
+	namespace Components {
+		class CRenderComponent;
+	}
 	namespace Rendering
 	{
 		class CMaterial
@@ -26,10 +29,12 @@ namespace CE
 			int m_mipLevels;
 			VkImageView m_texImageView;
 			VkSampler m_texSampler;
+			CE::Components::CRenderComponent* m_renderComponent;
 		public: 
 			CMaterial(); 
-			//reads only jpeg files at the moment
+			//reads only jpg files at the moment
 			void ReadFile(const std::string& texturepath);
+			void SetRenderComponent(CE::Components::CRenderComponent* renderComponent);
 			~CMaterial();
 		private: 
 
@@ -39,7 +44,7 @@ namespace CE
 
 			void CreateTextureSampler();
 
-
+			void CreateImageDescriptor();
 		};
 	}
 }

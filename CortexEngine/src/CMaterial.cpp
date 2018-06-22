@@ -1,7 +1,7 @@
 #include "include\CMaterial.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
-
+#include "include\CRenderComponent.h"
 
 CE::Rendering::CMaterial::CMaterial()
 	:m_pPixels(nullptr)
@@ -26,6 +26,11 @@ void CE::Rendering::CMaterial::ReadFile(const std::string & texturepath)
 	CreateTextureSampler();
 
 	RENDERER->CreateDescriptorSet(m_texImageView, m_texSampler);
+}
+
+void CE::Rendering::CMaterial::SetRenderComponent(CE::Components::CRenderComponent* renderComponent)
+{
+	m_renderComponent = renderComponent;
 }
 
 void CE::Rendering::CMaterial::CreateTextureImage()
@@ -84,6 +89,23 @@ void CE::Rendering::CMaterial::CreateTextureSampler()
 	if (vkCreateSampler(RENDERER->GetLogicalDevice(), &samplerInfo, nullptr, &m_texSampler) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create texture sampler!");
 	}
+}
+
+void CE::Rendering::CMaterial::CreateImageDescriptor()
+{
+	VkDescriptorImageInfo imageInfo = {};
+	imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+	imageInfo.imageView = m_texImageView;
+	imageInfo.sampler = m_texSampler;
+
+	VkWriteDescriptorSet descriptorWrite = {};
+	descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	descriptorWrite.dstSet = m_renderComponent->GetDescriptorSet();
+	descriptorWrite.dstBinding = 1;
+	descriptorWrite.dstArrayElement = 0;
+	descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	descriptorWrite.descriptorCount = 1;
+	descriptorWrite.pImageInfo = &imageInfo;
 }
 
 

@@ -1,6 +1,7 @@
 #include "include\CMesh.h"
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
+#include "include\CRenderComponent.h"
 
 
 CE::Rendering::CMesh::CMesh()
@@ -69,6 +70,11 @@ void CE::Rendering::CMesh::ReleaseModel()
 
 	vkDestroyBuffer(RENDERER->GetLogicalDevice(), m_vertexBuffer, nullptr);
 	vkFreeMemory(RENDERER->GetLogicalDevice(), m_vertexBufferMemory, nullptr);
+}
+
+void CE::Rendering::CMesh::SetRenderComponent(CE::Components::CRenderComponent* renderComponent)
+{
+	m_renderComponent = renderComponent;
 }
 
 void CE::Rendering::CMesh::CreateVertexBuffer()

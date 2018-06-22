@@ -11,6 +11,9 @@
 
 namespace CE
 {
+	namespace Components {
+		class CRenderComponent; 
+	}
 	namespace Rendering
 	{
 		class CMesh
@@ -22,12 +25,15 @@ namespace CE
 			VkDeviceMemory m_vertexBufferMemory; 
 			VkBuffer m_indexBuffer; 
 			VkDeviceMemory m_indexBufferMemory;
+			CE::Components::CRenderComponent* m_renderComponent;
 		public:
 			CMesh(); 
 
 			void LoadModel(const std::string& modelPath);
 
 			void ReleaseModel();
+
+			void SetRenderComponent(CE::Components::CRenderComponent* renderComponent);
 
 			~CMesh();
 		private: 

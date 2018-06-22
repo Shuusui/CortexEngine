@@ -102,7 +102,7 @@ namespace CE
 		{
 			/*if (component->IsUnique() && VectorBinSearch(m_components, component))
 				return false;*/
-			m_components.push_back(component);
+			m_components.push_back(component);			
 			return true;
 		}
 

@@ -144,7 +144,6 @@ namespace CE
 			std::vector<VkFence> m_inFlightFences;
 			size_t m_currentFrame;
 			VkDescriptorSetLayout m_descriptorSetLayout;
-			VkBuffer m_uniformBuffer; 
 			VkDeviceMemory m_uniformBufferMemory;
 			VkDescriptorPool m_descriptorPool;
 			VkDescriptorSet m_descriptorSet;
@@ -154,6 +153,8 @@ namespace CE
 			std::vector<VkBuffer> m_vertexBuffers; 
 			VkBuffer m_indexBuffer;
 			std::vector<uint32_t> m_indices;
+			std::vector<VkWriteDescriptorSet> m_descriptorWrites;
+			std::vector<VkDescriptorSetLayoutBinding> m_bindings;
 		public: 
 			VulkanRenderer(); 
 			~VulkanRenderer(); 
@@ -162,6 +163,7 @@ namespace CE
 			void Release();
 			VkDevice GetLogicalDevice() const { return m_logicalDevice; }
 
+			void UpdateDescriptorSets(VkWriteDescriptorSet& writeDescriptorSet);
 			//Helper functions
 			void MapData(void* dstData, void* srcData, VkDeviceMemory& dstMapMemory, VkDeviceSize memorySize);
 			void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
@@ -173,11 +175,13 @@ namespace CE
 			void GenerateMipmaps(VkImage image, int32_t texWidth, int32_t teexHeight, uint32_t mipLevels);
 			VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels);
 			size_t AddVertexBuffer(VkBuffer vertexBuffer);
+			void AddDescriptorLayoutBinding(VkDescriptorSetLayoutBinding binding);
 			void RemoveVertexBuffer(size_t index);
 			void SetIndices(std::vector<uint32_t> indices);
 			void SetIndexBuffer(VkBuffer indexBuffer);
-			void CreateDescriptorSet(VkImageView& texImageView, VkSampler& textureSampler);
 			void InitDevices();
+			VkDescriptorPool GetDescriptorPool() const; 
+			VkDescriptorSetLayout GetDescriptorLayout() const;
 		private: 
 			//Init functions
 			void InitWindow();
@@ -198,7 +202,6 @@ namespace CE
 			void CreateSyncObjects();
 			void RecreateSwapChain();
 			void CreateDescriptorLayout();
-			void CreateUniformBuffer();
 			void CreateDescriptorPool();
 			void CreateDepthResources();
 			void CreateCommandBuffers();

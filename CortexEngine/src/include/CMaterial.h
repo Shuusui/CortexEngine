@@ -44,6 +44,8 @@ namespace CE
 
 			void CreateTextureSampler();
 
+			void BindSampler(); 
+
 			void CreateImageDescriptor();
 		};
 	}

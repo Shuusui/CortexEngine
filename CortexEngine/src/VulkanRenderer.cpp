@@ -46,6 +46,12 @@ void CE::Rendering::VulkanRenderer::Release()
 	Cleanup();
 }
 
+void CE::Rendering::VulkanRenderer::UpdateDescriptorSets(VkWriteDescriptorSet& writeDescriptorSet)
+{
+	m_descriptorWrites.push_back(writeDescriptorSet);
+	vkUpdateDescriptorSets(m_logicalDevice, m_descriptorWrites.size(), m_descriptorWrites.data(), 0, nullptr);
+}
+
 void CE::Rendering::VulkanRenderer::MapData(void * dstData, void * srcData, VkDeviceMemory & dstMapMemory, VkDeviceSize memorySize)
 {
 	vkMapMemory(m_logicalDevice, dstMapMemory, 0, memorySize, 0, &dstData); 
@@ -72,9 +78,6 @@ void CE::Rendering::VulkanRenderer::Cleanup()
 	vkDestroyDescriptorPool(m_logicalDevice, m_descriptorPool, nullptr);
 
 	vkDestroyDescriptorSetLayout(m_logicalDevice, m_descriptorSetLayout, nullptr);
-
-	vkDestroyBuffer(m_logicalDevice, m_uniformBuffer, nullptr);
-	vkFreeMemory(m_logicalDevice, m_uniformBufferMemory, nullptr);
 
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 		vkDestroySemaphore(m_logicalDevice, m_renderFinishedSemaphores[i], nullptr);
@@ -163,10 +166,19 @@ void CE::Rendering::VulkanRenderer::InitDevices()
 	CreateSurface();
 	PickPhysicalDevice();
 	CreateLogicalDevice();
-	CreateCommandPool();
 	CreateDescriptorLayout();
-	CreateUniformBuffer();
+	CreateCommandPool();
 	CreateDescriptorPool();
+}
+
+VkDescriptorPool CE::Rendering::VulkanRenderer::GetDescriptorPool() const
+{
+	return m_descriptorPool;
+}
+
+VkDescriptorSetLayout CE::Rendering::VulkanRenderer::GetDescriptorLayout() const
+{
+	return m_descriptorSetLayout;
 }
 
 void CE::Rendering::VulkanRenderer::InitVulkan()
@@ -652,6 +664,7 @@ void CE::Rendering::VulkanRenderer::RecreateSwapChain()
 	if (width == 0 || height == 0) return;
 
 	vkDeviceWaitIdle(m_logicalDevice);
+	CreateDescriptorLayout();
 
 	CleanupSwapChain();
 	CreateSwapChain();
@@ -677,23 +690,16 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorLayout()
 	samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-	std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, samplerLayoutBinding };
 	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
-	layoutInfo.pBindings = bindings.data();
+	layoutInfo.bindingCount = static_cast<uint32_t>(m_bindings.size());
+	layoutInfo.pBindings = m_bindings.data();
 
 	if (vkCreateDescriptorSetLayout(m_logicalDevice, &layoutInfo, nullptr, &m_descriptorSetLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor set layout!");
 	}
 }
 
-void CE::Rendering::VulkanRenderer::CreateUniformBuffer()
-{
-	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-	CreateBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-		m_uniformBuffer, m_uniformBufferMemory);
-}
 
 void CE::Rendering::VulkanRenderer::CreateDescriptorPool()
 {
@@ -714,48 +720,6 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorPool()
 	}
 }
 
-void CE::Rendering::VulkanRenderer::CreateDescriptorSet(VkImageView& textureImageView, VkSampler& textureSampler)
-{
-	VkDescriptorSetLayout layouts[] = { m_descriptorSetLayout };
-	VkDescriptorSetAllocateInfo allocInfo = {};
-	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-	allocInfo.descriptorPool = m_descriptorPool;
-	allocInfo.descriptorSetCount = 1;
-	allocInfo.pSetLayouts = layouts;
-
-	if (vkAllocateDescriptorSets(m_logicalDevice, &allocInfo, &m_descriptorSet) != VK_SUCCESS) {
-		throw std::runtime_error("failed to allocate descriptor set!");
-	}
-
-	VkDescriptorBufferInfo bufferInfo = {};
-	bufferInfo.buffer = m_uniformBuffer;
-	bufferInfo.offset = 0;
-	bufferInfo.range = sizeof(UniformBufferObject);
-
-	VkDescriptorImageInfo imageInfo = {};
-	imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-	imageInfo.imageView = textureImageView;
-	imageInfo.sampler = textureSampler;
-
-	std::array<VkWriteDescriptorSet, 2> descriptorWrites = {};
-	descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWrites[0].dstSet = m_descriptorSet;
-	descriptorWrites[0].dstBinding = 0;
-	descriptorWrites[0].dstArrayElement = 0;
-	descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	descriptorWrites[0].descriptorCount = 1;
-	descriptorWrites[0].pBufferInfo = &bufferInfo;
-
-	descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWrites[1].dstSet = m_descriptorSet;
-	descriptorWrites[1].dstBinding = 1;
-	descriptorWrites[1].dstArrayElement = 0;
-	descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	descriptorWrites[1].descriptorCount = 1;
-	descriptorWrites[1].pImageInfo = &imageInfo;
-
-	vkUpdateDescriptorSets(m_logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
-}
 
 void CE::Rendering::VulkanRenderer::CreateDepthResources()
 {
@@ -987,6 +951,12 @@ size_t CE::Rendering::VulkanRenderer::AddVertexBuffer(VkBuffer vertexBuffer)
 {
 	m_vertexBuffers.push_back(vertexBuffer);
 	return m_vertexBuffers.size();
+}
+
+void CE::Rendering::VulkanRenderer::AddDescriptorLayoutBinding(VkDescriptorSetLayoutBinding binding)
+{
+	m_bindings.push_back(binding);
+	CreateDescriptorLayout();
 }
 
 void CE::Rendering::VulkanRenderer::RemoveVertexBuffer(size_t index)

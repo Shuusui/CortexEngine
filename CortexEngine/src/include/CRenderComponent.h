@@ -20,6 +20,8 @@ namespace CE
 			Rendering::CMesh* m_mesh;
 			Rendering::CMaterial* m_material;
 			VkDescriptorSet m_descriptorSet;
+			VkBuffer m_uniformBuffer;
+			VkDeviceMemory m_uniformBufferMemory;	
 		public: 
 			CRenderComponent(const uint_fast32_t& id); 
 			void AddMesh(Rendering::CMesh* mesh);
@@ -28,6 +30,9 @@ namespace CE
 			void DeltaUpdate() final;
 			VkDescriptorSet GetDescriptorSet() const { return m_descriptorSet; }
 			void AllocateDescriptorSet();
+			void CreateUniformBuffer();
+			void CreateUniformBufferWrite();
+			void BindUniformBuffer();
 			virtual ~CRenderComponent();
 		};
 	}

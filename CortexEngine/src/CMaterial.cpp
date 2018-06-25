@@ -21,16 +21,15 @@ void CE::Rendering::CMaterial::ReadFile(const std::string & texturepath)
 	m_pPixels = stbi_load(texturepath.c_str(), &m_texWidth, &m_texHeight, &m_texChannels, STBI_rgb_alpha);
 	if (!m_pPixels)
 		return;
-	CreateTextureImage();
-	CreateTextureImageView();
-	CreateTextureSampler();
-
-	RENDERER->CreateDescriptorSet(m_texImageView, m_texSampler);
 }
 
 void CE::Rendering::CMaterial::SetRenderComponent(CE::Components::CRenderComponent* renderComponent)
 {
 	m_renderComponent = renderComponent;
+	CreateTextureImage();
+	CreateTextureImageView();
+	CreateTextureSampler();
+
 }
 
 void CE::Rendering::CMaterial::CreateTextureImage()
@@ -91,6 +90,17 @@ void CE::Rendering::CMaterial::CreateTextureSampler()
 	}
 }
 
+void CE::Rendering::CMaterial::BindSampler()
+{
+	VkDescriptorSetLayoutBinding samplerLayoutBinding = {};
+	samplerLayoutBinding.binding = 1;
+	samplerLayoutBinding.descriptorCount = 1;
+	samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+	RENDERER->AddDescriptorLayoutBinding(samplerLayoutBinding);
+}
+
 void CE::Rendering::CMaterial::CreateImageDescriptor()
 {
 	VkDescriptorImageInfo imageInfo = {};
@@ -106,6 +116,9 @@ void CE::Rendering::CMaterial::CreateImageDescriptor()
 	descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	descriptorWrite.descriptorCount = 1;
 	descriptorWrite.pImageInfo = &imageInfo;
+
+	BindSampler();
+	RENDERER->UpdateDescriptorSets(descriptorWrite);
 }
 
 

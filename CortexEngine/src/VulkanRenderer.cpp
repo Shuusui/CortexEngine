@@ -181,6 +181,11 @@ VkDescriptorSetLayout CE::Rendering::VulkanRenderer::GetDescriptorLayout() const
 	return m_descriptorSetLayout;
 }
 
+void CE::Rendering::VulkanRenderer::AddDescriptorSet(VkDescriptorSet descriptorSet)
+{
+	m_descritorSets.push_back(descriptorSet);
+}
+
 void CE::Rendering::VulkanRenderer::InitVulkan()
 {
 	CreateSwapChain();
@@ -620,7 +625,7 @@ void CE::Rendering::VulkanRenderer::CreateCommandBuffers()
 
 			vkCmdBindIndexBuffer(m_commandBuffers[i], m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-			vkCmdBindDescriptorSets(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSet, 0, nullptr);
+			vkCmdBindDescriptorSets(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, m_descritorSets.data(), 0, nullptr);
 
 			vkCmdDrawIndexed(m_commandBuffers[i], static_cast<uint32_t>(m_indices.size()), 1, 0, 0, 0);
 		}
@@ -690,10 +695,12 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorLayout()
 	samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
+
+	std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, samplerLayoutBinding };
 	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	layoutInfo.bindingCount = static_cast<uint32_t>(m_bindings.size());
-	layoutInfo.pBindings = m_bindings.data();
+	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+	layoutInfo.pBindings = bindings.data();
 
 	if (vkCreateDescriptorSetLayout(m_logicalDevice, &layoutInfo, nullptr, &m_descriptorSetLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor set layout!");

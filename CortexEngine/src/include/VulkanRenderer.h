@@ -146,7 +146,7 @@ namespace CE
 			VkDescriptorSetLayout m_descriptorSetLayout;
 			VkDeviceMemory m_uniformBufferMemory;
 			VkDescriptorPool m_descriptorPool;
-			VkDescriptorSet m_descriptorSet;
+			std::vector<VkDescriptorSet> m_descritorSets;
 			VkImage m_depthImage;
 			VkDeviceMemory m_depthImageMemory;
 			VkImageView m_depthImageView;
@@ -182,6 +182,7 @@ namespace CE
 			void InitDevices();
 			VkDescriptorPool GetDescriptorPool() const; 
 			VkDescriptorSetLayout GetDescriptorLayout() const;
+			void AddDescriptorSet(VkDescriptorSet descriptorSet);
 		private: 
 			//Init functions
 			void InitWindow();

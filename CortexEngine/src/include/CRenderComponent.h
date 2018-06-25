@@ -29,6 +29,7 @@ namespace CE
 			void Update() final; 
 			void DeltaUpdate() final;
 			VkDescriptorSet GetDescriptorSet() const { return m_descriptorSet; }
+			void Init();
 			void AllocateDescriptorSet();
 			void CreateUniformBuffer();
 			void CreateUniformBufferWrite();

@@ -50,6 +50,7 @@ bool CE::Core::ProjectManager::Init()
 	CE::Physics::Transform transform;
 	ICObject* object = new ICObject(0, "object", transform);
 	CE::Components::CRenderComponent* renderComponent = new CE::Components::CRenderComponent(0);
+	renderComponent->Init();
 	CE::Rendering::CMaterial* material = new CE::Rendering::CMaterial();
 	material->ReadFile("../assets//textures//default.jpg");
 	CE::Rendering::CMesh* mesh = new CE::Rendering::CMesh();

@@ -88,6 +88,7 @@ void CE::Rendering::CMaterial::CreateTextureSampler()
 	if (vkCreateSampler(RENDERER->GetLogicalDevice(), &samplerInfo, nullptr, &m_texSampler) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create texture sampler!");
 	}
+	CreateImageDescriptor();
 }
 
 void CE::Rendering::CMaterial::BindSampler()
@@ -98,7 +99,7 @@ void CE::Rendering::CMaterial::BindSampler()
 	samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-	RENDERER->AddDescriptorLayoutBinding(samplerLayoutBinding);
+	//RENDERER->AddDescriptorLayoutBinding(samplerLayoutBinding);
 }
 
 void CE::Rendering::CMaterial::CreateImageDescriptor()
@@ -117,7 +118,7 @@ void CE::Rendering::CMaterial::CreateImageDescriptor()
 	descriptorWrite.descriptorCount = 1;
 	descriptorWrite.pImageInfo = &imageInfo;
 
-	BindSampler();
+	//BindSampler();
 	RENDERER->UpdateDescriptorSets(descriptorWrite);
 }
 

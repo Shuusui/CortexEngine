@@ -6,8 +6,6 @@ CE::Components::CRenderComponent::CRenderComponent(const uint_fast32_t& id)
 	,m_material(nullptr)
 	,m_mesh(nullptr)
 {
-	CreateUniformBuffer();
-	AllocateDescriptorSet();
 }
 
 void CE::Components::CRenderComponent::AddMesh(Rendering::CMesh * mesh)
@@ -32,6 +30,12 @@ void CE::Components::CRenderComponent::DeltaUpdate()
 }
 
 
+void CE::Components::CRenderComponent::Init()
+{
+	AllocateDescriptorSet();
+	CreateUniformBuffer();
+}
+
 void CE::Components::CRenderComponent::AllocateDescriptorSet()
 {
 	VkDescriptorSetLayout layouts[] = { RENDERER->GetDescriptorLayout() };
@@ -44,6 +48,7 @@ void CE::Components::CRenderComponent::AllocateDescriptorSet()
 	if (vkAllocateDescriptorSets(RENDERER->GetLogicalDevice(), &allocInfo, &m_descriptorSet) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate descriptor set!");
 	}
+	RENDERER->AddDescriptorSet(m_descriptorSet);
 }
 
 void CE::Components::CRenderComponent::CreateUniformBuffer()
@@ -82,7 +87,7 @@ void CE::Components::CRenderComponent::BindUniformBuffer()
 	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
-	RENDERER->AddDescriptorLayoutBinding(uboLayoutBinding);
+	//RENDERER->AddDescriptorLayoutBinding(uboLayoutBinding);
 }
 
 CE::Components::CRenderComponent::~CRenderComponent()

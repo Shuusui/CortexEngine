@@ -18,9 +18,9 @@ CE::Rendering::CMaterial::CMaterial()
 void CE::Rendering::CMaterial::AddNewTexture(const std::string & texturePath)
 {
 	m_diffTexData = ReadFile(texturePath);
-	CreateTextureImage();
-	CreateTextureImageView(); 
-	CreateTextureSampler();
+	//CreateTextureImage();
+	//CreateTextureImageView(); 
+	//CreateTextureSampler();
 }
 
 CE::Rendering::TexData CE::Rendering::CMaterial::ReadFile(const std::string & texturepath)
@@ -28,7 +28,7 @@ CE::Rendering::TexData CE::Rendering::CMaterial::ReadFile(const std::string & te
 	struct TexData data = {};
 	data.Pixels = stbi_load(texturepath.c_str(), &data.TexWidth, &data.TexHeight, &data.TexChannels, STBI_rgb_alpha);
 	if (!data.Pixels)
-		return;
+		return data; //TODO return a valid null value
 	return data;
 }
 

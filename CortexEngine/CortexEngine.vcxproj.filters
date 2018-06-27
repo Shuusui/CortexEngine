@@ -146,6 +146,9 @@
     <ClCompile Include="src\VulkanRenderer.cpp">
       <Filter>Rendering\Vulkan\Vulkan Solutionfiles</Filter>
     </ClCompile>
+    <ClCompile Include="src\ICComponent.cpp">
+      <Filter>Components\Interfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\ICObject.h">

@@ -31,6 +31,8 @@ namespace CE
 			void LoadLevel(CLevel* currLevel);
 			void NewLevel(const std::string& name, const uint32_t& resX, const uint32_t& resY);
 			CLevel* Level() { return m_pCurrLevel; }
+			void Update() { m_pCurrLevel->Update(); }
+			void Release();
 		private:
 			
 		};

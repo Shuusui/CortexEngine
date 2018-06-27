@@ -1,8 +1,4 @@
 #include "include\VulkanRenderer.h"
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-
-uint32_t g_modelRotation = 0;
 
 
 CE::Rendering::VulkanRenderer::VulkanRenderer()
@@ -22,7 +18,6 @@ void CE::Rendering::VulkanRenderer::Init()
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_W && action == GLFW_PRESS) {
-		g_modelRotation++;
 	}
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
 	}
@@ -33,7 +28,6 @@ int CE::Rendering::VulkanRenderer::Run()
 {
 	glfwPollEvents();
 	glfwSetKeyCallback(m_pWindow, KeyCallback);
-	UpdateUniformBuffer();
 	DrawFrame();
 	return glfwWindowShouldClose(m_pWindow);
 }
@@ -44,6 +38,12 @@ void CE::Rendering::VulkanRenderer::Release()
 	vkDeviceWaitIdle(m_logicalDevice);
 	CleanupSwapChain();
 	Cleanup();
+}
+
+void CE::Rendering::VulkanRenderer::UpdateDescriptorSets(VkWriteDescriptorSet writeDescriptorSet)
+{
+	m_descriptorWrites.push_back(writeDescriptorSet);
+	vkUpdateDescriptorSets(m_logicalDevice, m_descriptorWrites.size(), m_descriptorWrites.data(), 0, nullptr);
 }
 
 void CE::Rendering::VulkanRenderer::MapData(void * dstData, void * srcData, VkDeviceMemory & dstMapMemory, VkDeviceSize memorySize)
@@ -65,6 +65,7 @@ void CE::Rendering::VulkanRenderer::InitWindow()
 
 void CE::Rendering::VulkanRenderer::Cleanup()
 {
+
 	vkDestroyImageView(m_logicalDevice, m_depthImageView, nullptr);
 	vkDestroyImage(m_logicalDevice, m_depthImage, nullptr);
 	vkFreeMemory(m_logicalDevice, m_depthImageMemory, nullptr);
@@ -72,9 +73,6 @@ void CE::Rendering::VulkanRenderer::Cleanup()
 	vkDestroyDescriptorPool(m_logicalDevice, m_descriptorPool, nullptr);
 
 	vkDestroyDescriptorSetLayout(m_logicalDevice, m_descriptorSetLayout, nullptr);
-
-	vkDestroyBuffer(m_logicalDevice, m_uniformBuffer, nullptr);
-	vkFreeMemory(m_logicalDevice, m_uniformBufferMemory, nullptr);
 
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 		vkDestroySemaphore(m_logicalDevice, m_renderFinishedSemaphores[i], nullptr);
@@ -163,10 +161,29 @@ void CE::Rendering::VulkanRenderer::InitDevices()
 	CreateSurface();
 	PickPhysicalDevice();
 	CreateLogicalDevice();
-	CreateCommandPool();
 	CreateDescriptorLayout();
-	CreateUniformBuffer();
+	CreateCommandPool();
 	CreateDescriptorPool();
+}
+
+VkDescriptorPool CE::Rendering::VulkanRenderer::GetDescriptorPool() const
+{
+	return m_descriptorPool;
+}
+
+VkDescriptorSetLayout CE::Rendering::VulkanRenderer::GetDescriptorLayout() const
+{
+	return m_descriptorSetLayout;
+}
+
+void CE::Rendering::VulkanRenderer::AddDescriptorSet(VkDescriptorSet descriptorSet)
+{
+	m_descritorSets.push_back(descriptorSet);
+}
+
+VkExtent2D CE::Rendering::VulkanRenderer::GetExtent() const
+{
+	return m_swapChainExtent;
 }
 
 void CE::Rendering::VulkanRenderer::InitVulkan()
@@ -608,7 +625,7 @@ void CE::Rendering::VulkanRenderer::CreateCommandBuffers()
 
 			vkCmdBindIndexBuffer(m_commandBuffers[i], m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-			vkCmdBindDescriptorSets(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSet, 0, nullptr);
+			vkCmdBindDescriptorSets(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, m_descritorSets.data(), 0, nullptr);
 
 			vkCmdDrawIndexed(m_commandBuffers[i], static_cast<uint32_t>(m_indices.size()), 1, 0, 0, 0);
 		}
@@ -652,6 +669,7 @@ void CE::Rendering::VulkanRenderer::RecreateSwapChain()
 	if (width == 0 || height == 0) return;
 
 	vkDeviceWaitIdle(m_logicalDevice);
+	CreateDescriptorLayout();
 
 	CleanupSwapChain();
 	CreateSwapChain();
@@ -677,6 +695,7 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorLayout()
 	samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
+
 	std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, samplerLayoutBinding };
 	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -688,12 +707,6 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorLayout()
 	}
 }
 
-void CE::Rendering::VulkanRenderer::CreateUniformBuffer()
-{
-	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-	CreateBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-		m_uniformBuffer, m_uniformBufferMemory);
-}
 
 void CE::Rendering::VulkanRenderer::CreateDescriptorPool()
 {
@@ -714,48 +727,6 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorPool()
 	}
 }
 
-void CE::Rendering::VulkanRenderer::CreateDescriptorSet(VkImageView& textureImageView, VkSampler& textureSampler)
-{
-	VkDescriptorSetLayout layouts[] = { m_descriptorSetLayout };
-	VkDescriptorSetAllocateInfo allocInfo = {};
-	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-	allocInfo.descriptorPool = m_descriptorPool;
-	allocInfo.descriptorSetCount = 1;
-	allocInfo.pSetLayouts = layouts;
-
-	if (vkAllocateDescriptorSets(m_logicalDevice, &allocInfo, &m_descriptorSet) != VK_SUCCESS) {
-		throw std::runtime_error("failed to allocate descriptor set!");
-	}
-
-	VkDescriptorBufferInfo bufferInfo = {};
-	bufferInfo.buffer = m_uniformBuffer;
-	bufferInfo.offset = 0;
-	bufferInfo.range = sizeof(UniformBufferObject);
-
-	VkDescriptorImageInfo imageInfo = {};
-	imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-	imageInfo.imageView = textureImageView;
-	imageInfo.sampler = textureSampler;
-
-	std::array<VkWriteDescriptorSet, 2> descriptorWrites = {};
-	descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWrites[0].dstSet = m_descriptorSet;
-	descriptorWrites[0].dstBinding = 0;
-	descriptorWrites[0].dstArrayElement = 0;
-	descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	descriptorWrites[0].descriptorCount = 1;
-	descriptorWrites[0].pBufferInfo = &bufferInfo;
-
-	descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWrites[1].dstSet = m_descriptorSet;
-	descriptorWrites[1].dstBinding = 1;
-	descriptorWrites[1].dstArrayElement = 0;
-	descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	descriptorWrites[1].descriptorCount = 1;
-	descriptorWrites[1].pImageInfo = &imageInfo;
-
-	vkUpdateDescriptorSets(m_logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
-}
 
 void CE::Rendering::VulkanRenderer::CreateDepthResources()
 {
@@ -989,6 +960,12 @@ size_t CE::Rendering::VulkanRenderer::AddVertexBuffer(VkBuffer vertexBuffer)
 	return m_vertexBuffers.size();
 }
 
+void CE::Rendering::VulkanRenderer::AddDescriptorLayoutBinding(VkDescriptorSetLayoutBinding binding)
+{
+	m_bindings.push_back(binding);
+	CreateDescriptorLayout();
+}
+
 void CE::Rendering::VulkanRenderer::RemoveVertexBuffer(size_t index)
 {
 	m_vertexBuffers.erase(m_vertexBuffers.begin() + index);
@@ -1171,26 +1148,7 @@ void CE::Rendering::VulkanRenderer::DrawFrame()
 	m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
-void CE::Rendering::VulkanRenderer::UpdateUniformBuffer()
-{
-	static auto startTime = std::chrono::high_resolution_clock::now();
 
-	auto currentTime = std::chrono::high_resolution_clock::now();
-	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
-	UniformBufferObject ubo = {};
-	ubo.Model = glm::rotate(glm::mat4(1.0f), g_modelRotation* glm::radians(1.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.View = glm::lookAt(glm::vec3(40.0f, 40.0f, 40.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.Proj = glm::perspective(glm::radians(45.0f), m_swapChainExtent.width / (float)m_swapChainExtent.height, 0.1f, 100.0f);
-	
-	ubo.Proj[1][1] *= -1;
-
-	void* data;
-	vkMapMemory(m_logicalDevice, m_uniformBufferMemory, 0, sizeof(ubo), 0, &data);
-	memcpy(data, &ubo, sizeof(ubo));
-	vkUnmapMemory(m_logicalDevice, m_uniformBufferMemory);
-	
-}
 
 bool CE::Rendering::VulkanRenderer::CheckValidationLayerSupport()
 {

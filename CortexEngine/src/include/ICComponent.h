@@ -9,8 +9,12 @@
 
 namespace CE
 {
+	namespace Core {
+		class ICObject;
+	}
 	namespace Components
 	{
+
 		class ICComponent
 		{
 		private: 
@@ -18,6 +22,9 @@ namespace CE
 			std::string m_name;
 			bool m_bUnique;
 			Enums::EComponentType m_componentType;
+		protected:
+			CE::Core::ICObject* m_obj;
+
 		public:
 			ICComponent(const uint_fast32_t& id, const Enums::EComponentType& compType, const bool& unique = false) :m_ID(id), m_bUnique(unique), m_componentType(compType) {};
 
@@ -27,9 +34,13 @@ namespace CE
 
 			inline bool IsUnique() const { return m_bUnique; }
 
+			void AttachOnObject(CE::Core::ICObject* obj);
+
 			virtual void Update() = 0; 
 
 			virtual void DeltaUpdate() = 0;
+
+			virtual void Release() = 0;
 		};
 	}
 }

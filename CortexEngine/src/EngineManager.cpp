@@ -61,6 +61,7 @@ void CE::Core::EngineManager::Run()
 			std::cerr << e.what() << std::endl;
 			return;
 		}
+		s_pProjectManager->Update();
 		s_pEventHandler->Update();
 	}
 	EngineManager::Release();

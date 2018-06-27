@@ -162,6 +162,7 @@
     <ClCompile Include="src\EngineIni.cpp" />
     <ClCompile Include="src\EngineManager.cpp" />
     <ClCompile Include="src\EventHandler.cpp" />
+    <ClCompile Include="src\ICComponent.cpp" />
     <ClCompile Include="src\ICObject.cpp" />
     <ClCompile Include="src\IEvent.cpp" />
     <ClCompile Include="src\include\ProjectManager.cpp" />

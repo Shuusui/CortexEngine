@@ -36,7 +36,11 @@ namespace CE
 
 			void RemoveObject(const uint32_t& index);
 
+			void Update() { for (ICObject* object : m_objects) { object->Update(); } }
+
 			void Save();
+
+			void Release();
 
 			~CLevel();
 

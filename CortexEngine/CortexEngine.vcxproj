@@ -210,6 +210,10 @@
     <ClInclude Include="src\include\VulkanRenderer.h" />
     <ClInclude Include="src\include\Window.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\assets\shaders\shader.frag" />
+    <None Include="..\assets\shaders\shader.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

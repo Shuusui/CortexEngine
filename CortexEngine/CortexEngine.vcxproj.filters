@@ -87,6 +87,9 @@
     <Filter Include="EventSystem\EventSystem Headerfiles\Base class Sourcefiles">
       <UniqueIdentifier>{e67cde12-cae2-4032-96f3-fc1262a9dcba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rendering\Shader">
+      <UniqueIdentifier>{3e83515a-6f79-4f77-b789-c42a481d55cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\WinMain.cpp">
@@ -253,5 +256,13 @@
     <ClInclude Include="src\include\InternalMacros.h">
       <Filter>Helper</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\assets\shaders\shader.frag">
+      <Filter>Rendering\Shader</Filter>
+    </None>
+    <None Include="..\assets\shaders\shader.vert">
+      <Filter>Rendering\Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

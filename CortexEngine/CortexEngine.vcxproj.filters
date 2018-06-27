@@ -152,6 +152,12 @@
     <ClCompile Include="src\ICComponent.cpp">
       <Filter>Components\Interfaces</Filter>
     </ClCompile>
+    <ClCompile Include="src\VulkanCamera.cpp">
+      <Filter>Rendering\Vulkan\Vulkan Solutionfiles</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TimeHandler.cpp">
+      <Filter>Core\CoreSourcefiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\ICObject.h">
@@ -255,6 +261,9 @@
     </ClInclude>
     <ClInclude Include="src\include\InternalMacros.h">
       <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\TimeHandler.h">
+      <Filter>Core\CoreHeaderfiles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

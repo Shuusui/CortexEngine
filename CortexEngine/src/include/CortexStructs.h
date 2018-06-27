@@ -4,6 +4,7 @@
 #pragma endregion 
 #pragma region External Includes
 #include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
 #include <string>
 #pragma endregion 
 
@@ -58,9 +59,10 @@ namespace CE
 	}
 	namespace Rendering
 	{
-		struct MeshData
-		{
-
+		struct UniformBufferObject {
+			glm::mat4 Model;
+			glm::mat4 View;
+			glm::mat4 Proj;
 		};
 	}
 }

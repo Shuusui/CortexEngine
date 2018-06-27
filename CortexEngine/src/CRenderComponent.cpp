@@ -9,6 +9,7 @@ CE::Components::CRenderComponent::CRenderComponent(const uint_fast32_t& id)
 	:ICComponent(id, Enums::EComponentType::Render, true)
 	,m_material(nullptr)
 	,m_mesh(nullptr)
+	, m_modelMat(1)
 {
 }
 
@@ -112,8 +113,7 @@ void CE::Components::CRenderComponent::UpdateUniformBuffer()
 
 	CE::Rendering::UniformBufferObject ubo = {};
 	ubo.Model = glm::rotate(glm::mat4(1.0f), time* glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.View = glm::lookAt(glm::vec3(40.0f, 40.0f, 40.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.Proj = glm::perspective(glm::radians(45.0f), RENDERER->GetExtent().width/ (float)RENDERER->GetExtent().height, 0.1f, 100.0f);
+	RENDERER->GetCamera()->ComputeMatrix(ubo);
 
 	ubo.Proj[1][1] *= -1;
 
@@ -121,5 +121,10 @@ void CE::Components::CRenderComponent::UpdateUniformBuffer()
 	vkMapMemory(RENDERER->GetLogicalDevice(), m_uniformBufferMemory, 0, sizeof(ubo), 0, &data);
 	memcpy(data, &ubo, sizeof(ubo));
 	vkUnmapMemory(RENDERER->GetLogicalDevice(), m_uniformBufferMemory);
+
+}
+
+void CE::Components::CRenderComponent::SetModelMatrix()
+{
 
 }

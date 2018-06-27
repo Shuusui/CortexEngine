@@ -4,6 +4,7 @@ CE::Core::EngineManager* CE::Core::EngineManager::s_pEngineManager = nullptr;
 CE::Core::EventHandler* CE::Core::EngineManager::s_pEventHandler = nullptr;
 CE::Core::ProjectManager* CE::Core::EngineManager::s_pProjectManager = nullptr;
 CE::Editor::CEditor* CE::Core::EngineManager::s_pEditor = nullptr;
+CE::Core::TimeHandler* CE::Core::EngineManager::s_pTimeHandler = nullptr;
 
 CE::Core::EngineParams CE::Core::EngineManager::Init()
 {
@@ -23,6 +24,7 @@ CE::Core::EngineParams CE::Core::EngineManager::Init()
 	if (!InitListener())
 		return params; //TODO do some Error Handling here
 	
+	s_pTimeHandler = new CE::Core::TimeHandler();
 	m_pVkRenderer->InitDevices();
 	s_pProjectManager = new CE::Core::ProjectManager("project");
 	s_pProjectManager->Init();
@@ -54,6 +56,7 @@ void CE::Core::EngineManager::Run()
 	int shouldClose = 0;
 	while (!shouldClose)
 	{
+		s_pTimeHandler->Update();
 		try {
 			shouldClose = m_pVkRenderer->Run();
 		}

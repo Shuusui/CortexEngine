@@ -16,5 +16,12 @@ namespace CE
 		{
 			Message
 		};
+		enum class EDirection
+		{
+			Forward, 
+			Backward, 
+			Left, 
+			Right
+		};
 	};
 }

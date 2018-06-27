@@ -1,8 +1,4 @@
 #include "include\VulkanRenderer.h"
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-
-uint32_t g_modelRotation = 0;
 
 
 CE::Rendering::VulkanRenderer::VulkanRenderer()
@@ -22,7 +18,6 @@ void CE::Rendering::VulkanRenderer::Init()
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_W && action == GLFW_PRESS) {
-		g_modelRotation++;
 	}
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
 	}
@@ -33,7 +28,6 @@ int CE::Rendering::VulkanRenderer::Run()
 {
 	glfwPollEvents();
 	glfwSetKeyCallback(m_pWindow, KeyCallback);
-	UpdateUniformBuffer();
 	DrawFrame();
 	return glfwWindowShouldClose(m_pWindow);
 }
@@ -46,7 +40,7 @@ void CE::Rendering::VulkanRenderer::Release()
 	Cleanup();
 }
 
-void CE::Rendering::VulkanRenderer::UpdateDescriptorSets(VkWriteDescriptorSet& writeDescriptorSet)
+void CE::Rendering::VulkanRenderer::UpdateDescriptorSets(VkWriteDescriptorSet writeDescriptorSet)
 {
 	m_descriptorWrites.push_back(writeDescriptorSet);
 	vkUpdateDescriptorSets(m_logicalDevice, m_descriptorWrites.size(), m_descriptorWrites.data(), 0, nullptr);
@@ -71,6 +65,7 @@ void CE::Rendering::VulkanRenderer::InitWindow()
 
 void CE::Rendering::VulkanRenderer::Cleanup()
 {
+
 	vkDestroyImageView(m_logicalDevice, m_depthImageView, nullptr);
 	vkDestroyImage(m_logicalDevice, m_depthImage, nullptr);
 	vkFreeMemory(m_logicalDevice, m_depthImageMemory, nullptr);
@@ -184,6 +179,11 @@ VkDescriptorSetLayout CE::Rendering::VulkanRenderer::GetDescriptorLayout() const
 void CE::Rendering::VulkanRenderer::AddDescriptorSet(VkDescriptorSet descriptorSet)
 {
 	m_descritorSets.push_back(descriptorSet);
+}
+
+VkExtent2D CE::Rendering::VulkanRenderer::GetExtent() const
+{
+	return m_swapChainExtent;
 }
 
 void CE::Rendering::VulkanRenderer::InitVulkan()
@@ -1148,26 +1148,7 @@ void CE::Rendering::VulkanRenderer::DrawFrame()
 	m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
-void CE::Rendering::VulkanRenderer::UpdateUniformBuffer()
-{
-	static auto startTime = std::chrono::high_resolution_clock::now();
 
-	auto currentTime = std::chrono::high_resolution_clock::now();
-	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
-	UniformBufferObject ubo = {};
-	ubo.Model = glm::rotate(glm::mat4(1.0f), g_modelRotation* glm::radians(1.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.View = glm::lookAt(glm::vec3(40.0f, 40.0f, 40.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.Proj = glm::perspective(glm::radians(45.0f), m_swapChainExtent.width / (float)m_swapChainExtent.height, 0.1f, 100.0f);
-	
-	ubo.Proj[1][1] *= -1;
-
-	void* data;
-	vkMapMemory(m_logicalDevice, m_uniformBufferMemory, 0, sizeof(ubo), 0, &data);
-	memcpy(data, &ubo, sizeof(ubo));
-	vkUnmapMemory(m_logicalDevice, m_uniformBufferMemory);
-	
-}
 
 bool CE::Rendering::VulkanRenderer::CheckValidationLayerSupport()
 {

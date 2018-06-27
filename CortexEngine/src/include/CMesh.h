@@ -31,7 +31,7 @@ namespace CE
 
 			void LoadModel(const std::string& modelPath);
 
-			void ReleaseModel();
+			void Release();
 
 			void SetRenderComponent(CE::Components::CRenderComponent* renderComponent);
 

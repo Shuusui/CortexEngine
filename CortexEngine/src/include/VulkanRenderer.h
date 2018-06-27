@@ -144,14 +144,13 @@ namespace CE
 			std::vector<VkFence> m_inFlightFences;
 			size_t m_currentFrame;
 			VkDescriptorSetLayout m_descriptorSetLayout;
-			VkDeviceMemory m_uniformBufferMemory;
 			VkDescriptorPool m_descriptorPool;
 			std::vector<VkDescriptorSet> m_descritorSets;
 			VkImage m_depthImage;
 			VkDeviceMemory m_depthImageMemory;
 			VkImageView m_depthImageView;
-			std::vector<VkBuffer> m_vertexBuffers; 
-			VkBuffer m_indexBuffer;
+			std::vector<VkBuffer> m_vertexBuffers;  //TODO: Not deleted yet
+			VkBuffer m_indexBuffer; // TODO: Not deleted yet
 			std::vector<uint32_t> m_indices;
 			std::vector<VkWriteDescriptorSet> m_descriptorWrites;
 			std::vector<VkDescriptorSetLayoutBinding> m_bindings;
@@ -163,7 +162,7 @@ namespace CE
 			void Release();
 			VkDevice GetLogicalDevice() const { return m_logicalDevice; }
 
-			void UpdateDescriptorSets(VkWriteDescriptorSet& writeDescriptorSet);
+			void UpdateDescriptorSets(VkWriteDescriptorSet writeDescriptorSet);
 			//Helper functions
 			void MapData(void* dstData, void* srcData, VkDeviceMemory& dstMapMemory, VkDeviceSize memorySize);
 			void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
@@ -183,6 +182,7 @@ namespace CE
 			VkDescriptorPool GetDescriptorPool() const; 
 			VkDescriptorSetLayout GetDescriptorLayout() const;
 			void AddDescriptorSet(VkDescriptorSet descriptorSet);
+			VkExtent2D GetExtent() const;
 		private: 
 			//Init functions
 			void InitWindow();
@@ -209,7 +209,6 @@ namespace CE
 
 			//Runtime functions
 			void DrawFrame();
-			void UpdateUniformBuffer();
 
 			//Helper functions
 			bool CheckValidationLayerSupport();

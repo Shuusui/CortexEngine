@@ -4,23 +4,32 @@
 #include "include\CRenderComponent.h"
 
 CE::Rendering::CMaterial::CMaterial()
-	:m_pPixels(nullptr)
-	,m_texImage(VK_NULL_HANDLE)
-	,m_texImageMemory(VK_NULL_HANDLE)
+	//:m_pPixels(nullptr)
+	:m_diffImage(VK_NULL_HANDLE)
+	,m_diffImageMemory(VK_NULL_HANDLE)
 	,m_texImageView(VK_NULL_HANDLE)
 	,m_texSampler(VK_NULL_HANDLE)
-	,m_texHeight(0)
-	,m_texWidth(0)
-	,m_texChannels(0)
+	//,m_texHeight(0)
+	//,m_texWidth(0)
 	,m_mipLevels(0)
 {
 }
 
-void CE::Rendering::CMaterial::ReadFile(const std::string & texturepath)
+void CE::Rendering::CMaterial::AddNewTexture(const std::string & texturePath)
 {
-	m_pPixels = stbi_load(texturepath.c_str(), &m_texWidth, &m_texHeight, &m_texChannels, STBI_rgb_alpha);
-	if (!m_pPixels)
+	m_diffTexData = ReadFile(texturePath);
+	CreateTextureImage();
+	CreateTextureImageView(); 
+	CreateTextureSampler();
+}
+
+CE::Rendering::TexData CE::Rendering::CMaterial::ReadFile(const std::string & texturepath)
+{
+	struct TexData data = {};
+	data.Pixels = stbi_load(texturepath.c_str(), &data.TexWidth, &data.TexHeight, &data.TexChannels, STBI_rgb_alpha);
+	if (!data.Pixels)
 		return;
+	return data;
 }
 
 void CE::Rendering::CMaterial::SetRenderComponent(CE::Components::CRenderComponent* renderComponent)
@@ -32,11 +41,32 @@ void CE::Rendering::CMaterial::SetRenderComponent(CE::Components::CRenderCompone
 
 }
 
+void CE::Rendering::CMaterial::AddImageInfo(VkDescriptorImageInfo imageInfo)
+{
+	m_imageInfos.push_back(imageInfo);
+}
+
+void CE::Rendering::CMaterial::Release()
+{
+	vkDeviceWaitIdle(RENDERER->GetLogicalDevice());
+
+	stbi_image_free(m_diffTexData.Pixels);
+
+	vkDestroyImageView(RENDERER->GetLogicalDevice(), m_texImageView, nullptr);
+
+	vkDestroyImage(RENDERER->GetLogicalDevice(), m_diffImage, nullptr);
+	vkFreeMemory(RENDERER->GetLogicalDevice(), m_diffImageMemory, nullptr);
+
+	vkDestroySampler(RENDERER->GetLogicalDevice(), m_texSampler, nullptr);
+
+	delete this;
+}
+
 void CE::Rendering::CMaterial::CreateTextureImage()
 {
-	VkDeviceSize imageSize = m_texWidth * m_texHeight * 4;
+	VkDeviceSize imageSize = m_diffTexData.TexWidth * m_diffTexData.TexHeight * 4;
 
-	m_mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(m_texWidth, m_texHeight)))) + 1;
+	m_mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(m_diffTexData.TexWidth, m_diffTexData.TexHeight)))) + 1;
 
 
 	VkBuffer stagingBuffer;
@@ -46,23 +76,23 @@ void CE::Rendering::CMaterial::CreateTextureImage()
 		stagingBuffer, stagingBufferMemory);
 
 	void* data = nullptr;
-	RENDERER->MapData(data, m_pPixels, stagingBufferMemory, imageSize);
+	RENDERER->MapData(data, m_diffTexData.Pixels, stagingBufferMemory, imageSize);
 
-	RENDERER->CreateImage(m_texWidth, m_texHeight, m_mipLevels, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_texImage, m_texImageMemory);
+	RENDERER->CreateImage(m_diffTexData.TexWidth, m_diffTexData.TexHeight, m_mipLevels, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_diffImage, m_diffImageMemory);
 	
-	RENDERER->TransitionImageLayout(m_texImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, m_mipLevels);
-	RENDERER->CopyBufferToImage(stagingBuffer, m_texImage, static_cast<uint32_t>(m_texWidth), static_cast<uint32_t>(m_texHeight));
+	RENDERER->TransitionImageLayout(m_diffImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, m_mipLevels);
+	RENDERER->CopyBufferToImage(stagingBuffer, m_diffImage, static_cast<uint32_t>(m_diffTexData.TexWidth), static_cast<uint32_t>(m_diffTexData.TexHeight));
 
 	vkDestroyBuffer(RENDERER->GetLogicalDevice(), stagingBuffer, nullptr);
 	vkFreeMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory, nullptr);
 
-	RENDERER->GenerateMipmaps(m_texImage, m_texWidth, m_texHeight, m_mipLevels);
+	RENDERER->GenerateMipmaps(m_diffImage, m_diffTexData.TexWidth, m_diffTexData.TexHeight, m_mipLevels);
 }
 
 void CE::Rendering::CMaterial::CreateTextureImageView()
 {
-	m_texImageView = RENDERER->CreateImageView(m_texImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT, m_mipLevels);
+	m_texImageView = RENDERER->CreateImageView(m_diffImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT, m_mipLevels);
 }
 
 void CE::Rendering::CMaterial::CreateTextureSampler()
@@ -104,10 +134,7 @@ void CE::Rendering::CMaterial::BindSampler()
 
 void CE::Rendering::CMaterial::CreateImageDescriptor()
 {
-	VkDescriptorImageInfo imageInfo = {};
-	imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-	imageInfo.imageView = m_texImageView;
-	imageInfo.sampler = m_texSampler;
+	CreateImageDescriptorInfo();
 
 	VkWriteDescriptorSet descriptorWrite = {};
 	descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -116,21 +143,22 @@ void CE::Rendering::CMaterial::CreateImageDescriptor()
 	descriptorWrite.dstArrayElement = 0;
 	descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	descriptorWrite.descriptorCount = 1;
-	descriptorWrite.pImageInfo = &imageInfo;
+	descriptorWrite.pImageInfo = m_imageInfos.data();
 
 	//BindSampler();
 	RENDERER->UpdateDescriptorSets(descriptorWrite);
 }
 
+void CE::Rendering::CMaterial::CreateImageDescriptorInfo()
+{
+	VkDescriptorImageInfo imageInfo = {};
+	imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+	imageInfo.imageView = m_texImageView;
+	imageInfo.sampler = m_texSampler;
+	AddImageInfo(imageInfo);
+}
+
 
 CE::Rendering::CMaterial::~CMaterial()
 {
-	stbi_image_free(m_pPixels);
-
-	vkDestroyImageView(RENDERER->GetLogicalDevice(), m_texImageView, nullptr);
-
-	vkDestroyImage(RENDERER->GetLogicalDevice(), m_texImage, nullptr);
-	vkFreeMemory(RENDERER->GetLogicalDevice(), m_texImageMemory, nullptr);
-
-	vkDestroySampler(RENDERER->GetLogicalDevice(), m_texSampler, nullptr);
 }

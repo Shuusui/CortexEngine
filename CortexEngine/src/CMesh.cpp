@@ -61,8 +61,10 @@ void CE::Rendering::CMesh::LoadModel(const std::string& modelPath)
 	RENDERER->SetIndices(m_indices);
 }
 
-void CE::Rendering::CMesh::ReleaseModel()
+void CE::Rendering::CMesh::Release()
 {
+	vkDeviceWaitIdle(RENDERER->GetLogicalDevice());
+
 	m_vertices.clear();
 	m_indices.clear();
 	vkDestroyBuffer(RENDERER->GetLogicalDevice(), m_indexBuffer, nullptr);
@@ -70,6 +72,8 @@ void CE::Rendering::CMesh::ReleaseModel()
 
 	vkDestroyBuffer(RENDERER->GetLogicalDevice(), m_vertexBuffer, nullptr);
 	vkFreeMemory(RENDERER->GetLogicalDevice(), m_vertexBufferMemory, nullptr);
+
+	delete this;
 }
 
 void CE::Rendering::CMesh::SetRenderComponent(CE::Components::CRenderComponent* renderComponent)
@@ -125,9 +129,4 @@ void CE::Rendering::CMesh::CreateIndexBuffer()
 
 CE::Rendering::CMesh::~CMesh()
 {
-	vkDestroyBuffer(RENDERER->GetLogicalDevice(), m_indexBuffer, nullptr);
-	vkFreeMemory(RENDERER->GetLogicalDevice(), m_indexBufferMemory, nullptr);
-
-	vkDestroyBuffer(RENDERER->GetLogicalDevice(), m_vertexBuffer, nullptr);
-	vkFreeMemory(RENDERER->GetLogicalDevice(), m_vertexBufferMemory, nullptr);
 }

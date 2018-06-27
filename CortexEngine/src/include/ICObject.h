@@ -68,6 +68,8 @@ namespace CE
 
 			void Update();
 
+			void Release();
+
 			virtual ~ICObject();
 		};
 

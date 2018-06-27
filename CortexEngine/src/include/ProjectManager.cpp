@@ -18,6 +18,12 @@ void CE::Core::ProjectManager::NewLevel(const std::string & name, const uint32_t
 	m_pCurrLevel = new CLevel(name, resX, resY);
 }
 
+void CE::Core::ProjectManager::Release()
+{
+	m_pCurrLevel->Release();
+	delete this;
+}
+
 CE::Core::ProjectManager::ProjectManager(const std::string & name, CLevel* pCurrLevel, const bool& newProj)
 	:m_name(name)
 	,m_pCurrLevel(m_pCurrLevel)
@@ -36,7 +42,6 @@ CE::Core::ProjectManager::ProjectManager(const std::string & name, CLevel* pCurr
 
 CE::Core::ProjectManager::~ProjectManager()
 {
-	delete m_pCurrLevel;
 }
 
 CE::Core::ProjectParams CE::Core::ProjectManager::LoadProjectFile()

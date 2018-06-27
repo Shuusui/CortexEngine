@@ -17,24 +17,37 @@ namespace CE
 	}
 	namespace Rendering
 	{
+		struct TexData
+		{
+			int TexWidth; 
+			int TexHeight; 
+			int TexChannels;
+			stbi_uc* Pixels;
+		};
 		class CMaterial
 		{
 		private: 
-			int m_texWidth;
-			int m_texHeight; 
-			int m_texChannels; 
-			stbi_uc* m_pPixels;
-			VkImage m_texImage; 
-			VkDeviceMemory m_texImageMemory;
+			/*int m_texWidth;
+			int m_texHeight;
+			stbi_uc* m_pPixels;*/
+			TexData m_diffTexData;
+			VkImage m_diffImage; 
+			VkDeviceMemory m_diffImageMemory;
+			VkImage m_normalImage; 
+			VkDeviceMemory m_normalImageMemory;
 			int m_mipLevels;
 			VkImageView m_texImageView;
 			VkSampler m_texSampler;
 			CE::Components::CRenderComponent* m_renderComponent;
+			std::vector<VkDescriptorImageInfo> m_imageInfos;
 		public: 
 			CMaterial(); 
 			//reads only jpg files at the moment
-			void ReadFile(const std::string& texturepath);
+			void AddNewTexture(const std::string& texturePath);
+			TexData ReadFile(const std::string& texturepath);
 			void SetRenderComponent(CE::Components::CRenderComponent* renderComponent);
+			void AddImageInfo(VkDescriptorImageInfo imageInfo);
+			void Release();
 			~CMaterial();
 		private: 
 
@@ -47,6 +60,8 @@ namespace CE
 			void BindSampler(); 
 
 			void CreateImageDescriptor();
+
+			void CreateImageDescriptorInfo();
 		};
 	}
 }

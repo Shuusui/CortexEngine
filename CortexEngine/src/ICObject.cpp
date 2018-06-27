@@ -9,12 +9,17 @@ void CE::Core::ICObject::Update()
 	}
 }
 
+void CE::Core::ICObject::Release()
+{
+	for (Components::ICComponent* comp : m_components)
+	{
+		comp->Release();
+	}
+	delete this;
+}
+
 CE::Core::ICObject::~ICObject()
 {
-	for (const auto& component: m_components)
-	{
-		delete (component);
-	}
 	for (const auto& subObject : m_subObjects)
 	{
 		delete(subObject);

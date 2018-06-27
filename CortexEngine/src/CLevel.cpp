@@ -31,11 +31,17 @@ void CE::Core::CLevel::Save()
 
 }
 
-CE::Core::CLevel::~CLevel()
+void CE::Core::CLevel::Release()
 {
 	for (const auto& object : m_objects)
 	{
-		delete(object);
+		object->Release();
 	}
+	delete this;
+}
+
+CE::Core::CLevel::~CLevel()
+{
+
 }
 

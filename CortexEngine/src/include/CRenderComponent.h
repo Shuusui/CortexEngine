@@ -6,6 +6,7 @@
 #include "Enums.h"
 #include "ICObject.h"
 #include "VulkanRenderer.h"
+#include "CortexStructs.h"
 #pragma endregion 
 #pragma region External Includes
 #include <glm/gtc/matrix_transform.hpp>
@@ -24,6 +25,7 @@ namespace CE
 			VkBuffer m_uniformBuffer;
 			VkDeviceMemory m_uniformBufferMemory;	
 			std::vector<VkDescriptorBufferInfo> m_bufferInfos;
+			glm::mat4 m_modelMat;
 		public: 
 			CRenderComponent(const uint_fast32_t& id); 
 			void AddMesh(Rendering::CMesh* mesh);
@@ -42,6 +44,7 @@ namespace CE
 		private: 
 			void CreateUniformBufferInfo();
 			void UpdateUniformBuffer();
+			void SetModelMatrix();
 
 		};
 	}

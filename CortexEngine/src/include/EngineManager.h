@@ -11,6 +11,7 @@
 #include "DirtyEventListener.h"
 #include "Algorithms.h"
 #include "VulkanRenderer.h"
+#include "TimeHandler.h"
 #pragma endregion 
 #pragma region External Includes
 #include <string>
@@ -29,6 +30,7 @@ namespace CE
 			static ProjectManager* s_pProjectManager;
 			static EventHandler* s_pEventHandler;
 			static Editor::CEditor* s_pEditor;
+			static TimeHandler* s_pTimeHandler;
 			EngineIni* m_pEngineIni;
 			Rendering::VulkanRenderer* m_pVkRenderer;
 		public: 
@@ -42,6 +44,7 @@ namespace CE
 			static ProjectManager* GetProjManager() { return s_pProjectManager; }
 			static EventHandler* GetEventHandler() { return s_pEventHandler; }
 			static Editor::CEditor* GetEditor() { return s_pEditor; }
+			static TimeHandler* GetTimeHandler() { return s_pTimeHandler; }
 			EngineParams Init();
 			bool InitListener();
 			Rendering::VulkanRenderer* GetRenderer() { return m_pVkRenderer; }

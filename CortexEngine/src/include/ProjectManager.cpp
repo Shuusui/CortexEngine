@@ -58,9 +58,9 @@ bool CE::Core::ProjectManager::Init()
 	renderComponent->Init();
 	CE::Rendering::CMaterial* material = new CE::Rendering::CMaterial();
 	//material->ReadFile("../assets//textures//default.jpg");
-	material->AddNewTexture("../assets//textures//default.jpg");
+	material->AddNewTexture("../assets//textures//chalet.jpg");
 	CE::Rendering::CMesh* mesh = new CE::Rendering::CMesh();
-	mesh->LoadModel("../assets//models//sphere.obj");
+	mesh->LoadModel("../assets//models//chalet.obj");
 	renderComponent->AddMesh(mesh);
 	renderComponent->AddMaterial(material);
 	object->AddComponent(renderComponent);

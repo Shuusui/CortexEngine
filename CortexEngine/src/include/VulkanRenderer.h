@@ -1,6 +1,8 @@
 #pragma once
 #pragma region Internal Includes
 #include "MessageEvent.h"
+#include "VulkanCamera.h"
+#include "Enums.h"
 #pragma endregion 
 #pragma region External Includes
 #define GLFW_INCLUDE_VULKAN
@@ -23,8 +25,8 @@
 #pragma endregion 
 
 
-const int WIDTH = 800; 
-const int HEIGHT = 600;
+const int WIDTH = 1600; 
+const int HEIGHT = 800;
 
 
 const std::vector<const char*> validationLayers = {
@@ -111,12 +113,6 @@ namespace CE
 			std::vector<VkPresentModeKHR> PresentModes;
 		};
 
-		struct UniformBufferObject {
-			glm::mat4 Model; 
-			glm::mat4 View; 
-			glm::mat4 Proj;
-		};
-
 		class VulkanRenderer
 		{
 		private: 
@@ -154,6 +150,8 @@ namespace CE
 			std::vector<uint32_t> m_indices;
 			std::vector<VkWriteDescriptorSet> m_descriptorWrites;
 			std::vector<VkDescriptorSetLayoutBinding> m_bindings;
+			VulkanCamera* m_camera;
+			bool m_closeflag = false;
 		public: 
 			VulkanRenderer(); 
 			~VulkanRenderer(); 
@@ -161,6 +159,8 @@ namespace CE
 			int Run(); 
 			void Release();
 			VkDevice GetLogicalDevice() const { return m_logicalDevice; }
+
+			void SetInput(int key);
 
 			void UpdateDescriptorSets(VkWriteDescriptorSet writeDescriptorSet);
 			//Helper functions
@@ -183,6 +183,7 @@ namespace CE
 			VkDescriptorSetLayout GetDescriptorLayout() const;
 			void AddDescriptorSet(VkDescriptorSet descriptorSet);
 			VkExtent2D GetExtent() const;
+			VulkanCamera* GetCamera() const;
 		private: 
 			//Init functions
 			void InitWindow();
@@ -206,7 +207,7 @@ namespace CE
 			void CreateDescriptorPool();
 			void CreateDepthResources();
 			void CreateCommandBuffers();
-
+			static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 			//Runtime functions
 			void DrawFrame();
 

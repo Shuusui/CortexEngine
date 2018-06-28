@@ -25,8 +25,8 @@
 #pragma endregion 
 
 
-const int WIDTH = 800; 
-const int HEIGHT = 600;
+const int WIDTH = 1600; 
+const int HEIGHT = 800;
 
 
 const std::vector<const char*> validationLayers = {

@@ -34,9 +34,10 @@ namespace CE
 		{
 		private: 
 			CameraData m_data;
-			VkExtent2D m_extents;
+			VkExtent2D m_extent;
+			GLFWwindow* m_pWindow;
 		public: 
-			VulkanCamera(VkExtent2D extent);
+			VulkanCamera(VkExtent2D extent, GLFWwindow* window);
 			VulkanCamera(CameraData data, VkExtent2D extent);
 			void ResizeExtent(VkExtent2D extent);
 			void ComputeMatrix(CE::Rendering::UniformBufferObject& ubo);

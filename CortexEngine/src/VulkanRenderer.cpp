@@ -18,7 +18,7 @@ CE::Rendering::VulkanRenderer::~VulkanRenderer()
 void CE::Rendering::VulkanRenderer::Init()
 {
 	InitVulkan();
-	m_camera = new CE::Rendering::VulkanCamera(m_swapChainExtent);
+	m_camera = new CE::Rendering::VulkanCamera(m_swapChainExtent, m_pWindow);
 }
 
 

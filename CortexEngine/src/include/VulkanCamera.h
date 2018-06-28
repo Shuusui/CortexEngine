@@ -40,7 +40,7 @@ namespace CE
 			VulkanCamera(CameraData data, VkExtent2D extent);
 			void ResizeExtent(VkExtent2D extent);
 			void ComputeMatrix(CE::Rendering::UniformBufferObject& ubo);
-			void Move(Enums::EDirection& dir);
+			void Move(Enums::EDirection dir);
 		};
 	}
 }

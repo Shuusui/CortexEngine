@@ -151,6 +151,7 @@ namespace CE
 			std::vector<VkWriteDescriptorSet> m_descriptorWrites;
 			std::vector<VkDescriptorSetLayoutBinding> m_bindings;
 			VulkanCamera* m_camera;
+			bool m_closeflag = false;
 		public: 
 			VulkanRenderer(); 
 			~VulkanRenderer(); 

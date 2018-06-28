@@ -24,33 +24,15 @@ void CE::Rendering::VulkanRenderer::Init()
 
 void CE::Rendering::VulkanRenderer::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (key == GLFW_KEY_W && action == GLFW_PRESS) {
-		internal::g_vkRenderer->SetInput(key);
-	}
-	if (key == GLFW_KEY_S && action == GLFW_PRESS)
-	{
-		internal::g_vkRenderer->SetInput(key);
-	}
-	if (key == GLFW_KEY_A && action == GLFW_PRESS)
-	{
-		internal::g_vkRenderer->SetInput(key);
-	}
-	if (key == GLFW_KEY_D && action == GLFW_PRESS)
-	{
-		internal::g_vkRenderer->SetInput(key);
-	}
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-		internal::g_vkRenderer->SetInput(key);
-	}
+	internal::g_vkRenderer->SetInput(key);
 }
 
 int CE::Rendering::VulkanRenderer::Run()
 {
 	glfwPollEvents();
 	glfwSetKeyCallback(m_pWindow, KeyCallback);
-
 	DrawFrame();
-	return glfwWindowShouldClose(m_pWindow);
+	return glfwWindowShouldClose(m_pWindow) | m_closeflag;
 }
 
 
@@ -66,13 +48,19 @@ void CE::Rendering::VulkanRenderer::SetInput(int key)
 	switch (key)
 	{
 	case GLFW_KEY_W:
+		m_camera->Move(Enums::EDirection::Forward);
 		break;
 	case GLFW_KEY_S:
+		m_camera->Move(Enums::EDirection::Backward);
 		break;
 	case GLFW_KEY_A: 
+		m_camera->Move(Enums::EDirection::Left);
 		break; 
 	case GLFW_KEY_D:
+		m_camera->Move(Enums::EDirection::Right);
 		break;
+	case GLFW_KEY_ESCAPE: 
+		m_closeflag = true;
 	}
 }
 
@@ -720,6 +708,7 @@ void CE::Rendering::VulkanRenderer::RecreateSwapChain()
 	CreateDepthResources();
 	CreateFramebuffers();
 	CreateCommandBuffers();
+	m_camera->ResizeExtent(m_swapChainExtent);
 }
 
 void CE::Rendering::VulkanRenderer::CreateDescriptorLayout()

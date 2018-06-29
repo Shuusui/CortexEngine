@@ -38,7 +38,6 @@ namespace CE
 			void CreateUniformBuffer();
 			void CreateUniformBufferWrite();
 			void AddBufferInfo(VkDescriptorBufferInfo bufferInfo);
-			void AddImageInfo(VkDescriptorImageInfo imageInfo);
 			virtual void Release() final;
 			virtual ~CRenderComponent();
 		private: 

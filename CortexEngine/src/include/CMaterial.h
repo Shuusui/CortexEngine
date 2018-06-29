@@ -33,6 +33,7 @@ namespace CE
 			TexData m_diffTexData;
 			VkImage m_diffImage; 
 			VkDeviceMemory m_diffImageMemory;
+			TexData m_normalTexData;
 			VkImage m_normalImage; 
 			VkDeviceMemory m_normalImageMemory;
 			int m_mipLevels;
@@ -43,7 +44,8 @@ namespace CE
 		public: 
 			CMaterial(); 
 			//reads only jpg files at the moment
-			void AddNewTexture(const std::string& texturePath);
+			void AddDiffuse(const std::string& texturePath);
+			void AddNormal(const std::string& texturePath);
 			TexData ReadFile(const std::string& texturepath);
 			void SetRenderComponent(CE::Components::CRenderComponent* renderComponent);
 			void AddImageInfo(VkDescriptorImageInfo imageInfo);

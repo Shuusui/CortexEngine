@@ -112,11 +112,10 @@ void CE::Components::CRenderComponent::UpdateUniformBuffer()
 	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
 	CE::Rendering::UniformBufferObject ubo = {};
-	glm::mat4 initRot = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	glm::mat4 rotMat = glm::rotate(glm::mat4(1.0f), time* glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	glm::mat4 transMat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 20.0f));
+	glm::mat4 initRot = glm::mat4(1);
+	glm::mat4 transMat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 150.0f));
 
-	ubo.Model =  transMat*initRot*rotMat;
+	ubo.Model =  transMat*initRot/**rotMat*/;
 	RENDERER->GetCamera()->ComputeMatrix(ubo);
 
 	ubo.Proj[1][1] *= -1;

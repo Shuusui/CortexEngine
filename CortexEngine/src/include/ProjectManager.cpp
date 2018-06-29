@@ -52,15 +52,15 @@ CE::Core::ProjectParams CE::Core::ProjectManager::LoadProjectFile()
 
 bool CE::Core::ProjectManager::Init()
 {
-	CE::Physics::Transform transform;
+	CE::Physics::Transform transform = {};
 	ICObject* object = new ICObject(0, "object", transform);
 	CE::Components::CRenderComponent* renderComponent = new CE::Components::CRenderComponent(0);
 	renderComponent->Init();
 	CE::Rendering::CMaterial* material = new CE::Rendering::CMaterial();
-	//material->ReadFile("../assets//textures//default.jpg");
-	material->AddNewTexture("../assets//textures//chalet.jpg");
+	material->AddDiffuse("../assets//textures//CubeBasecolor.jpg");
+	material->AddNormal("../assets//textures//CubeNormal.jpg");
 	CE::Rendering::CMesh* mesh = new CE::Rendering::CMesh();
-	mesh->LoadModel("../assets//models//chalet.obj");
+	mesh->LoadModel("../assets//models//Cube.obj");
 	renderComponent->AddMesh(mesh);
 	renderComponent->AddMaterial(material);
 	object->AddComponent(renderComponent);

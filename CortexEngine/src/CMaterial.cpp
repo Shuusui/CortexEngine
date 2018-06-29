@@ -4,23 +4,22 @@
 #include "include\CRenderComponent.h"
 
 CE::Rendering::CMaterial::CMaterial()
-	//:m_pPixels(nullptr)
 	:m_diffImage(VK_NULL_HANDLE)
 	,m_diffImageMemory(VK_NULL_HANDLE)
 	,m_texImageView(VK_NULL_HANDLE)
 	,m_texSampler(VK_NULL_HANDLE)
-	//,m_texHeight(0)
-	//,m_texWidth(0)
 	,m_mipLevels(0)
 {
 }
 
-void CE::Rendering::CMaterial::AddNewTexture(const std::string & texturePath)
+void CE::Rendering::CMaterial::AddDiffuse(const std::string & texturePath)
 {
 	m_diffTexData = ReadFile(texturePath);
-	//CreateTextureImage();
-	//CreateTextureImageView(); 
-	//CreateTextureSampler();
+}
+
+void CE::Rendering::CMaterial::AddNormal(const std::string & texturePath)
+{
+	m_normalTexData = ReadFile(texturePath);
 }
 
 CE::Rendering::TexData CE::Rendering::CMaterial::ReadFile(const std::string & texturepath)
@@ -38,7 +37,6 @@ void CE::Rendering::CMaterial::SetRenderComponent(CE::Components::CRenderCompone
 	CreateTextureImage();
 	CreateTextureImageView();
 	CreateTextureSampler();
-
 }
 
 void CE::Rendering::CMaterial::AddImageInfo(VkDescriptorImageInfo imageInfo)
@@ -128,8 +126,6 @@ void CE::Rendering::CMaterial::BindSampler()
 	samplerLayoutBinding.descriptorCount = 1;
 	samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-
-	//RENDERER->AddDescriptorLayoutBinding(samplerLayoutBinding);
 }
 
 void CE::Rendering::CMaterial::CreateImageDescriptor()
@@ -145,7 +141,6 @@ void CE::Rendering::CMaterial::CreateImageDescriptor()
 	descriptorWrite.descriptorCount = 1;
 	descriptorWrite.pImageInfo = m_imageInfos.data();
 
-	//BindSampler();
 	RENDERER->UpdateDescriptorSets(descriptorWrite);
 }
 

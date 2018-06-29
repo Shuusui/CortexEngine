@@ -38,6 +38,11 @@ void CE::Rendering::CMesh::LoadModel(const std::string& modelPath)
 				attrib.texcoords[2 * index.texcoord_index + 0],
 				1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
 			};
+			vertex.Normal = {
+				attrib.normals[3 * index.normal_index + 0],
+				attrib.normals[3 * index.normal_index + 1],
+				attrib.normals[3 * index.normal_index + 2]
+			};
 
 			vertex.Color = { 1.0f, 1.0f, 1.0f };
 
@@ -83,7 +88,6 @@ void CE::Rendering::CMesh::SetRenderComponent(CE::Components::CRenderComponent* 
 
 void CE::Rendering::CMesh::CreateVertexBuffer()
 {
-	
 	VkDeviceSize bufferSize = sizeof(m_vertices[0]) * m_vertices.size();
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;

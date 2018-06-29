@@ -50,7 +50,7 @@ void CE::Rendering::VulkanCamera::ComputeMatrix(CE::Rendering::UniformBufferObje
 		cos(m_data.HorizontalAngle - 3.14 / 2.0f));
 	m_data.Up = glm::cross(m_data.Right, m_data.Direction);
 
-	ubo.Proj = glm::perspective(glm::radians(m_data.FoV), m_extent.width / (float)m_extent.height, 0.1f, 500.0f);
+	ubo.Proj = glm::perspective(glm::radians(m_data.FoV), m_extent.width / (float)m_extent.height, 0.1f, 15000.0f);
 	ubo.View = glm::lookAt(m_data.Position, m_data.Position + m_data.Direction, m_data.Up);
 }
 

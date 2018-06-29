@@ -61,6 +61,7 @@ void CE::Rendering::VulkanRenderer::SetInput(int key)
 		break;
 	case GLFW_KEY_ESCAPE: 
 		m_closeflag = true;
+		break;
 	}
 }
 

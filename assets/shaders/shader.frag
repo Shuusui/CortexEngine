@@ -15,6 +15,7 @@ void main() {
 	vec4 lightColor = vec4(1,1,1,1);
 	vec4 baseColor = texture(texSampler, fragTexCoord);
 	vec4 normal = texture(normalSampler, fragTexCoord);
+	vec4 normalTS = normalize(normal.rgb*2.0-1.0);
 	float lightPower = 5;
 	float cosTheta = clamp(dot(normalize(fragNormal),normalize(lightDirection)), 0, 1);
 	vec4 matDiffCol = baseColor*cosTheta*lightColor*lightPower;

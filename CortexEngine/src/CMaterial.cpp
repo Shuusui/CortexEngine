@@ -128,16 +128,27 @@ void CE::Rendering::CMaterial::CreateImageDescriptor()
 	CreateImageDescriptorInfo(m_diffTexData);
 	CreateImageDescriptorInfo(m_normalTexData);
 
-	VkWriteDescriptorSet descriptorWrite = {};
-	descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWrite.dstSet = m_renderComponent->GetDescriptorSet();
-	descriptorWrite.dstBinding = 1;
-	descriptorWrite.dstArrayElement = 0;
-	descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	descriptorWrite.descriptorCount = 1;
-	descriptorWrite.pImageInfo = m_imageInfos.data();
+	VkWriteDescriptorSet descriptorWriteDiff = {};
+	descriptorWriteDiff.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	descriptorWriteDiff.dstSet = m_renderComponent->GetDescriptorSet();
+	descriptorWriteDiff.dstBinding = 1;
+	descriptorWriteDiff.dstArrayElement = 0;
+	descriptorWriteDiff.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	descriptorWriteDiff.descriptorCount = 1;
+	descriptorWriteDiff.pImageInfo = m_imageInfos.data();
 
-	RENDERER->UpdateDescriptorSets(descriptorWrite);
+	VkWriteDescriptorSet descriptorWriteNormal = {};
+	descriptorWriteNormal.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	descriptorWriteNormal.dstSet = m_renderComponent->GetDescriptorSet();
+	descriptorWriteNormal.dstBinding = 2;
+	descriptorWriteNormal.dstArrayElement = 0;
+	descriptorWriteNormal.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	descriptorWriteNormal.descriptorCount = 1;
+	descriptorWriteNormal.pImageInfo = m_imageInfos.data();
+
+
+	RENDERER->UpdateDescriptorSets(descriptorWriteDiff);
+	RENDERER->UpdateDescriptorSets(descriptorWriteNormal);
 }
 
 void CE::Rendering::CMaterial::CreateImageDescriptorInfo(TexData& data)

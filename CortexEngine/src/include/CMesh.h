@@ -21,6 +21,8 @@ namespace CE
 		private: 
 			std::vector<Vertex> m_vertices; 
 			std::vector<uint32_t> m_indices;
+			std::vector<glm::vec3> m_tangents;
+			std::vector<glm::vec3> m_bitangents;
 			VkBuffer m_vertexBuffer; 
 			VkDeviceMemory m_vertexBufferMemory; 
 			VkBuffer m_indexBuffer; 
@@ -37,6 +39,7 @@ namespace CE
 
 			~CMesh();
 		private: 
+			void ComputeTangents();
 
 			void CreateVertexBuffer();
 

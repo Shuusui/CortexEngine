@@ -88,6 +88,8 @@ void CE::Components::CRenderComponent::Release()
 {
 	m_mesh->Release();
 	m_material->Release();
+	vkDestroyBuffer(RENDERER->GetLogicalDevice(),m_uniformBuffer, nullptr);
+	vkFreeMemory(RENDERER->GetLogicalDevice(), m_uniformBufferMemory, nullptr);
 	delete this;
 }
 

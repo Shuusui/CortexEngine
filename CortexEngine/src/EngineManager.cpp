@@ -9,17 +9,6 @@ CE::Core::TimeHandler* CE::Core::EngineManager::s_pTimeHandler = nullptr;
 CE::Core::EngineParams CE::Core::EngineManager::Init()
 {
 	EngineParams params;
-	//LPWSTR* szArgList;
-	//int nArgs;
-
-	//szArgList = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-	//std::wstring wstr = szArgList[0];
-	//for (int i = 0; i < 16; i++)
-	//	wstr.pop_back(); 
-	//LocalFree(szArgList);
-	//
-	//params.EnginePath = WStrToStr(wstr);
-	//params.hInstance = hInstance;
 
 	if (!InitListener())
 		return params; //TODO do some Error Handling here
@@ -32,13 +21,7 @@ CE::Core::EngineParams CE::Core::EngineManager::Init()
 
 	return m_pEngineIni->LoadIni(params);
 }
-//
-//bool CE::Core::EngineManager::InitWindow(const EngineParams& params)
-//{
-//	m_pWndClass = new Window();
-//	m_wndHandle = m_pWndClass->Init(params);
-//	return m_wndHandle != NULL ? true : false;
-//}
+
 bool CE::Core::EngineManager::InitListener()
 {
 	Console* console = new Console();

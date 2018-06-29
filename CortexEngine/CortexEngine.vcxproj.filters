@@ -92,12 +92,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\WinMain.cpp">
-      <Filter>Core\CoreSourcefiles</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Window.cpp">
-      <Filter>Core\CoreSourcefiles</Filter>
-    </ClCompile>
     <ClCompile Include="src\EngineIni.cpp">
       <Filter>Core\CoreSourcefiles</Filter>
     </ClCompile>
@@ -158,6 +152,9 @@
     <ClCompile Include="src\TimeHandler.cpp">
       <Filter>Core\CoreSourcefiles</Filter>
     </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Core\CoreSourcefiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\ICObject.h">
@@ -168,9 +165,6 @@
     </ClInclude>
     <ClInclude Include="src\include\Algorithms.h">
       <Filter>Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\Window.h">
-      <Filter>Core\CoreHeaderfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\EngineIni.h">
       <Filter>Core\CoreHeaderfiles</Filter>

@@ -173,8 +173,7 @@
     <ClCompile Include="src\TimeHandler.cpp" />
     <ClCompile Include="src\VulkanCamera.cpp" />
     <ClCompile Include="src\VulkanRenderer.cpp" />
-    <ClCompile Include="src\Window.cpp" />
-    <ClCompile Include="src\WinMain.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\Algorithms.h" />
@@ -211,7 +210,6 @@
     <ClInclude Include="src\include\TimeHandler.h" />
     <ClInclude Include="src\include\VulkanCamera.h" />
     <ClInclude Include="src\include\VulkanRenderer.h" />
-    <ClInclude Include="src\include\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\assets\shaders\shader.frag" />

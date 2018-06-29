@@ -6,7 +6,7 @@
 #pragma region External Includes
 #include <string>
 #include <stb_image.h>
-#include <vulkan\vulkan.h>
+#include <vulkan/vulkan.h>
 #include <algorithm>
 #pragma endregion 
 
@@ -23,22 +23,17 @@ namespace CE
 			int TexHeight; 
 			int TexChannels;
 			stbi_uc* Pixels;
+			VkImage Image; 
+			VkDeviceMemory ImageMemory;
+			VkImageView ImageView;
+			VkSampler ImageSampler;
 		};
 		class CMaterial
 		{
 		private: 
-			/*int m_texWidth;
-			int m_texHeight;
-			stbi_uc* m_pPixels;*/
 			TexData m_diffTexData;
-			VkImage m_diffImage; 
-			VkDeviceMemory m_diffImageMemory;
 			TexData m_normalTexData;
-			VkImage m_normalImage; 
-			VkDeviceMemory m_normalImageMemory;
 			int m_mipLevels;
-			VkImageView m_texImageView;
-			VkSampler m_texSampler;
 			CE::Components::CRenderComponent* m_renderComponent;
 			std::vector<VkDescriptorImageInfo> m_imageInfos;
 		public: 
@@ -46,24 +41,22 @@ namespace CE
 			//reads only jpg files at the moment
 			void AddDiffuse(const std::string& texturePath);
 			void AddNormal(const std::string& texturePath);
-			TexData ReadFile(const std::string& texturepath);
+			void ReadFile(const std::string& texturepath, TexData& data);
 			void SetRenderComponent(CE::Components::CRenderComponent* renderComponent);
 			void AddImageInfo(VkDescriptorImageInfo imageInfo);
 			void Release();
 			~CMaterial();
 		private: 
 
-			void CreateTextureImage();
+			void CreateTextureImage(TexData& data);
 
-			void CreateTextureImageView();
+			void CreateTextureImageView(TexData& data);
 
-			void CreateTextureSampler();
-
-			void BindSampler(); 
+			void CreateTextureSampler(TexData& data);
 
 			void CreateImageDescriptor();
 
-			void CreateImageDescriptorInfo();
+			void CreateImageDescriptorInfo(TexData& data);
 		};
 	}
 }

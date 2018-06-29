@@ -3,7 +3,6 @@
 #include "ProjectManager.h"
 #include "CortexStructs.h"
 #include "EngineIni.h"
-#include "Window.h"
 #include "EventHandler.h"
 #include "Console.h"
 #include "MessageEvent.h"

@@ -192,7 +192,6 @@ namespace CE
 			void GenerateMipmaps(VkImage image, int32_t texWidth, int32_t teexHeight, uint32_t mipLevels);
 			VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels);
 			size_t AddVertexBuffer(VkBuffer vertexBuffer);
-			void AddDescriptorLayoutBinding(VkDescriptorSetLayoutBinding binding);
 			void RemoveVertexBuffer(size_t index);
 			void SetIndices(std::vector<uint32_t> indices);
 			void SetIndexBuffer(VkBuffer indexBuffer);

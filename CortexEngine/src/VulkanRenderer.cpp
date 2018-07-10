@@ -1007,12 +1007,6 @@ size_t CE::Rendering::VulkanRenderer::AddVertexBuffer(VkBuffer vertexBuffer)
 	return m_vertexBuffers.size();
 }
 
-void CE::Rendering::VulkanRenderer::AddDescriptorLayoutBinding(VkDescriptorSetLayoutBinding binding)
-{
-	m_bindings.push_back(binding);
-	CreateDescriptorLayout();
-}
-
 void CE::Rendering::VulkanRenderer::RemoveVertexBuffer(size_t index)
 {
 	m_vertexBuffers.erase(m_vertexBuffers.begin() + index);

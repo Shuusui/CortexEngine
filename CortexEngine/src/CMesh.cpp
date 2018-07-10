@@ -23,7 +23,8 @@ void CE::Rendering::CMesh::LoadModel(const std::string& modelPath)
 	}
 
 	std::unordered_map<Vertex, uint32_t> uniqueVertices = {};
-
+	uint32_t count = 0;
+	uint32_t i = 0;
 	for (const auto& shape : shapes) {
 		for (const auto& index : shape.mesh.indices) {
 			Vertex vertex = {};
@@ -49,6 +50,38 @@ void CE::Rendering::CMesh::LoadModel(const std::string& modelPath)
 			if (uniqueVertices.count(vertex) == 0) {
 				uniqueVertices[vertex] = static_cast<uint32_t>(m_vertices.size());
 				m_vertices.push_back(vertex);
+				if (count == 2)
+				{
+					glm::vec3& v0 = m_vertices[i - 2].Pos; 
+					glm::vec3& v1 = m_vertices[i - 1].Pos; 
+					glm::vec3& v2 = m_vertices[i].Pos; 
+
+					glm::vec2& uv0 = m_vertices[i - 2].TexCoord; 
+					glm::vec2& uv1 = m_vertices[i - 1].TexCoord; 
+					glm::vec2& uv2 = m_vertices[i].TexCoord; 
+
+					glm::vec3 deltaPos1 = v1 - v0; 
+					glm::vec3 deltaPos2 = v2 - v0;
+
+					glm::vec2 deltaUV1 = uv1 - uv0; 
+					glm::vec2 deltaUV2 = uv2 - uv0;
+
+					float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+					glm::vec3 tangent = (deltaPos1*deltaUV2.y - deltaPos2 * deltaUV1.y)*r; 
+					glm::vec3 bitangent = ( deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x)*r;
+
+					m_tangents.push_back(tangent);
+					m_tangents.push_back(tangent);
+					m_tangents.push_back(tangent);
+
+					m_bitangents.push_back(bitangent);
+					m_bitangents.push_back(bitangent);
+					m_bitangents.push_back(bitangent);
+					count = 0;
+				}
+
+				count++;
+				i++;
 			}
 
 
@@ -59,7 +92,6 @@ void CE::Rendering::CMesh::LoadModel(const std::string& modelPath)
 	{
 		return;
 	}
-	ComputeTangents();
 	CreateVertexBuffer();
 	CreateIndexBuffer();
 	RENDERER->AddVertexBuffer(m_vertexBuffer);
@@ -136,34 +168,3 @@ CE::Rendering::CMesh::~CMesh()
 {
 }
 
-void CE::Rendering::CMesh::ComputeTangents()
-{
-	for (int i = 0; i < m_vertices.size(); i += 3)
-	{
-		glm::vec3& v0 = m_vertices[i + 0].Pos;
-		glm::vec3& v1 = m_vertices[i + 1].Pos;
-		glm::vec3& v2 = m_vertices[i + 2].Pos;
-
-		glm::vec2& uv0 = m_vertices[i + 0].TexCoord;
-		glm::vec2& uv1 = m_vertices[i + 1].TexCoord;
-		glm::vec2& uv2 = m_vertices[i + 2].TexCoord;
-
-		glm::vec3 deltaPos1 = v1 - v0; 
-		glm::vec3 deltaPos2 = v2 - v0;
-
-		glm::vec2 deltaUV1 = uv1 - uv0; 
-		glm::vec2 deltaUV2 = uv2 - uv0;
-
-		float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
-		glm::vec3 tangent = (deltaPos1*deltaUV2.y - deltaPos2 * deltaUV1.y)*r; 
-		glm::vec3 bitangent = ( deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x)*r;
-
-		m_tangents.push_back(tangent);
-		m_tangents.push_back(tangent);
-		m_tangents.push_back(tangent);
-
-		m_bitangents.push_back(bitangent);
-		m_bitangents.push_back(bitangent);
-		m_bitangents.push_back(bitangent);
-	}
-}

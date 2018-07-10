@@ -63,6 +63,7 @@ namespace CE
 			glm::mat4 Model;
 			glm::mat4 View;
 			glm::mat4 Proj;
+			glm::mat3 MV3x3;
 		};
 	}
 }

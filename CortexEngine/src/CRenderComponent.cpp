@@ -106,6 +106,8 @@ void CE::Components::CRenderComponent::UpdateUniformBuffer()
 
 	ubo.Proj[1][1] *= -1;
 
+	ubo.MV3x3 = glm::mat3x3(ubo.View * ubo.Model);
+
 	void* data;
 	vkMapMemory(RENDERER->GetLogicalDevice(), m_uniformBufferMemory, 0, sizeof(ubo), 0, &data);
 	memcpy(data, &ubo, sizeof(ubo));

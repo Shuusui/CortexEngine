@@ -14,8 +14,8 @@ layout(location = 0) out vec4 outColor;
 void main() {
 	vec4 lightColor = vec4(1,1,1,1);
 	vec4 baseColor = texture(texSampler, fragTexCoord);
-	vec4 normal = texture(normalSampler, fragTexCoord);
-	vec4 normalTS = normalize(normal.rgb*2.0-1.0);
+	vec3 texNormalTS = normalize(texture(normalSampler, fragTexCoord).rgb*2.0-1.0);
+	
 	float lightPower = 5;
 	float cosTheta = clamp(dot(normalize(fragNormal),normalize(lightDirection)), 0, 1);
 	vec4 matDiffCol = baseColor*cosTheta*lightColor*lightPower;
@@ -25,7 +25,8 @@ void main() {
 	vec3 E = normalize(lightDirection);
 	vec3 R = reflect(-lightDirection, fragNormal);
 	float cosAlpha = clamp(dot(E,R), 0, 1);
-
+	
+	
 	vec4 matSpecCol =  lightColor * lightPower* pow(cosAlpha, 60);
-    outColor = matDiffCol+matAmbCol+normal;
+    outColor = matDiffCol+matAmbCol+texNormalTS;
 }

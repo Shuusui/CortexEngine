@@ -39,7 +39,6 @@ namespace CE
 
 			~CMesh();
 		private: 
-			void ComputeTangents();
 
 			void CreateVertexBuffer();
 

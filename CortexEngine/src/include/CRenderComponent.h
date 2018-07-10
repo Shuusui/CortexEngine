@@ -4,9 +4,9 @@
 #include "CMaterial.h"
 #include "ICComponent.h"
 #include "Enums.h"
-#include "ICObject.h"
 #include "VulkanRenderer.h"
 #include "CortexStructs.h"
+#include "InternalMacros.h"
 #pragma endregion 
 #pragma region External Includes
 #include <glm/gtc/matrix_transform.hpp>
@@ -34,7 +34,6 @@ namespace CE
 			void DeltaUpdate() final;
 			VkDescriptorSet GetDescriptorSet() const { return m_descriptorSet; }
 			void Init();
-			void AllocateDescriptorSet();
 			void CreateUniformBuffer();
 			void CreateUniformBufferWrite();
 			void AddBufferInfo(VkDescriptorBufferInfo bufferInfo);

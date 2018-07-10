@@ -53,18 +53,28 @@ CE::Core::ProjectParams CE::Core::ProjectManager::LoadProjectFile()
 bool CE::Core::ProjectManager::Init()
 {
 	CE::Physics::Transform transform = {};
+	transform.Position = glm::vec3(0, 0, 150);
+	CE::Physics::Transform transform2 = {};
+	transform2.Position = glm::vec3(200, 0, -150);
 	ICObject* object = new ICObject(0, "object", transform);
+	ICObject* object2 = new ICObject(1, "object2", transform2);
 	CE::Components::CRenderComponent* renderComponent = new CE::Components::CRenderComponent(0);
+	CE::Components::CRenderComponent* renderComponent2 = new CE::Components::CRenderComponent(1);
 	renderComponent->Init();
+	renderComponent2->Init();
 	CE::Rendering::CMaterial* material = new CE::Rendering::CMaterial();
 	material->AddDiffuse("../assets//textures//CubeBasecolor.jpg");
 	material->AddNormal("../assets//textures//CubeNormal.jpg");
+	material->Init();
 	CE::Rendering::CMesh* mesh = new CE::Rendering::CMesh();
-	mesh->LoadModel("../assets//models//Cube.obj");
 	renderComponent->AddMesh(mesh);
+	renderComponent2->AddMesh(mesh);
 	renderComponent->AddMaterial(material);
+	renderComponent2->AddMaterial(material);
 	object->AddComponent(renderComponent);
+	object2->AddComponent(renderComponent2);
 	m_pCurrLevel->AddObject(object);
+	m_pCurrLevel->AddObject(object2);
 	return true;
 }
 

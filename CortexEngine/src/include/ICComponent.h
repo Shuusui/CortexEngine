@@ -41,6 +41,7 @@ namespace CE
 			virtual void DeltaUpdate() = 0;
 
 			virtual void Release() = 0;
+			
 		};
 	}
 }

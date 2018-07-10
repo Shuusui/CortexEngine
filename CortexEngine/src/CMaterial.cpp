@@ -33,17 +33,16 @@ void CE::Rendering::CMaterial::ReadFile(const std::string & texturepath, TexData
 	if (!data.Pixels)
 		return; //TODO: Errorhandling
 }
-
-void CE::Rendering::CMaterial::SetRenderComponent(CE::Components::CRenderComponent* renderComponent)
-{
-	m_renderComponent = renderComponent;
-	CreateImageDescriptor();
-}
-
 void CE::Rendering::CMaterial::AddImageInfo(VkDescriptorImageInfo imageInfo)
 {
 	m_imageInfos.push_back(imageInfo);
 }
+
+void CE::Rendering::CMaterial::Init()
+{
+	CreateImageDescriptor();
+}
+
 
 void CE::Rendering::CMaterial::Release()
 {
@@ -125,12 +124,14 @@ void CE::Rendering::CMaterial::CreateTextureSampler(TexData& data)
 
 void CE::Rendering::CMaterial::CreateImageDescriptor()
 {
+	RENDERER->AllocateDescriptorSet(m_descriptorSet);
+
 	CreateImageDescriptorInfo(m_diffTexData);
 	CreateImageDescriptorInfo(m_normalTexData);
 
 	VkWriteDescriptorSet descriptorWriteDiff = {};
 	descriptorWriteDiff.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWriteDiff.dstSet = m_renderComponent->GetDescriptorSet();
+	descriptorWriteDiff.dstSet = m_descriptorSet;
 	descriptorWriteDiff.dstBinding = 1;
 	descriptorWriteDiff.dstArrayElement = 0;
 	descriptorWriteDiff.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -139,7 +140,7 @@ void CE::Rendering::CMaterial::CreateImageDescriptor()
 
 	VkWriteDescriptorSet descriptorWriteNormal = {};
 	descriptorWriteNormal.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWriteNormal.dstSet = m_renderComponent->GetDescriptorSet();
+	descriptorWriteNormal.dstSet = m_descriptorSet;
 	descriptorWriteNormal.dstBinding = 2;
 	descriptorWriteNormal.dstArrayElement = 0;
 	descriptorWriteNormal.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;

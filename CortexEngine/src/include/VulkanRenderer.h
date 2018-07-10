@@ -147,7 +147,7 @@ namespace CE
 			size_t m_currentFrame;
 			VkDescriptorSetLayout m_descriptorSetLayout;
 			VkDescriptorPool m_descriptorPool;
-			std::vector<VkDescriptorSet> m_descritorSets;
+			std::vector<VkDescriptorSet> m_descriptorSets;
 			VkImage m_depthImage;
 			VkDeviceMemory m_depthImageMemory;
 			VkImageView m_depthImageView;
@@ -187,9 +187,9 @@ namespace CE
 			void InitDevices();
 			VkDescriptorPool GetDescriptorPool() const; 
 			VkDescriptorSetLayout GetDescriptorLayout() const;
-			void AddDescriptorSet(VkDescriptorSet descriptorSet);
 			VkExtent2D GetExtent() const;
 			VulkanCamera* GetCamera() const;
+			void AllocateDescriptorSet(VkDescriptorSet& descriptorSet);
 		private: 
 			//Init functions
 			void InitWindow();

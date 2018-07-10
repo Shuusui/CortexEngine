@@ -201,10 +201,6 @@ VkDescriptorSetLayout CE::Rendering::VulkanRenderer::GetDescriptorLayout() const
 	return m_descriptorSetLayout;
 }
 
-void CE::Rendering::VulkanRenderer::AddDescriptorSet(VkDescriptorSet descriptorSet)
-{
-	m_descritorSets.push_back(descriptorSet);
-}
 
 VkExtent2D CE::Rendering::VulkanRenderer::GetExtent() const
 {
@@ -214,6 +210,21 @@ VkExtent2D CE::Rendering::VulkanRenderer::GetExtent() const
 CE::Rendering::VulkanCamera* CE::Rendering::VulkanRenderer::GetCamera() const
 {
 	return m_camera;
+}
+
+void CE::Rendering::VulkanRenderer::AllocateDescriptorSet(VkDescriptorSet& descriptorSet)
+{
+	VkDescriptorSetLayout layouts[] = { m_descriptorSetLayout };
+	VkDescriptorSetAllocateInfo allocInfo = {};
+	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	allocInfo.descriptorPool = m_descriptorPool;
+	allocInfo.descriptorSetCount = 1;
+	allocInfo.pSetLayouts = layouts;
+
+	if (vkAllocateDescriptorSets(m_logicalDevice, &allocInfo, &descriptorSet) != VK_SUCCESS) {
+		throw std::runtime_error("failed to allocate descriptor set!");
+	}
+	m_descriptorSets.push_back(descriptorSet);
 }
 
 void CE::Rendering::VulkanRenderer::InitVulkan()
@@ -655,7 +666,7 @@ void CE::Rendering::VulkanRenderer::CreateCommandBuffers()
 
 			vkCmdBindIndexBuffer(m_commandBuffers[i], m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-			vkCmdBindDescriptorSets(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, m_descritorSets.data(), 0, nullptr);
+			vkCmdBindDescriptorSets(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, m_descriptorSets.data(), 0, nullptr);
 
 			vkCmdDrawIndexed(m_commandBuffers[i], static_cast<uint32_t>(m_indices.size()), 1, 0, 0, 0);
 		}
@@ -748,15 +759,15 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorPool()
 {
 	std::array<VkDescriptorPoolSize, 2> poolSizes = {};
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[0].descriptorCount = 1;
+	poolSizes[0].descriptorCount = 2;
 	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSizes[1].descriptorCount = 2;
+	poolSizes[1].descriptorCount = 4;
 
 	VkDescriptorPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
 	poolInfo.pPoolSizes = poolSizes.data();
-	poolInfo.maxSets = 2;
+	poolInfo.maxSets = 4;
 
 	if (vkCreateDescriptorPool(m_logicalDevice, &poolInfo, nullptr, &m_descriptorPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor pool!");

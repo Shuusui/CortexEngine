@@ -12,9 +12,7 @@
 
 namespace CE
 {
-	namespace Components {
-		class CRenderComponent;
-	}
+
 	namespace Rendering
 	{
 		struct TexData
@@ -34,16 +32,16 @@ namespace CE
 			TexData m_diffTexData;
 			TexData m_normalTexData;
 			int m_mipLevels;
-			CE::Components::CRenderComponent* m_renderComponent;
 			std::vector<VkDescriptorImageInfo> m_imageInfos;
+			VkDescriptorSet m_descriptorSet; 
 		public: 
 			CMaterial(); 
 			//reads only jpg files at the moment
 			void AddDiffuse(const std::string& texturePath);
 			void AddNormal(const std::string& texturePath);
 			void ReadFile(const std::string& texturepath, TexData& data);
-			void SetRenderComponent(CE::Components::CRenderComponent* renderComponent);
 			void AddImageInfo(VkDescriptorImageInfo imageInfo);
+			void Init(); 
 			void Release();
 			~CMaterial();
 		private: 

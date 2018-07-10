@@ -22,7 +22,6 @@ void CE::Components::CRenderComponent::AddMesh(Rendering::CMesh * mesh)
 void CE::Components::CRenderComponent::AddMaterial(Rendering::CMaterial * mat)
 {
 	m_material = mat;
-	m_material->SetRenderComponent(this);
 }
 
 void CE::Components::CRenderComponent::Update()
@@ -37,23 +36,8 @@ void CE::Components::CRenderComponent::DeltaUpdate()
 
 void CE::Components::CRenderComponent::Init()
 {
-	AllocateDescriptorSet();
+	RENDERER->AllocateDescriptorSet(m_descriptorSet);
 	CreateUniformBuffer();
-}
-
-void CE::Components::CRenderComponent::AllocateDescriptorSet()
-{
-	VkDescriptorSetLayout layouts[] = { RENDERER->GetDescriptorLayout() };
-	VkDescriptorSetAllocateInfo allocInfo = {};
-	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-	allocInfo.descriptorPool = RENDERER->GetDescriptorPool();
-	allocInfo.descriptorSetCount = 1;
-	allocInfo.pSetLayouts = layouts;
-
-	if (vkAllocateDescriptorSets(RENDERER->GetLogicalDevice(), &allocInfo, &m_descriptorSet) != VK_SUCCESS) {
-		throw std::runtime_error("failed to allocate descriptor set!");
-	}
-	RENDERER->AddDescriptorSet(m_descriptorSet);
 }
 
 void CE::Components::CRenderComponent::CreateUniformBuffer()
@@ -65,6 +49,15 @@ void CE::Components::CRenderComponent::CreateUniformBuffer()
 	CreateUniformBufferWrite();
 }
 
+
+void CE::Components::CRenderComponent::CreateUniformBufferInfo()
+{
+	VkDescriptorBufferInfo bufferInfo = {};
+	bufferInfo.buffer = m_uniformBuffer;
+	bufferInfo.offset = 0;
+	bufferInfo.range = sizeof(CE::Rendering::UniformBufferObject);
+	AddBufferInfo(bufferInfo);
+}
 void CE::Components::CRenderComponent::CreateUniformBufferWrite()
 {
 	VkWriteDescriptorSet descriptorWrite = {};
@@ -84,6 +77,7 @@ void CE::Components::CRenderComponent::AddBufferInfo(VkDescriptorBufferInfo buff
 	m_bufferInfos.push_back(bufferInfo);
 }
 
+
 void CE::Components::CRenderComponent::Release()
 {
 	m_mesh->Release();
@@ -97,15 +91,6 @@ CE::Components::CRenderComponent::~CRenderComponent()
 {
 }
 
-void CE::Components::CRenderComponent::CreateUniformBufferInfo()
-{
-	VkDescriptorBufferInfo bufferInfo = {};
-	bufferInfo.buffer = m_uniformBuffer;
-	bufferInfo.offset = 0;
-	bufferInfo.range = sizeof(CE::Rendering::UniformBufferObject);
-	AddBufferInfo(bufferInfo);
-}
-
 void CE::Components::CRenderComponent::UpdateUniformBuffer()
 {
 	static auto startTime = std::chrono::high_resolution_clock::now();
@@ -115,9 +100,8 @@ void CE::Components::CRenderComponent::UpdateUniformBuffer()
 
 	CE::Rendering::UniformBufferObject ubo = {};
 	glm::mat4 initRot = glm::mat4(1);
-	glm::mat4 transMat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 150.0f));
-
-	ubo.Model =  transMat*initRot/**rotMat*/;
+	glm::mat4 transMat = glm::translate(glm::mat4(1.0f), glm::vec3(m_obj->GetTransform().Position[0], m_obj->GetTransform().Position[1], m_obj->GetTransform().Position[2]));
+	ubo.Model =  transMat*initRot;
 	RENDERER->GetCamera()->ComputeMatrix(ubo);
 
 	ubo.Proj[1][1] *= -1;

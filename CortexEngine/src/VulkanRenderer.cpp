@@ -710,7 +710,9 @@ void CE::Rendering::VulkanRenderer::RecreateSwapChain()
 	if (width == 0 || height == 0) return;
 
 	vkDeviceWaitIdle(m_logicalDevice);
-	CreateDescriptorLayout();
+	CreateUDescriptorLayout();
+	CreateUDDescriptorLayout(); 
+	CreateUDNDescriptorLayout();
 
 	CleanupSwapChain();
 	CreateSwapChain();
@@ -723,7 +725,51 @@ void CE::Rendering::VulkanRenderer::RecreateSwapChain()
 	m_camera->ResizeExtent(m_swapChainExtent);
 }
 
-void CE::Rendering::VulkanRenderer::CreateDescriptorLayout()
+
+
+void CE::Rendering::VulkanRenderer::CreateUDescriptorLayout()
+{
+	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	layoutInfo.bindingCount = 1;
+	std::array<VkDescriptorSetLayoutBinding, 1> tempBindings = { m_bindings[0] };
+	layoutInfo.pBindings = tempBindings.data();
+
+	if (vkCreateDescriptorSetLayout(m_logicalDevice, &layoutInfo, nullptr, &m_uDescriptorSetLayout) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create descriptor set layout!");
+	}
+	
+}
+
+void CE::Rendering::VulkanRenderer::CreateUDDescriptorLayout()
+{
+	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	layoutInfo.bindingCount = 2; 
+	std::array<VkDescriptorSetLayoutBinding, 2> tempBindings = { m_bindings[0], m_bindings[1] };
+	layoutInfo.pBindings = tempBindings.data();
+
+	if (vkCreateDescriptorSetLayout(m_logicalDevice, &layoutInfo, nullptr, &m_udDescriptorSetLayout) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create descriptor set layout!");
+	}
+
+}
+
+void CE::Rendering::VulkanRenderer::CreateUDNDescriptorLayout()
+{
+	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	layoutInfo.bindingCount = 3; 
+	std::array<VkDescriptorSetLayoutBinding, 3> tempBindings = { m_bindings[0], m_bindings[1], m_bindings[2] };
+	layoutInfo.pBindings = tempBindings.data();
+
+	if (vkCreateDescriptorSetLayout(m_logicalDevice, &layoutInfo, nullptr, &m_udnDescriptorSetLayout) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create descriptor set layout!");
+	}
+
+}
+
+void CE::Rendering::VulkanRenderer::CreateDescriptorLayoutBinding()
 {
 	VkDescriptorSetLayoutBinding uboLayoutBinding = {};
 	uboLayoutBinding.binding = 0;
@@ -743,15 +789,7 @@ void CE::Rendering::VulkanRenderer::CreateDescriptorLayout()
 	normalSamplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	normalSamplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-	std::array<VkDescriptorSetLayoutBinding, 3> bindings = { uboLayoutBinding, diffSamplerLayoutBinding, normalSamplerLayoutBinding };
-	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
-	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
-	layoutInfo.pBindings = bindings.data();
-
-	if (vkCreateDescriptorSetLayout(m_logicalDevice, &layoutInfo, nullptr, &m_descriptorSetLayout) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create descriptor set layout!");
-	}
+	m_bindings = { uboLayoutBinding, diffSamplerLayoutBinding, normalSamplerLayoutBinding };
 }
 
 

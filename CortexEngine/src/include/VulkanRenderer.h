@@ -158,6 +158,9 @@ namespace CE
 			std::vector<VkFence> m_inFlightFences;
 			size_t m_currentFrame;
 			VkDescriptorSetLayout m_descriptorSetLayout;
+			VkDescriptorSetLayout m_uDescriptorSetLayout; 
+			VkDescriptorSetLayout m_udDescriptorSetLayout; 
+			VkDescriptorSetLayout m_udnDescriptorSetLayout; 
 			VkDescriptorPool m_descriptorPool;
 			std::vector<VkDescriptorSet> m_descriptorSets;
 			VkImage m_depthImage;
@@ -167,7 +170,7 @@ namespace CE
 			VkBuffer m_indexBuffer; // TODO: Not deleted yet
 			std::vector<uint32_t> m_indices;
 			std::vector<VkWriteDescriptorSet> m_descriptorWrites;
-			std::vector<VkDescriptorSetLayoutBinding> m_bindings;
+			std::array<VkDescriptorSetLayoutBinding, 3> m_bindings;
 			VulkanCamera* m_camera;
 			bool m_closeflag = false;
 		public: 
@@ -220,7 +223,10 @@ namespace CE
 			void CreateCommandPool();
 			void CreateSyncObjects();
 			void RecreateSwapChain();
-			void CreateDescriptorLayout();
+			void CreateUDescriptorLayout();
+			void CreateUDDescriptorLayout(); 
+			void CreateUDNDescriptorLayout();
+			void CreateDescriptorLayoutBinding();
 			void CreateDescriptorPool();
 			void CreateDepthResources();
 			void CreateCommandBuffers();

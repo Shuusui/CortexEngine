@@ -54,15 +54,6 @@
     <Filter Include="Components\Collider">
       <UniqueIdentifier>{b413b2f4-3ebb-451e-b484-6ca73375306c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Editor">
-      <UniqueIdentifier>{6ac23ca8-90c2-40f6-9480-0f07a950732d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Editor\Editor Headerfiles">
-      <UniqueIdentifier>{c48c0ce8-247e-4e6e-95f0-0ca58ccbe55a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Editor\Editor Sourcefiles">
-      <UniqueIdentifier>{3562ebe9-b1f5-4154-85eb-29b6999191c5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Rendering">
       <UniqueIdentifier>{1aa9200c-14df-4824-a3b5-da7bd948d7ff}</UniqueIdentifier>
     </Filter>
@@ -127,9 +118,6 @@
     </ClCompile>
     <ClCompile Include="src\ICObject.cpp">
       <Filter>Core\CoreSourcefiles</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CEditor.cpp">
-      <Filter>Editor\Editor Sourcefiles</Filter>
     </ClCompile>
     <ClCompile Include="src\CMesh.cpp">
       <Filter>Rendering\Rendering Sourcefiles</Filter>
@@ -231,9 +219,6 @@
     </ClInclude>
     <ClInclude Include="src\include\CTransformComponent.h">
       <Filter>Components\Components Headerfiles</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\CEditor.h">
-      <Filter>Editor\Editor Headerfiles</Filter>
     </ClInclude>
     <ClInclude Include="src\include\CMesh.h">
       <Filter>Rendering\Rendering Headerfiles</Filter>

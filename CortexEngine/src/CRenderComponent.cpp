@@ -22,6 +22,10 @@ void CE::Components::CRenderComponent::AddMesh(Rendering::CMesh * mesh)
 void CE::Components::CRenderComponent::AddMaterial(Rendering::CMaterial * mat)
 {
 	m_material = mat;
+	for (VkWriteDescriptorSet descWrite : mat->GetDescriptorWrites())
+	{
+		RENDERER->UpdateDescriptorSets(descWrite);
+	}
 }
 
 void CE::Components::CRenderComponent::Update()
@@ -68,6 +72,7 @@ void CE::Components::CRenderComponent::CreateUniformBufferWrite()
 	descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	descriptorWrite.descriptorCount = 1;
 	descriptorWrite.pBufferInfo = m_bufferInfos.data();
+	m_descriptorWrites.push_back(descriptorWrite);
 	RENDERER->UpdateDescriptorSets(descriptorWrite);
 }
 

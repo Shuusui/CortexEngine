@@ -25,6 +25,7 @@ namespace CE
 			VkBuffer m_uniformBuffer;
 			VkDeviceMemory m_uniformBufferMemory;	
 			std::vector<VkDescriptorBufferInfo> m_bufferInfos;
+			std::vector<VkWriteDescriptorSet> m_descriptorWrites;
 			glm::mat4 m_modelMat;
 		public: 
 			CRenderComponent(const uint_fast32_t& id); 
@@ -32,7 +33,6 @@ namespace CE
 			void AddMaterial(Rendering::CMaterial* mat);
 			void Update() final; 
 			void DeltaUpdate() final;
-			VkDescriptorSet GetDescriptorSet() const { return m_descriptorSet; }
 			void Init();
 			void CreateUniformBuffer();
 			void CreateUniformBufferWrite();

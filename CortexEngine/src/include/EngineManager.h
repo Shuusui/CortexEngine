@@ -6,7 +6,6 @@
 #include "EventHandler.h"
 #include "Console.h"
 #include "MessageEvent.h"
-#include "CEditor.h"
 #include "DirtyEventListener.h"
 #include "Algorithms.h"
 #include "VulkanRenderer.h"
@@ -28,7 +27,6 @@ namespace CE
 			static EngineManager* s_pEngineManager;
 			static ProjectManager* s_pProjectManager;
 			static EventHandler* s_pEventHandler;
-			static Editor::CEditor* s_pEditor;
 			static TimeHandler* s_pTimeHandler;
 			EngineIni* m_pEngineIni;
 			Rendering::VulkanRenderer* m_pVkRenderer;
@@ -42,7 +40,6 @@ namespace CE
 			static void Save();
 			static ProjectManager* GetProjManager() { return s_pProjectManager; }
 			static EventHandler* GetEventHandler() { return s_pEventHandler; }
-			static Editor::CEditor* GetEditor() { return s_pEditor; }
 			static TimeHandler* GetTimeHandler() { return s_pTimeHandler; }
 			EngineParams Init();
 			bool InitListener();
@@ -57,7 +54,6 @@ namespace CE
 				s_pEngineManager = this;
 				m_pEngineIni = new EngineIni("");
 				s_pEventHandler = new EventHandler();
-				s_pEditor = new Editor::CEditor();
 				m_pVkRenderer = new Rendering::VulkanRenderer();
 			};			
 		};
@@ -94,7 +90,6 @@ void CE::Core::EngineManager::Release()
 	s_pProjectManager->Release();
 	s_pEngineManager->m_pVkRenderer->Release();
 	delete s_pEngineManager;
-	delete s_pEditor;
 }
 
 

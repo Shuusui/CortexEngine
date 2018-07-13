@@ -3,7 +3,6 @@
 CE::Core::EngineManager* CE::Core::EngineManager::s_pEngineManager = nullptr;
 CE::Core::EventHandler* CE::Core::EngineManager::s_pEventHandler = nullptr;
 CE::Core::ProjectManager* CE::Core::EngineManager::s_pProjectManager = nullptr;
-CE::Editor::CEditor* CE::Core::EngineManager::s_pEditor = nullptr;
 CE::Core::TimeHandler* CE::Core::EngineManager::s_pTimeHandler = nullptr;
 
 CE::Core::EngineParams CE::Core::EngineManager::Init()
@@ -55,6 +54,7 @@ void CE::Core::EngineManager::Run()
 
 bool CE::Core::EngineManager::CreateNewProject(const std::string & name)
 {
+
 	s_pProjectManager = new ProjectManager(name);
 	if (!s_pProjectManager)
 		return false; 

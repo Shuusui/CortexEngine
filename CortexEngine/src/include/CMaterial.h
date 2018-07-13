@@ -34,6 +34,7 @@ namespace CE
 			int m_mipLevels;
 			std::vector<VkDescriptorImageInfo> m_imageInfos;
 			VkDescriptorSet m_descriptorSet; 
+			std::vector<VkWriteDescriptorSet> m_descriptorWrites;
 		public: 
 			CMaterial(); 
 			//reads only jpg files at the moment
@@ -41,8 +42,8 @@ namespace CE
 			void AddNormal(const std::string& texturePath);
 			void ReadFile(const std::string& texturepath, TexData& data);
 			void AddImageInfo(VkDescriptorImageInfo imageInfo);
-			void Init(); 
 			void Release();
+			std::vector<VkWriteDescriptorSet> GetDescriptorWrites() const; 
 			~CMaterial();
 		private: 
 
@@ -52,7 +53,9 @@ namespace CE
 
 			void CreateTextureSampler(TexData& data);
 
-			void CreateImageDescriptor();
+			void CreateDiffImageDescriptor();
+
+			void CreateNormalImageDescriptor();
 
 			void CreateImageDescriptorInfo(TexData& data);
 		};

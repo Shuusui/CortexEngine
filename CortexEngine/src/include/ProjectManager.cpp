@@ -65,7 +65,6 @@ bool CE::Core::ProjectManager::Init()
 	CE::Rendering::CMaterial* material = new CE::Rendering::CMaterial();
 	material->AddDiffuse("../assets//textures//CubeBasecolor.jpg");
 	material->AddNormal("../assets//textures//CubeNormal.jpg");
-	material->Init();
 	CE::Rendering::CMesh* mesh = new CE::Rendering::CMesh();
 	renderComponent->AddMesh(mesh);
 	renderComponent2->AddMesh(mesh);

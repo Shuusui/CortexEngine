@@ -186,7 +186,9 @@ void CE::Rendering::VulkanRenderer::InitDevices()
 	CreateSurface();
 	PickPhysicalDevice();
 	CreateLogicalDevice();
-	CreateDescriptorLayout();
+	CreateUDescriptorLayout();
+	CreateUDDescriptorLayout();
+	CreateUDNDescriptorLayout();
 	CreateCommandPool();
 	CreateDescriptorPool();
 }

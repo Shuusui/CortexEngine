@@ -3,6 +3,7 @@
 #include "MessageEvent.h"
 #include "VulkanCamera.h"
 #include "Enums.h"
+#include "CortexStructs.h"
 #pragma endregion 
 #pragma region External Includes
 #define GLFW_INCLUDE_VULKAN
@@ -100,6 +101,74 @@ struct Vertex {
 
 	bool operator==(const Vertex& other) const {
 		return Pos == other.Pos && Color == other.Color && TexCoord == other.TexCoord;
+	}
+};
+
+struct SMesh
+{
+	VkDevice LogicalDevice;
+	std::vector<Vertex> Vertices; 
+	std::vector<uint32_t> Indices; 
+	std::vector<glm::vec3> Tangents; 
+	std::vector<glm::vec3> Bitangents; 
+	VkBuffer VertexBuffer; 
+	VkDeviceMemory VertexBufferMemory; 
+	VkBuffer IndexBuffer; 
+	VkDeviceMemory IndexBufferMemory; 
+
+	void Release()
+	{
+		vkDeviceWaitIdle(LogicalDevice);
+
+		Vertices.clear(); 
+		Indices.clear(); 
+		Tangents.clear(); 
+		Bitangents.clear();
+		vkDestroyBuffer(LogicalDevice, VertexBuffer, nullptr); 
+		vkFreeMemory(LogicalDevice, VertexBufferMemory, nullptr);
+		vkDestroyBuffer(LogicalDevice, IndexBuffer, nullptr); 
+		vkFreeMemory(LogicalDevice, IndexBufferMemory, nullptr);
+	}
+};
+
+struct SMaterial
+{
+	VkDevice LogicalDevice; 
+	CE::Rendering::TexData DiffData; 
+	CE::Rendering::TexData NormalData;
+	int MipLevel; 
+	std::vector<VkDescriptorImageInfo> ImageInfos; 
+	std::vector<VkWriteDescriptorSet> DescriptorWrites;
+	void Release()
+	{
+		vkDeviceWaitIdle(LogicalDevice);
+
+		stbi_image_free(DiffData.Pixels);
+		stbi_image_free(NormalData.Pixels);
+		vkDestroyImageView(LogicalDevice, DiffData.ImageView, nullptr); 
+		vkDestroyImageView(LogicalDevice, NormalData.ImageView, nullptr); 
+		vkDestroyImage(LogicalDevice, DiffData.Image, nullptr); 
+		vkDestroyImage(LogicalDevice, NormalData.Image, nullptr); 
+		vkFreeMemory(LogicalDevice, DiffData.ImageMemory, nullptr); 
+		vkFreeMemory(LogicalDevice, NormalData.ImageMemory, nullptr); 
+		vkDestroySampler(LogicalDevice, DiffData.ImageSampler, nullptr); 
+		vkDestroySampler(LogicalDevice, NormalData.ImageSampler, nullptr);
+	}
+};
+
+struct SObject
+{
+	VkDevice LogicalDevice; 
+	VkDescriptorSet DescriptorSet; 
+	VkBuffer UniformBuffer; 
+	VkDeviceMemory UniformBufferMemory; 
+	VkWriteDescriptorSet UniformBufferWrite;
+	uint32_t MeshRefID; 
+	uint32_t MaterialRefID;
+	void Release()
+	{
+		vkDestroyBuffer(LogicalDevice, UniformBuffer, nullptr);
+		vkFreeMemory(LogicalDevice, UniformBufferMemory, nullptr); 
 	}
 };
 

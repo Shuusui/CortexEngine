@@ -27,6 +27,7 @@ namespace CE
 			std::vector<VkDescriptorBufferInfo> m_bufferInfos;
 			std::vector<VkWriteDescriptorSet> m_descriptorWrites;
 			glm::mat4 m_modelMat;
+			uint32_t m_VkID;
 		public: 
 			CRenderComponent(const uint_fast32_t& id); 
 			void AddMesh(Rendering::CMesh* mesh);

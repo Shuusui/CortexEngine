@@ -65,5 +65,16 @@ namespace CE
 			glm::mat4 Proj;
 			glm::mat3 MV3x3;
 		};
+		struct TexData
+		{
+			int TexWidth;
+			int TexHeight;
+			int TexChannels;
+			stbi_uc* Pixels;
+			VkImage Image;
+			VkDeviceMemory ImageMemory;
+			VkImageView ImageView;
+			VkSampler ImageSampler;
+		};
 	}
 }

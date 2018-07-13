@@ -5,10 +5,8 @@
 
 
 CE::Rendering::CMesh::CMesh()
-	:m_vertexBuffer(VK_NULL_HANDLE)
-	,m_indexBuffer(VK_NULL_HANDLE)
 {
-
+	m_mesh = {};
 }
 
 void CE::Rendering::CMesh::LoadModel(const std::string& modelPath)
@@ -48,17 +46,17 @@ void CE::Rendering::CMesh::LoadModel(const std::string& modelPath)
 			vertex.Color = { 1.0f, 1.0f, 1.0f };
 
 			if (uniqueVertices.count(vertex) == 0) {
-				uniqueVertices[vertex] = static_cast<uint32_t>(m_vertices.size());
-				m_vertices.push_back(vertex);
+				uniqueVertices[vertex] = static_cast<uint32_t>(m_mesh.Vertices.size());
+				m_mesh.Vertices.push_back(vertex);
 				if (count == 2)
 				{
-					glm::vec3& v0 = m_vertices[i - 2].Pos; 
-					glm::vec3& v1 = m_vertices[i - 1].Pos; 
-					glm::vec3& v2 = m_vertices[i].Pos; 
+					glm::vec3& v0 = m_mesh.Vertices[i - 2].Pos; 
+					glm::vec3& v1 = m_mesh.Vertices[i - 1].Pos; 
+					glm::vec3& v2 = m_mesh.Vertices[i].Pos; 
 
-					glm::vec2& uv0 = m_vertices[i - 2].TexCoord; 
-					glm::vec2& uv1 = m_vertices[i - 1].TexCoord; 
-					glm::vec2& uv2 = m_vertices[i].TexCoord; 
+					glm::vec2& uv0 = m_mesh.Vertices[i - 2].TexCoord; 
+					glm::vec2& uv1 = m_mesh.Vertices[i - 1].TexCoord; 
+					glm::vec2& uv2 = m_mesh.Vertices[i].TexCoord; 
 
 					glm::vec3 deltaPos1 = v1 - v0; 
 					glm::vec3 deltaPos2 = v2 - v0;
@@ -70,13 +68,13 @@ void CE::Rendering::CMesh::LoadModel(const std::string& modelPath)
 					glm::vec3 tangent = (deltaPos1*deltaUV2.y - deltaPos2 * deltaUV1.y)*r; 
 					glm::vec3 bitangent = ( deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x)*r;
 
-					m_tangents.push_back(tangent);
-					m_tangents.push_back(tangent);
-					m_tangents.push_back(tangent);
+					m_mesh.Tangents.push_back(tangent);
+					m_mesh.Tangents.push_back(tangent);
+					m_mesh.Tangents.push_back(tangent);
 
-					m_bitangents.push_back(bitangent);
-					m_bitangents.push_back(bitangent);
-					m_bitangents.push_back(bitangent);
+					m_mesh.Bitangents.push_back(bitangent);
+					m_mesh.Bitangents.push_back(bitangent);
+					m_mesh.Bitangents.push_back(bitangent);
 					count = 0;
 				}
 
@@ -85,23 +83,23 @@ void CE::Rendering::CMesh::LoadModel(const std::string& modelPath)
 			}
 
 
-			m_indices.push_back(uniqueVertices[vertex]);
+			m_mesh.Indices.push_back(uniqueVertices[vertex]);
 		}
 	}
-	if (m_vertices.empty())
+	if (m_mesh.Vertices.empty())
 	{
 		return;
 	}
-	CreateVertexBuffer();
-	CreateIndexBuffer();
-	RENDERER->AddVertexBuffer(m_vertexBuffer);
-	RENDERER->SetIndexBuffer(m_indexBuffer);
-	RENDERER->SetIndices(m_indices);
+	//CreateVertexBuffer();
+	//CreateIndexBuffer();
+	//RENDERER->AddVertexBuffer(m_vertexBuffer);
+	//RENDERER->SetIndexBuffer(m_indexBuffer);
+	//RENDERER->SetIndices(m_indices);
 }
 
 void CE::Rendering::CMesh::Release()
 {
-	vkDeviceWaitIdle(RENDERER->GetLogicalDevice());
+	/*vkDeviceWaitIdle(RENDERER->GetLogicalDevice());
 
 	m_vertices.clear();
 	m_indices.clear();
@@ -110,18 +108,14 @@ void CE::Rendering::CMesh::Release()
 
 	vkDestroyBuffer(RENDERER->GetLogicalDevice(), m_vertexBuffer, nullptr);
 	vkFreeMemory(RENDERER->GetLogicalDevice(), m_vertexBufferMemory, nullptr);
-
+*/
 	delete this;
 }
 
-void CE::Rendering::CMesh::SetRenderComponent(CE::Components::CRenderComponent* renderComponent)
-{
-	m_renderComponent = renderComponent;
-}
 
-void CE::Rendering::CMesh::CreateVertexBuffer()
+void CE::Rendering::CMesh::CreateVertexBuffer(std::vector<Vertex> vertices, VkBuffer vertexBuffer, VkDeviceMemory vertexBufferMemory)
 {
-	VkDeviceSize bufferSize = sizeof(m_vertices[0]) * m_vertices.size();
+	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
 	RENDERER->CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
@@ -129,13 +123,13 @@ void CE::Rendering::CMesh::CreateVertexBuffer()
 
 	void* data;
 	vkMapMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, m_vertices.data(), (size_t)bufferSize);
+	memcpy(data, vertices.data(), (size_t)bufferSize);
 	vkUnmapMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory);
 
 	RENDERER->CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-		m_vertexBuffer, m_vertexBufferMemory);
+		vertexBuffer, vertexBufferMemory);
 
-	RENDERER->CopyBuffer(stagingBuffer, m_vertexBuffer, bufferSize);
+	RENDERER->CopyBuffer(stagingBuffer, vertexBuffer, bufferSize);
 
 	vkDestroyBuffer(RENDERER->GetLogicalDevice(), stagingBuffer, nullptr);
 	vkFreeMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory, nullptr);

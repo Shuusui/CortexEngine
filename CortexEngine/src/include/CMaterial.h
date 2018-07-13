@@ -15,17 +15,7 @@ namespace CE
 
 	namespace Rendering
 	{
-		struct TexData
-		{
-			int TexWidth; 
-			int TexHeight; 
-			int TexChannels;
-			stbi_uc* Pixels;
-			VkImage Image; 
-			VkDeviceMemory ImageMemory;
-			VkImageView ImageView;
-			VkSampler ImageSampler;
-		};
+		
 		class CMaterial
 		{
 		private: 
@@ -35,6 +25,7 @@ namespace CE
 			std::vector<VkDescriptorImageInfo> m_imageInfos;
 			VkDescriptorSet m_descriptorSet; 
 			std::vector<VkWriteDescriptorSet> m_descriptorWrites;
+			uint32_t m_VkID;
 		public: 
 			CMaterial(); 
 			//reads only jpg files at the moment

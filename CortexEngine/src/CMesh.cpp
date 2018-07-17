@@ -99,63 +99,14 @@ void CE::Rendering::CMesh::LoadModel(const std::string& modelPath)
 
 void CE::Rendering::CMesh::Release()
 {
-	/*vkDeviceWaitIdle(RENDERER->GetLogicalDevice());
+	m_mesh.Release();
 
-	m_vertices.clear();
-	m_indices.clear();
-	vkDestroyBuffer(RENDERER->GetLogicalDevice(), m_indexBuffer, nullptr);
-	vkFreeMemory(RENDERER->GetLogicalDevice(), m_indexBufferMemory, nullptr);
-
-	vkDestroyBuffer(RENDERER->GetLogicalDevice(), m_vertexBuffer, nullptr);
-	vkFreeMemory(RENDERER->GetLogicalDevice(), m_vertexBufferMemory, nullptr);
-*/
 	delete this;
 }
 
-
-void CE::Rendering::CMesh::CreateVertexBuffer(std::vector<Vertex> vertices, VkBuffer vertexBuffer, VkDeviceMemory vertexBufferMemory)
+SMesh CE::Rendering::CMesh::GetMeshData()
 {
-	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-	RENDERER->CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-		stagingBuffer, stagingBufferMemory);
-
-	void* data;
-	vkMapMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, vertices.data(), (size_t)bufferSize);
-	vkUnmapMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory);
-
-	RENDERER->CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-		vertexBuffer, vertexBufferMemory);
-
-	RENDERER->CopyBuffer(stagingBuffer, vertexBuffer, bufferSize);
-
-	vkDestroyBuffer(RENDERER->GetLogicalDevice(), stagingBuffer, nullptr);
-	vkFreeMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory, nullptr);
-}
-
-void CE::Rendering::CMesh::CreateIndexBuffer()
-{
-	VkDeviceSize bufferSize = sizeof(m_indices[0]) * m_indices.size();
-
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-	RENDERER->CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-		stagingBuffer, stagingBufferMemory);
-
-	void* data;
-	vkMapMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, m_indices.data(), (size_t)bufferSize);
-	vkUnmapMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory);
-
-	RENDERER->CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-		m_indexBuffer, m_indexBufferMemory);
-
-	RENDERER->CopyBuffer(stagingBuffer, m_indexBuffer, bufferSize);
-
-	vkDestroyBuffer(RENDERER->GetLogicalDevice(), stagingBuffer, nullptr);
-	vkFreeMemory(RENDERER->GetLogicalDevice(), stagingBufferMemory, nullptr);
+	return m_mesh;
 }
 
 CE::Rendering::CMesh::~CMesh()

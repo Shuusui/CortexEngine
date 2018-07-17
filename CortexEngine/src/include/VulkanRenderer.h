@@ -131,11 +131,32 @@ struct SMesh
 	}
 };
 
+struct SImageData
+{
+	VkDevice LogicalDevice;
+	VkImage Image;
+	VkDeviceMemory ImageMemory;
+	VkImageView ImageView;
+	VkSampler ImageSampler;
+
+	void Release()
+	{
+		vkDestroyImageView(LogicalDevice, ImageView, nullptr);
+		vkDestroyImage(LogicalDevice, Image, nullptr); 
+		vkDestroySampler(LogicalDevice, ImageSampler, nullptr);
+		vkFreeMemory(LogicalDevice, ImageMemory, nullptr);
+	}
+};
+
 struct SMaterial
 {
 	VkDevice LogicalDevice; 
 	CE::Rendering::TexData DiffData; 
 	CE::Rendering::TexData NormalData;
+
+	SImageData DiffImageData; 
+	SImageData NormalImageData;
+
 	int MipLevel; 
 	std::vector<VkDescriptorImageInfo> ImageInfos; 
 	std::vector<VkWriteDescriptorSet> DescriptorWrites;
@@ -143,16 +164,11 @@ struct SMaterial
 	{
 		vkDeviceWaitIdle(LogicalDevice);
 
-		stbi_image_free(DiffData.Pixels);
-		stbi_image_free(NormalData.Pixels);
-		vkDestroyImageView(LogicalDevice, DiffData.ImageView, nullptr); 
-		vkDestroyImageView(LogicalDevice, NormalData.ImageView, nullptr); 
-		vkDestroyImage(LogicalDevice, DiffData.Image, nullptr); 
-		vkDestroyImage(LogicalDevice, NormalData.Image, nullptr); 
-		vkFreeMemory(LogicalDevice, DiffData.ImageMemory, nullptr); 
-		vkFreeMemory(LogicalDevice, NormalData.ImageMemory, nullptr); 
-		vkDestroySampler(LogicalDevice, DiffData.ImageSampler, nullptr); 
-		vkDestroySampler(LogicalDevice, NormalData.ImageSampler, nullptr);
+		DiffData.Release();
+		NormalData.Release();
+		DiffImageData.Release();
+		NormalImageData.Release();
+
 	}
 };
 
@@ -273,7 +289,10 @@ namespace CE
 			VkExtent2D GetExtent() const;
 			VulkanCamera* GetCamera() const;
 			void AllocateDescriptorSet(VkDescriptorSet& descriptorSet);
+			void CreateMeshData(SMesh& meshData);
 		private: 
+			void CreateVertexBuffer(std::vector<Vertex> vertices, VkBuffer& vertexBuffer, VkDeviceMemory& vertexBufferMemory);
+			void CreateIndexBuffer(std::vector<uint32_t> indices, VkBuffer& indexBuffer, VkDeviceMemory& indexBufferMemory);
 			//Init functions
 			void InitWindow();
 			void Cleanup(); 

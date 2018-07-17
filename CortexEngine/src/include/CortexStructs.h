@@ -6,6 +6,7 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <string>
+#include <stb_image.h>
 #pragma endregion 
 
 namespace CE
@@ -71,10 +72,10 @@ namespace CE
 			int TexHeight;
 			int TexChannels;
 			stbi_uc* Pixels;
-			VkImage Image;
-			VkDeviceMemory ImageMemory;
-			VkImageView ImageView;
-			VkSampler ImageSampler;
+			void Release()
+			{
+				stbi_image_free(Pixels);
+			}
 		};
 	}
 }

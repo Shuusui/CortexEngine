@@ -229,6 +229,14 @@ void CE::Rendering::VulkanRenderer::AllocateDescriptorSet(VkDescriptorSet& descr
 	m_descriptorSets.push_back(descriptorSet);
 }
 
+void CE::Rendering::VulkanRenderer::CreateMeshData(SMesh & meshData)
+{
+	meshData.LogicalDevice = m_logicalDevice; 
+	CreateVertexBuffer(meshData.Vertices, meshData.VertexBuffer, meshData.VertexBufferMemory);
+	CreateIndexBuffer(meshData.Indices, meshData.IndexBuffer, meshData.IndexBufferMemory);
+
+}
+
 void CE::Rendering::VulkanRenderer::InitVulkan()
 {
 	CreateSwapChain();
@@ -770,6 +778,51 @@ void CE::Rendering::VulkanRenderer::CreateUDNDescriptorLayout()
 	}
 
 }
+void CE::Rendering::VulkanRenderer::CreateVertexBuffer(std::vector<Vertex> vertices, VkBuffer& vertexBuffer, VkDeviceMemory& vertexBufferMemory)
+{
+	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+	VkBuffer stagingBuffer;
+	VkDeviceMemory stagingBufferMemory;
+	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+		stagingBuffer, stagingBufferMemory);
+
+	void* data;
+	vkMapMemory(m_logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
+	memcpy(data, vertices.data(), (size_t)bufferSize);
+	vkUnmapMemory(m_logicalDevice, stagingBufferMemory);
+
+	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+		vertexBuffer, vertexBufferMemory);
+
+	CopyBuffer(stagingBuffer, vertexBuffer, bufferSize);
+
+	vkDestroyBuffer(m_logicalDevice, stagingBuffer, nullptr);
+	vkFreeMemory(m_logicalDevice, stagingBufferMemory, nullptr);
+}
+
+void CE::Rendering::VulkanRenderer::CreateIndexBuffer(std::vector<uint32_t> indices, VkBuffer& indexBuffer, VkDeviceMemory& indexBufferMemory)
+{
+	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+
+	VkBuffer stagingBuffer;
+	VkDeviceMemory stagingBufferMemory;
+	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+		stagingBuffer, stagingBufferMemory);
+
+	void* data;
+	vkMapMemory(m_logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
+	memcpy(data, indices.data(), (size_t)bufferSize);
+	vkUnmapMemory(m_logicalDevice, stagingBufferMemory);
+
+	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+		indexBuffer, indexBufferMemory);
+
+	CopyBuffer(stagingBuffer, indexBuffer, bufferSize);
+
+	vkDestroyBuffer(m_logicalDevice, stagingBuffer, nullptr);
+	vkFreeMemory(m_logicalDevice, stagingBufferMemory, nullptr);
+}
+
 
 void CE::Rendering::VulkanRenderer::CreateDescriptorLayoutBinding()
 {

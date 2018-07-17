@@ -16,7 +16,6 @@ CE::Components::CRenderComponent::CRenderComponent(const uint_fast32_t& id)
 void CE::Components::CRenderComponent::AddMesh(Rendering::CMesh * mesh)
 {
 	m_mesh = mesh;
-	m_mesh->SetRenderComponent(this);
 }
 
 void CE::Components::CRenderComponent::AddMaterial(Rendering::CMaterial * mat)
